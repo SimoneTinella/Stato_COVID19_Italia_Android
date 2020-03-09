@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">Stato COVID-19 Italia</string>
+    <string name="app_name">COVID-19 Stato Italia</string>
+    <string name="titolo">Stato COVID 19</string>
+    <string name="noData">\????</string>
 </resources>
