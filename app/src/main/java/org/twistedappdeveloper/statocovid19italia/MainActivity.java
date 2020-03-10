@@ -3,6 +3,7 @@ package org.twistedappdeveloper.statocovid19italia;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,32 +14,75 @@ import com.loopj.android.http.SyncHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
+import org.twistedappdeveloper.statocovid19italia.model.Data;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView txtTotaleCasi, txtDeceduti, txtGuariti, txtRicoverati, txtTamponi, txtIsolamento, txtNuoviCasi, txtPositivi, txtData;
+    private TextView txtData;
+
+    private ListView listView;
+    private DataAdapter adapter;
 
     private ProgressDialog pdialog;
+
+    private List<Data> dataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        txtTotaleCasi = findViewById(R.id.txtCasiValue);
-        txtDeceduti = findViewById(R.id.txtDecedutiValue);
-        txtGuariti = findViewById(R.id.txtGuaritiValue);
-        txtRicoverati = findViewById(R.id.txtRicoveratiValue);
-        txtTamponi = findViewById(R.id.txtTamponiValue);
-        txtIsolamento = findViewById(R.id.txtIsolamentoValue);
-        txtNuoviCasi = findViewById(R.id.txtNuoviCasiValue);
-        txtPositivi = findViewById(R.id.txtAttualmentePositiviValue);
+        dataList = new ArrayList<>();
 
-        txtData = findViewById(R.id.txtData);
+        txtData = findViewById(R.id.txtName);
+
+        listView = findViewById(R.id.listView);
+        adapter = new DataAdapter(getApplicationContext(), R.layout.list_data, dataList);
+        listView.setAdapter(adapter);
     }
 
+
+    private String getColorByKey(String key) {
+        switch (key) {
+
+            case "deceduti":
+                return "#FF0000";
+
+            case "totale_casi":
+                return "#FFB300";
+
+            case "dimessi_guariti":
+                return "#00FF00";
+
+            default:
+                return "#000000";
+        }
+    }
+
+    private int getPositionByKey(String key) {
+        switch (key) {
+
+            case "deceduti":
+                return 2;
+
+            case "totale_casi":
+                return 0;
+
+            case "dimessi_guariti":
+                return 1;
+
+            default:
+                return Integer.MAX_VALUE;
+        }
+    }
 
     private void updateValues() {
 
@@ -52,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 client.get("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json", new JsonHttpResponseHandler() {
 
+
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
@@ -60,32 +105,38 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = response.getJSONObject(response.length() - 1);
 
-                            final String totaleCasi = obj.getString("totale_casi");
-                            final String deceduti = obj.getString("deceduti");
-                            final String dimessiGuariti = obj.getString("dimessi_guariti");
-                            final String isolamento = obj.getString("isolamento_domiciliare");
-                            final String totale_attualmente_positivi = obj.getString("totale_attualmente_positivi");
-                            final String nuovi_attualmente_positivi = obj.getString("nuovi_attualmente_positivi");
-                            final String ricoverati_con_sintomi = obj.getString("ricoverati_con_sintomi");
-                            final String tamponi = obj.getString("tamponi");
-
                             final String data = obj.getString("data");
+
+                            dataList.clear();
+                            for (Iterator<String> keys = obj.keys(); keys.hasNext(); ) {
+                                String key = keys.next();
+
+                                if (key.equalsIgnoreCase("data") ||
+                                        key.equalsIgnoreCase("stato")
+                                ) {
+                                    continue;
+                                }
+                                String[] strings = key.split("_");
+                                String name = "";
+                                for (int i = 0; i < strings.length; i++) {
+                                    name = String.format(
+                                            "%s %s",
+                                            name,
+                                            String.format("%s%s", strings[i].substring(0, 1).toUpperCase(), strings[i].substring(1))
+                                    );
+                                }
+                                String value = obj.getString(key);
+                                dataList.add(new Data(name.trim(), value, getColorByKey(key), getPositionByKey(key)));
+                            }
 
 
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    txtTotaleCasi.setText(totaleCasi);
-                                    txtDeceduti.setText(deceduti);
-                                    txtGuariti.setText(dimessiGuariti);
-                                    txtTamponi.setText(tamponi);
-                                    txtIsolamento.setText(isolamento);
-                                    txtPositivi.setText(totale_attualmente_positivi);
-                                    txtNuoviCasi.setText(nuovi_attualmente_positivi);
-                                    txtRicoverati.setText(ricoverati_con_sintomi);
-
                                     txtData.setText(String.format("Dati al: %s", data));
 
+                                    Collections.sort(dataList);
+                                    adapter.notifyDataSetChanged();
                                     pdialog.dismiss();
                                 }
                             });
@@ -96,35 +147,6 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                        super.onSuccess(statusCode, headers, response);
-                        Log.i("AndroTag", "onSuccessJSONObject");
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        Log.i("AndroTag", "onFailureJSONObject");
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-                        super.onFailure(statusCode, headers, throwable, errorResponse);
-                        Log.i("AndroTag", "onFailureJSONArray");
-                    }
-
-                    @Override
-                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                        super.onFailure(statusCode, headers, responseString, throwable);
-                        Log.i("AndroTag", "onFailureString");
-                    }
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, String responseString) {
-                        super.onSuccess(statusCode, headers, responseString);
-                        Log.i("AndroTag", "onSuccessString");
-                    }
                 });
 
             }
