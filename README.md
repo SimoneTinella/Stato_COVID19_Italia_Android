@@ -5,3 +5,5 @@ Applicazione Nativa Android per l'accesso facilitato ai dati relativi alla diffu
 
 
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia/raw/master/img/MainActivity.png)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia/raw/master/img/ChartActivity.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia/raw/master/img/InfoDialog.PNG)
