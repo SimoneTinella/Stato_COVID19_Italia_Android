@@ -2,6 +2,7 @@ package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -86,9 +87,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_update:
-                updateValues();
-                break;
             case R.id.action_info:
                 final SpannableString s =
                         new SpannableString(getString(R.string.infoMessage));
@@ -107,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
                 if (txtDialog != null) {
                     txtDialog.setMovementMethod(LinkMovementMethod.getInstance());
                 }
+                break;
+            case R.id.action_chart:
+                Intent chartActivity= new Intent(getApplicationContext(), ChartActivity.class);
+                startActivity(chartActivity);
                 break;
         }
         return super.onOptionsItemSelected(item);
