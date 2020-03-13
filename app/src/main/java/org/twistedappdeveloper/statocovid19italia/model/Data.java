@@ -1,10 +1,10 @@
 package org.twistedappdeveloper.statocovid19italia.model;
 
 public class Data implements Comparable<Data>{
-    private String Name, Value, Color;
-    private Integer position;
+    private String Name, Value;
+    private Integer position, Color;
 
-    public Data(String name, String value, String color, int position) {
+    public Data(String name, String value, int color, int position) {
         Name = name;
         Value = value;
         Color = color;
@@ -27,11 +27,11 @@ public class Data implements Comparable<Data>{
         Value = value;
     }
 
-    public String getColor() {
+    public int getColor() {
         return Color;
     }
 
-    public void setColor(String color) {
+    public void setColor(int color) {
         Color = color;
     }
 

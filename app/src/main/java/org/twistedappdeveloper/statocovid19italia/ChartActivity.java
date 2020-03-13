@@ -1,9 +1,15 @@
 package org.twistedappdeveloper.statocovid19italia;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,18 +23,28 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
+import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
+import org.twistedappdeveloper.statocovid19italia.model.TrendsSelection;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener {
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
+
+public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener {
     private LineChart chart;
     private DataStorage dataStorage;
     private TextView txtMarkerData;
+
+    private List<TrendsSelection> trendList;
+
+    private int precIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +55,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         dataStorage = DataStorage.getIstance();
         txtMarkerData = findViewById(R.id.txtMarkerData);
+        FloatingActionButton fabTrends = findViewById(R.id.fabTrends);
+
+        fabTrends.setOnClickListener(this);
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -54,15 +73,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.setHighlightPerDragEnabled(true);
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);
-
-//        MyMarkerView myMarkerView = new MyMarkerView(getApplicationContext());
-//        chart.setMarker(myMarkerView);
-
-        // set an alternative background color
-//        chart.setBackgroundColor(Color.rgb(240, 240, 240));
         chart.setBackgroundColor(Color.WHITE);
-
-        chart.animateX(1000);
 
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
@@ -95,104 +106,59 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         YAxis rightAxis = chart.getAxisLeft();
         rightAxis.setEnabled(false);
 
+        trendList = new ArrayList<>();
+        for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
+            trendList.add(new TrendsSelection(trendInfo, isTrendSelected(trendInfo.getKey())));
+        }
+        Collections.sort(trendList);
+
         setData();
     }
 
+    private boolean isTrendSelected(String key) {
+        switch (key) {
+            case "dimessi_guariti":
+            case "totale_casi":
+            case "deceduti":
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
     private void setData() {
-        YAxis leftAxis = chart.getAxisRight();
+//        YAxis leftAxis = chart.getAxisRight();
 
-        ArrayList<Entry> values1 = new ArrayList<>();
-        ArrayList<Entry> values2 = new ArrayList<>();
-        ArrayList<Entry> values3 = new ArrayList<>();
+        LineData data = new LineData();
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(11f);
+        data.setHighlightEnabled(true);
+        chart.animateX(1000);
 
-        JSONArray datiNazionaliJSON = dataStorage.getDatiNazionaliJson();
-
-        try {
-            leftAxis.setAxisMaximum(dataStorage.getDatiNazionaliJson().getJSONObject(dataStorage.getDatiNazionaliJson().length() - 1).getInt("totale_casi") + 1000);
-            for (int i = 0; i < datiNazionaliJSON.length(); i++) {
-                try {
-                    int totale_casi = datiNazionaliJSON.getJSONObject(i).getInt("totale_casi");
-                    int deceduti = datiNazionaliJSON.getJSONObject(i).getInt("deceduti");
-                    int dimessi_guariti = datiNazionaliJSON.getJSONObject(i).getInt("dimessi_guariti");
-
-                    values1.add(new Entry(i, totale_casi));
-                    values2.add(new Entry(i, deceduti));
-                    values3.add(new Entry(i, dimessi_guariti));
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        for (TrendsSelection trendSelection : trendList) {
+            if (trendSelection.isSelected()) {
+                List<Entry> values = new ArrayList<>();
+                for (int i = 0; i < trendSelection.getTrendInfo().getValues().size(); i++) {
+                    values.add(new Entry(i, trendSelection.getTrendInfo().getValues().get(i)));
                 }
+                LineDataSet dataSet = new LineDataSet(values, trendSelection.getTrendInfo().getName());
+                dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
+                dataSet.setColor(getColorByTrendKey(ChartActivity.this, trendSelection.getTrendInfo().getKey()));
+                dataSet.setCircleColor(Color.BLACK);
+                dataSet.setLineWidth(2f);
+                dataSet.setCircleRadius(3f);
+                dataSet.setFillAlpha(65);
+                dataSet.setFillColor(Color.rgb(255, 131, 0));
+                dataSet.setHighLightColor(Color.rgb(244, 117, 117));
+                dataSet.setDrawCircleHole(false);
+                dataSet.setDrawHorizontalHighlightIndicator(false);
+                data.addDataSet(dataSet);
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
-
-        LineDataSet set1, set2, set3;
-
-        if (chart.getData() != null &&
-                chart.getData().getDataSetCount() > 0) {
-            set1 = (LineDataSet) chart.getData().getDataSetByIndex(0);
-            set2 = (LineDataSet) chart.getData().getDataSetByIndex(1);
-            set3 = (LineDataSet) chart.getData().getDataSetByIndex(2);
-            set1.setValues(values1);
-            set2.setValues(values2);
-            set3.setValues(values3);
-            chart.getData().notifyDataChanged();
-            chart.notifyDataSetChanged();
-        } else {
-            // create a dataset and give it a type
-            set1 = new LineDataSet(values1, "Totale Casi");
-
-            set1.setAxisDependency(YAxis.AxisDependency.RIGHT);
-            set1.setColor(Color.rgb(255, 131, 0));
-            set1.setCircleColor(Color.BLACK);
-            set1.setLineWidth(2f);
-            set1.setCircleRadius(3f);
-            set1.setFillAlpha(65);
-            set1.setFillColor(Color.rgb(255, 131, 0));
-            set1.setHighLightColor(Color.rgb(244, 117, 117));
-            set1.setDrawCircleHole(false);
-            //set1.setFillFormatter(new MyFillFormatter(0f));
-            set1.setDrawHorizontalHighlightIndicator(false);
-            //set1.setVisible(false);
-            //set1.setCircleHoleColor(Color.WHITE);
-
-            // create a dataset and give it a type
-            set2 = new LineDataSet(values2, "Deceduti");
-            set2.setAxisDependency(YAxis.AxisDependency.RIGHT);
-            set2.setColor(Color.RED);
-            set2.setCircleColor(Color.BLACK);
-            set2.setLineWidth(2f);
-            set2.setCircleRadius(3f);
-            set2.setFillAlpha(65);
-            set2.setFillColor(Color.RED);
-            set2.setDrawCircleHole(false);
-            set2.setHighLightColor(Color.rgb(244, 117, 117));
-            set2.setDrawHorizontalHighlightIndicator(false);
-            //set2.setFillFormatter(new MyFillFormatter(900f));
-
-            set3 = new LineDataSet(values3, "Guariti");
-            set3.setAxisDependency(YAxis.AxisDependency.RIGHT);
-            set3.setColor(Color.GREEN);
-            set3.setCircleColor(Color.BLACK);
-            set3.setLineWidth(2f);
-            set3.setCircleRadius(3f);
-            set3.setFillAlpha(65);
-            set3.setFillColor(ColorTemplate.colorWithAlpha(Color.GREEN, 200));
-            set3.setDrawCircleHole(false);
-            set3.setHighLightColor(Color.rgb(244, 117, 117));
-            set3.setDrawHorizontalHighlightIndicator(false);
-
-            // create a data object with the data sets
-            LineData data = new LineData(set1, set2, set3);
-            data.setValueTextColor(Color.BLACK);
-            data.setValueTextSize(9f);
-            data.setHighlightEnabled(true);
-
-            // set data
-            chart.setData(data);
-            onNothingSelected();
-        }
+        chart.setData(data);
+        onNothingSelected();
     }
 
     @Override
@@ -203,34 +169,83 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public void onNothingSelected() {
-        updateLegend(dataStorage.getDatiNazionaliJson().length() - 1);
+        int index = dataStorage.getDatiNazionaliJson().length() - 1;
+        updateLegend(index);
     }
 
-
     private void updateLegend(int index) {
-
         try {
             JSONObject datiNazionaliObj = dataStorage.getDatiNazionaliJson().getJSONObject(index);
             txtMarkerData.setText(String.format("Dati relativi al %s", datiNazionaliObj.getString("data").substring(0, 10)));
-
-            int i = 0;
-            for (ILineDataSet dataSet : chart.getLineData().getDataSets()) {
-                switch (i++) {
-                    case 0:
-                        dataSet.setLabel(String.format("%s (%s)", dataSet.getLabel().split("\\(")[0].trim(), datiNazionaliObj.getString("totale_casi")));
-                        break;
-                    case 1:
-                        dataSet.setLabel(String.format("%s (%s)", dataSet.getLabel().split("\\(")[0].trim(), datiNazionaliObj.getString("deceduti")));
-                        break;
-                    case 2:
-                        dataSet.setLabel(String.format("%s (%s)", dataSet.getLabel().split("\\(")[0].trim(), datiNazionaliObj.getString("dimessi_guariti")));
-                        break;
-                }
-
-            }
-            chart.notifyDataSetChanged();
-        } catch (JSONException ex) {
-            ex.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        for (TrendsSelection trendSelection : trendList) {
+            if (trendSelection.isSelected()) {
+                ILineDataSet dataSetByLabel = chart.getLineData().getDataSetByLabel(
+                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getValues().get(precIndex)),
+                        false
+                );
+                if (dataSetByLabel == null) {
+                    dataSetByLabel = chart.getLineData().getDataSetByLabel(trendSelection.getTrendInfo().getName(), false);
+                }
+                if (dataSetByLabel != null) {
+                    dataSetByLabel
+                            .setLabel(
+                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getValues().get(index)));
+                }
+            }
+        }
+        precIndex = index;
+        chart.notifyDataSetChanged();
+    }
+
+
+    private int numberOfSelectedTrends() {
+        int n = 0;
+        for (TrendsSelection trendsSelection : trendList) {
+            if (trendsSelection.isSelected()) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    @Override
+    public void onClick(View v) {
+        final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
+        dialog.setContentView(R.layout.dialog_trends);
+
+        final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
+        Button btnSaveTrends = dialog.findViewById(R.id.btnCloseTrendDialog);
+
+        final TrendsAdapter trendsAdapter = new TrendsAdapter(ChartActivity.this, R.layout.list_trends, trendList);
+        listViewTrends.setAdapter(trendsAdapter);
+        listViewTrends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (numberOfSelectedTrends() == 1 && trendList.get(position).isSelected()) {
+                    Toast.makeText(ChartActivity.this, "Almeno uno deve essere selezionato", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                trendList.get(position).setSelected(!trendList.get(position).isSelected());
+                trendsAdapter.notifyDataSetChanged();
+            }
+        });
+
+        btnSaveTrends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                chart.getLineData().clearValues();
+                chart.invalidate();
+                chart.clear();
+                setData();
+            }
+        });
+
+
+        dialog.show();
     }
 }

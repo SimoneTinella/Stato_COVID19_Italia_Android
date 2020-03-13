@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </com.github.mikephil.charting.charts.LineChart>
+        android:layout_height="match_parent"></com.github.mikephil.charting.charts.LineChart>
 
     <TextView
         android:id="@+id/txtMarkerData"
@@ -21,5 +20,21 @@
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:layout_marginStart="5sp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabTrends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/baseline_format_list_bulleted_white_24"
+        app:backgroundTint="@color/colorPrimaryDark"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:layout_marginBottom="40sp"
+        />
 
 </RelativeLayout>

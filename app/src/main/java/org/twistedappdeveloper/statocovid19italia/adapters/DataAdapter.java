@@ -28,7 +28,7 @@ public class DataAdapter extends ArrayAdapter<Data> {
         Data obj = getItem(position);
         name.setText(obj.getName());
         value.setText(obj.getValue());
-        value.setTextColor(Color.parseColor(obj.getColor()));
+        value.setTextColor(obj.getColor());
         return convertView;
     }
 }

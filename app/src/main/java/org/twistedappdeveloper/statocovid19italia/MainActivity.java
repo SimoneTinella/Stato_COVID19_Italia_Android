@@ -35,6 +35,9 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
+
 public class MainActivity extends AppCompatActivity {
 
     private TextView txtData;
@@ -110,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent chartActivity= new Intent(getApplicationContext(), ChartActivity.class);
                 startActivity(chartActivity);
                 break;
+            case R.id.action_update:
+                updateValues();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -138,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                     );
                 }
                 String value = obj.getString(key);
-                dataList.add(new Data(name.trim(), value, getColorByKey(key), getPositionByKey(key)));
+                dataList.add(new Data(name.trim(), value, getColorByTrendKey(getApplicationContext(), key), getPositionByTrendKey(key)));
             }
 
             txtData.setText(String.format("Relativo al %s", data));
@@ -148,51 +154,6 @@ public class MainActivity extends AppCompatActivity {
             btnEnableStatusCheck();
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private String getColorByKey(String key) {
-        switch (key) {
-
-            case "deceduti":
-                return "#FF0000";
-
-            case "totale_casi":
-                return "#FF8300";
-
-            case "dimessi_guariti":
-                return "#00FF00";
-
-            default:
-                return "#000000";
-        }
-    }
-
-    private int getPositionByKey(String key) {
-        switch (key) {
-            case "totale_casi":
-                return 0;
-            case "dimessi_guariti":
-                return 1;
-            case "deceduti":
-                return 2;
-            case "totale_attualmente_positivi":
-                return 3;
-            case "nuovi_attualmente_positivi":
-                return 4;
-            case "totale_ospedalizzati":
-                return 5;
-            case "terapia_intensiva":
-                return 6;
-            case "ricoverati_con_sintomi":
-                return 7;
-            case "isolamento_domiciliare":
-                return 8;
-            case "tamponi":
-                return 9;
-
-            default:
-                return Integer.MAX_VALUE;
         }
     }
 
