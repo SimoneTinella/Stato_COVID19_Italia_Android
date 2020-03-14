@@ -5,20 +5,20 @@ I dati visualizzati vengono recuperati dal repository ufficiale della Protezione
 
 Screenshot Applicativo:
 
-Pagina principale<br/>
+**Pagina principale**<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.png)
 
-Informativa<br/>
+**Informativa**<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
 
-Visualizzazione grafica<br/>
+**Visualizzazione grafica**<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG)
 
-Comparazione giorni<br/>
+**Comparazione giorni**<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.png)
 
-Selettore Trend<br/>
+**Selettore Trend**<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png)
 
-Zoom<br/>
+**Zoom**<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png)
