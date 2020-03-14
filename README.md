@@ -13,3 +13,12 @@ Informativa<br/>
 
 Visualizzazione grafica<br/>
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG)
+
+Comparazione giorni<br/>
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.PNG)
+
+Selettore Trend<br/>
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.PNG)
+
+Zoom<br/>
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.PNG)
