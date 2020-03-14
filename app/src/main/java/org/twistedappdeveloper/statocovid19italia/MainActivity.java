@@ -3,6 +3,7 @@ package org.twistedappdeveloper.statocovid19italia;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -191,14 +192,18 @@ public class MainActivity extends AppCompatActivity {
     private void btnEnableStatusCheck() {
         if (cursore > 0) {
             btnIndietro.setEnabled(true);
+            btnIndietro.setTextColor(Color.WHITE);
         } else {
             btnIndietro.setEnabled(false);
+            btnIndietro.setTextColor(Color.DKGRAY);
         }
 
         if (cursore < nationalDataStorage.getDatiNazionaliLength() - 1) {
             btnAvanti.setEnabled(true);
+            btnAvanti.setTextColor(Color.WHITE);
         } else {
             btnAvanti.setEnabled(false);
+            btnAvanti.setTextColor(Color.DKGRAY);
         }
     }
 

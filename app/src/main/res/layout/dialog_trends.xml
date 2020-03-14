@@ -25,14 +25,50 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/txtTrendsDialogTitle"
-        android:layout_above="@id/btnCloseTrendDialog"/>
+        android:layout_above="@id/listButton"/>
 
-    <Button
-        android:id="@+id/btnCloseTrendDialog"
+    <LinearLayout
+        android:id="@+id/listButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ok"
-        android:layout_alignParentBottom="true"/>
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        style="?android:attr/buttonBarStyle"
+        android:background="@color/colorPrimary">
+
+        <Button
+            android:id="@+id/btnSelectAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleziona tutto"
+            android:layout_weight="1"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/btnDeselectAll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Deseleziona tutto"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@android:color/white"/>
+
+        <Button
+            android:id="@+id/btnCloseTrendDialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="OK"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
 
 
 </RelativeLayout>

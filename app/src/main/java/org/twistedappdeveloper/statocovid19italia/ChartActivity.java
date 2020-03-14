@@ -136,10 +136,6 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private void setData() {
         LineData data = new LineData();
-        data.setValueTextColor(Color.BLACK);
-        data.setValueTextSize(11f);
-        data.setHighlightEnabled(true);
-        chart.animateX(1000);
 
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
@@ -163,6 +159,12 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         }
 
         chart.setData(data);
+
+        data.setValueTextColor(Color.BLACK);
+        data.setValueTextSize(10f);
+        data.setHighlightEnabled(true);
+        chart.animateX(1000);
+
         onNothingSelected();
     }
 
@@ -219,36 +221,60 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         switch (v.getId()) {
             case R.id.fabTrends:
                 final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
+                dialog.setCancelable(false);
                 dialog.setContentView(R.layout.dialog_trends);
 
                 final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
-                Button btnSaveTrends = dialog.findViewById(R.id.btnCloseTrendDialog);
+                final Button btnSaveTrends = dialog.findViewById(R.id.btnCloseTrendDialog);
+                final Button btnSelectAllTrends = dialog.findViewById(R.id.btnSelectAll);
+                final Button btnDeselectAllTrends = dialog.findViewById(R.id.btnDeselectAll);
 
                 final TrendsAdapter trendsAdapter = new TrendsAdapter(ChartActivity.this, R.layout.list_trends, trendList);
                 listViewTrends.setAdapter(trendsAdapter);
                 listViewTrends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        if (numberOfSelectedTrends() == 1 && trendList.get(position).isSelected()) {
-                            Toast.makeText(ChartActivity.this, "Almeno un elemento deve essere selezionato", Toast.LENGTH_LONG).show();
-                            return;
-                        }
                         trendList.get(position).setSelected(!trendList.get(position).isSelected());
                         trendsAdapter.notifyDataSetChanged();
                     }
                 });
 
-                btnSaveTrends.setOnClickListener(new View.OnClickListener() {
+                View.OnClickListener clickListener = new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
-                        chart.getLineData().clearValues();
-                        chart.invalidate();
-                        chart.clear();
-                        resetZoom();
-                        setData();
+
+                        switch (v.getId()) {
+                            case R.id.btnCloseTrendDialog:
+                                if (numberOfSelectedTrends() == 0) {
+                                    Toast.makeText(ChartActivity.this, "Seleziona almeno un elemento", Toast.LENGTH_LONG).show();
+                                } else {
+                                    dialog.dismiss();
+                                    chart.getLineData().clearValues();
+                                    chart.invalidate();
+                                    chart.clear();
+                                    resetZoom();
+                                    setData();
+                                }
+                                break;
+                            case R.id.btnSelectAll:
+                                for (TrendsSelection trendsSelection : trendList) {
+                                    trendsSelection.setSelected(true);
+                                }
+                                trendsAdapter.notifyDataSetChanged();
+                                break;
+                            case R.id.btnDeselectAll:
+                                for (TrendsSelection trendsSelection : trendList) {
+                                    trendsSelection.setSelected(false);
+                                }
+                                trendsAdapter.notifyDataSetChanged();
+                                break;
+                        }
                     }
-                });
+                };
+
+                btnSaveTrends.setOnClickListener(clickListener);
+                btnSelectAllTrends.setOnClickListener(clickListener);
+                btnDeselectAllTrends.setOnClickListener(clickListener);
                 dialog.show();
                 break;
 
