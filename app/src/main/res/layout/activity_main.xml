@@ -37,7 +37,6 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:gravity="center_horizontal"
-        android:text="In Aggiornamento"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@android:color/black"
@@ -80,21 +79,27 @@
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        style="?android:attr/buttonBarStyle"
+        android:background="@color/colorPrimary">
 
         <Button
             android:id="@+id/btnIndietro"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Indietro" />
+            android:text="Indietro"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/btnAvanti"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Avanti" />
+            android:text="Avanti"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

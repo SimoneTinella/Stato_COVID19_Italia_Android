@@ -16,17 +16,17 @@ import java.util.Map;
  * Singleton Class used to share the data between activities
  * **/
 public class NationalDataStorage {
-    private static final String DATA_KEY= "data";
-    public static final String GUARITI_KEY= "dimessi_guariti";
-    public static final String DECEDUTI_KEY= "deceduti";
-    public static final String TOTALE_CASI_KEY= "totale_casi";
-    public static final String TOTALE_ATTUALMENTE_POSITIVI_KEY= "totale_attualmente_positivi";
-    public static final String NUOVI_POSITIVI_KEY= "nuovi_attualmente_positivi";
-    public static final String TOTALE_OSPEDALIZZAZIONI_KEY= "totale_ospedalizzazioni";
-    public static final String TERAPIA_INTENSIVA_KEY= "terapia_intensiva";
-    public static final String RICOVERATI_SINTOMI_KEY= "ricoverati_con_sintomi";
-    public static final String ISOLAMENTO_DOMICILIARE_KEY= "isolamento_domiciliare";
-    public static final String TAMPONI_KEY= "tamponi";
+    private static final String DATA_KEY = "data";
+    public static final String GUARITI_KEY = "dimessi_guariti";
+    public static final String DECEDUTI_KEY = "deceduti";
+    public static final String TOTALE_CASI_KEY = "totale_casi";
+    public static final String TOTALE_ATTUALMENTE_POSITIVI_KEY = "totale_attualmente_positivi";
+    public static final String NUOVI_POSITIVI_KEY = "nuovi_attualmente_positivi";
+    public static final String TOTALE_OSPEDALIZZAZIONI_KEY = "totale_ospedalizzati";
+    public static final String TERAPIA_INTENSIVA_KEY = "terapia_intensiva";
+    public static final String RICOVERATI_SINTOMI_KEY = "ricoverati_con_sintomi";
+    public static final String ISOLAMENTO_DOMICILIARE_KEY = "isolamento_domiciliare";
+    public static final String TAMPONI_KEY = "tamponi";
 
     private static NationalDataStorage istance;
 
@@ -45,8 +45,11 @@ public class NationalDataStorage {
         return istance;
     }
 
-    public int getDatiNazionaliLength(){
-        return datiNazionaliJson.length();
+    public int getDatiNazionaliLength() {
+        if (datiNazionaliJson != null) {
+            return datiNazionaliJson.length();
+        }
+        return 0;
     }
 
     public String getDateByIndex(int index) {

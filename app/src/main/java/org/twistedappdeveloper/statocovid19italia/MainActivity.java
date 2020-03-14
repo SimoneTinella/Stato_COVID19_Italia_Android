@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorag
 import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.Data;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
+import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -109,8 +111,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.action_chart:
-                Intent chartActivity= new Intent(getApplicationContext(), ChartActivity.class);
-                startActivity(chartActivity);
+                if (nationalDataStorage.getDatiNazionaliLength() > 0) {
+                    Intent chartActivity = new Intent(getApplicationContext(), ChartActivity.class);
+                    startActivity(chartActivity);
+                } else {
+                    Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.action_update:
                 updateValues();
@@ -123,10 +129,10 @@ public class MainActivity extends AppCompatActivity {
     private void displayData() {
         dataList.clear();
 
-        for (TrendInfo trendInfo: nationalDataStorage.getTrendsList()){
+        for (TrendInfo trendInfo : nationalDataStorage.getTrendsList()) {
             dataList.add(new Data(
                     trendInfo.getName(),
-                    String.format("%s",trendInfo.getTrendValues().get(cursore).getValue()),
+                    String.format("%s", trendInfo.getTrendValues().get(cursore).getValue()),
                     getColorByTrendKey(getApplicationContext(), trendInfo.getKey()),
                     getPositionByTrendKey(trendInfo.getKey())
             ));
@@ -138,7 +144,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateValues() {
+        if (!Utils.isDeviceOnline(MainActivity.this)) {
+            Toast.makeText(MainActivity.this, "Il dispositivo non ha accesso ad Internet, attiva la connessione e riprova.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         pdialog = ProgressDialog.show(MainActivity.this, "", "Attendere prego...", true);
+        txtData.setText("In Aggiornamento");
+
         new Thread(new Runnable() {
 
             SyncHttpClient client = new SyncHttpClient();
