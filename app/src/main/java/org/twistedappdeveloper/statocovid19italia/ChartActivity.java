@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.BarLineChartTouchListener;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -110,8 +111,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         leftAxis.setDrawGridLines(true);
         leftAxis.setGranularityEnabled(true);
 
-        YAxis rightAxis = chart.getAxisLeft();
-        rightAxis.setEnabled(false);
+        chart.getAxisLeft().setEnabled(false);
 
         trendList = new ArrayList<>();
         for (TrendInfo trendInfo : nationalDataStorage.getTrendsList()) {
@@ -303,7 +303,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void resetZoom() {
-        chart.fitScreen();
         fabResetZoom.setVisibility(View.INVISIBLE);
+        BarLineChartTouchListener onTouchListener = (BarLineChartTouchListener) chart.getOnTouchListener();
+        onTouchListener.stopDeceleration();
+        chart.fitScreen();
     }
 }
