@@ -7,7 +7,7 @@
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.github.mikephil.charting.charts.LineChart>
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/txtMarkerData"
@@ -36,5 +36,21 @@
         android:layout_marginLeft="5sp"
         android:layout_marginBottom="40sp"
         />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabResetZoom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@id/fabTrends"
+        android:layout_marginStart="5sp"
+        android:layout_marginLeft="5sp"
+        android:layout_marginBottom="10sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        android:src="@drawable/baseline_zoom_out_white_24"
+        app:backgroundTint="@color/colorPrimaryDark" />
 
 </RelativeLayout>

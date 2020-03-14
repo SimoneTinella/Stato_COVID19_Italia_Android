@@ -1,4 +1,4 @@
-package org.twistedappdeveloper.statocovid19italia;
+package org.twistedappdeveloper.statocovid19italia.DataStorage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,18 +38,18 @@ public class NationalDataStorage {
         trendsMap = new HashMap<>();
     }
 
-    static NationalDataStorage getIstance() {
+    public static NationalDataStorage getIstance() {
         if (istance == null) {
             istance = new NationalDataStorage();
         }
         return istance;
     }
 
-    int getDatiNazionaliLength(){
+    public int getDatiNazionaliLength(){
         return datiNazionaliJson.length();
     }
 
-    String getDateByIndex(int index) {
+    public String getDateByIndex(int index) {
         String date;
         try {
             date = datiNazionaliJson.getJSONObject(index).getString(DATA_KEY);
@@ -60,7 +60,7 @@ public class NationalDataStorage {
         return date;
     }
 
-    void setDatiNazionaliJson(JSONArray datiNazionaliJson) {
+    public void setDatiNazionaliJson(JSONArray datiNazionaliJson) {
         this.datiNazionaliJson = datiNazionaliJson;
 
         try {
@@ -97,11 +97,11 @@ public class NationalDataStorage {
         }
     }
 
-    List<TrendInfo> getTrendsList() {
+    public List<TrendInfo> getTrendsList() {
         return new ArrayList<>(trendsMap.values());
     }
 
-    TrendInfo getTrendByKey(String trendKey) {
+    public TrendInfo getTrendByKey(String trendKey) {
         return trendsMap.get(trendKey);
     }
 

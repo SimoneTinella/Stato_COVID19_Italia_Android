@@ -3,6 +3,7 @@ package org.twistedappdeveloper.statocovid19italia;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -22,9 +23,12 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendsSelection;
@@ -35,7 +39,7 @@ import java.util.List;
 
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
 
-public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener {
+public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener, OnChartGestureListener {
     private LineChart chart;
     private NationalDataStorage nationalDataStorage;
     private TextView txtMarkerData;
@@ -43,6 +47,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     private List<TrendsSelection> trendList;
 
     private int precIndex = 0;
+    FloatingActionButton fabResetZoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +59,11 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         nationalDataStorage = NationalDataStorage.getIstance();
         txtMarkerData = findViewById(R.id.txtMarkerData);
         FloatingActionButton fabTrends = findViewById(R.id.fabTrends);
+        fabResetZoom = findViewById(R.id.fabResetZoom);
+        fabResetZoom.setVisibility(View.INVISIBLE);
 
         fabTrends.setOnClickListener(this);
+        fabResetZoom.setOnClickListener(this);
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -72,6 +80,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);
         chart.setBackgroundColor(Color.WHITE);
+        chart.setOnChartGestureListener(this);
 
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
@@ -115,9 +124,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private boolean isTrendSelected(String key) {
         switch (key) {
-            case "dimessi_guariti":
-            case "totale_casi":
-            case "deceduti":
+            case NationalDataStorage.GUARITI_KEY:
+            case NationalDataStorage.TOTALE_CASI_KEY:
+            case NationalDataStorage.DECEDUTI_KEY:
                 return true;
 
             default:
@@ -206,38 +215,95 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public void onClick(View v) {
-        final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
-        dialog.setContentView(R.layout.dialog_trends);
 
-        final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
-        Button btnSaveTrends = dialog.findViewById(R.id.btnCloseTrendDialog);
+        switch (v.getId()) {
+            case R.id.fabTrends:
+                final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
+                dialog.setContentView(R.layout.dialog_trends);
 
-        final TrendsAdapter trendsAdapter = new TrendsAdapter(ChartActivity.this, R.layout.list_trends, trendList);
-        listViewTrends.setAdapter(trendsAdapter);
-        listViewTrends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (numberOfSelectedTrends() == 1 && trendList.get(position).isSelected()) {
-                    Toast.makeText(ChartActivity.this, "Almeno uno deve essere selezionato", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                trendList.get(position).setSelected(!trendList.get(position).isSelected());
-                trendsAdapter.notifyDataSetChanged();
-            }
-        });
+                final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
+                Button btnSaveTrends = dialog.findViewById(R.id.btnCloseTrendDialog);
 
-        btnSaveTrends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                chart.getLineData().clearValues();
-                chart.invalidate();
-                chart.clear();
-                setData();
-            }
-        });
+                final TrendsAdapter trendsAdapter = new TrendsAdapter(ChartActivity.this, R.layout.list_trends, trendList);
+                listViewTrends.setAdapter(trendsAdapter);
+                listViewTrends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        if (numberOfSelectedTrends() == 1 && trendList.get(position).isSelected()) {
+                            Toast.makeText(ChartActivity.this, "Almeno un elemento deve essere selezionato", Toast.LENGTH_LONG).show();
+                            return;
+                        }
+                        trendList.get(position).setSelected(!trendList.get(position).isSelected());
+                        trendsAdapter.notifyDataSetChanged();
+                    }
+                });
 
+                btnSaveTrends.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        chart.getLineData().clearValues();
+                        chart.invalidate();
+                        chart.clear();
+                        resetZoom();
+                        setData();
+                    }
+                });
+                dialog.show();
+                break;
 
-        dialog.show();
+            case R.id.fabResetZoom:
+                resetZoom();
+                break;
+        }
+    }
+
+    @Override
+    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+        if (chart.getScaleX() <= 1.05f && chart.getScaleY() <= 1.05f) {
+            resetZoom();
+        } else {
+            fabResetZoom.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onChartLongPressed(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartDoubleTapped(MotionEvent me) {
+        fabResetZoom.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onChartSingleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+    }
+
+    @Override
+    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+    }
+
+    @Override
+    public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+    }
+
+    private void resetZoom() {
+        chart.fitScreen();
+        fabResetZoom.setVisibility(View.INVISIBLE);
     }
 }

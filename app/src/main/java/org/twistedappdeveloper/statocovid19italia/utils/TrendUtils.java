@@ -3,7 +3,7 @@ package org.twistedappdeveloper.statocovid19italia.utils;
 import android.content.Context;
 import android.graphics.Color;
 
-import org.twistedappdeveloper.statocovid19italia.NationalDataStorage;
+import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorage;
 import org.twistedappdeveloper.statocovid19italia.R;
 
 public class TrendUtils {

@@ -23,6 +23,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
+import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.Data;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;

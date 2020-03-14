@@ -9,13 +9,13 @@
         android:icon="@drawable/baseline_info_white_24"/>
 
     <item android:id="@+id/action_chart"
-        android:title="Grafico"
+        android:title="Grafico andamento Nazionale"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:icon="@drawable/baseline_show_chart_white_24"/>
 
     <item android:id="@+id/action_update"
-        android:title="Aggiorna i dati"
+        android:title="Controlla nuovi Dati"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:icon="@drawable/baseline_refresh_white_24"/>
