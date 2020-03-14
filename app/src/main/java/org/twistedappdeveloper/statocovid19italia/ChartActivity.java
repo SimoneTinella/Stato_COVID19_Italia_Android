@@ -25,8 +25,6 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendsSelection;
@@ -39,7 +37,7 @@ import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getCol
 
 public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener {
     private LineChart chart;
-    private DataStorage dataStorage;
+    private NationalDataStorage nationalDataStorage;
     private TextView txtMarkerData;
 
     private List<TrendsSelection> trendList;
@@ -53,7 +51,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_chart);
 
-        dataStorage = DataStorage.getIstance();
+        nationalDataStorage = NationalDataStorage.getIstance();
         txtMarkerData = findViewById(R.id.txtMarkerData);
         FloatingActionButton fabTrends = findViewById(R.id.fabTrends);
 
@@ -107,7 +105,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         rightAxis.setEnabled(false);
 
         trendList = new ArrayList<>();
-        for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
+        for (TrendInfo trendInfo : nationalDataStorage.getTrendsList()) {
             trendList.add(new TrendsSelection(trendInfo, isTrendSelected(trendInfo.getKey())));
         }
         Collections.sort(trendList);
@@ -128,8 +126,6 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void setData() {
-//        YAxis leftAxis = chart.getAxisRight();
-
         LineData data = new LineData();
         data.setValueTextColor(Color.BLACK);
         data.setValueTextSize(11f);
@@ -139,8 +135,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 List<Entry> values = new ArrayList<>();
-                for (int i = 0; i < trendSelection.getTrendInfo().getValues().size(); i++) {
-                    values.add(new Entry(i, trendSelection.getTrendInfo().getValues().get(i)));
+                for (int i = 0; i < trendSelection.getTrendInfo().getTrendValues().size(); i++) {
+                    values.add(new Entry(i, trendSelection.getTrendInfo().getTrendValues().get(i).getValue()));
                 }
                 LineDataSet dataSet = new LineDataSet(values, trendSelection.getTrendInfo().getName());
                 dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
@@ -169,22 +165,18 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public void onNothingSelected() {
-        int index = dataStorage.getDatiNazionaliJson().length() - 1;
+        int index = nationalDataStorage.getDatiNazionaliLength() - 1;
         updateLegend(index);
     }
 
     private void updateLegend(int index) {
-        try {
-            JSONObject datiNazionaliObj = dataStorage.getDatiNazionaliJson().getJSONObject(index);
-            txtMarkerData.setText(String.format("Dati relativi al %s", datiNazionaliObj.getString("data").substring(0, 10)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        txtMarkerData.setText(String.format("Dati relativi al %s", nationalDataStorage.getDateByIndex(index).substring(0, 10)));
+
 
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 ILineDataSet dataSetByLabel = chart.getLineData().getDataSetByLabel(
-                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getValues().get(precIndex)),
+                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValues().get(precIndex).getValue()),
                         false
                 );
                 if (dataSetByLabel == null) {
@@ -193,7 +185,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 if (dataSetByLabel != null) {
                     dataSetByLabel
                             .setLabel(
-                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getValues().get(index)));
+                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValues().get(index).getValue()));
                 }
             }
         }

@@ -15,10 +15,6 @@ public class TrendsSelection implements Comparable<TrendsSelection> {
         return trendInfo;
     }
 
-    public void setTrendInfo(TrendInfo trendInfo) {
-        this.trendInfo = trendInfo;
-    }
-
     public boolean isSelected() {
         return selected;
     }

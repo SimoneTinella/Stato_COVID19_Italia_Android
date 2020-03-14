@@ -3,33 +3,34 @@ package org.twistedappdeveloper.statocovid19italia.utils;
 import android.content.Context;
 import android.graphics.Color;
 
+import org.twistedappdeveloper.statocovid19italia.NationalDataStorage;
 import org.twistedappdeveloper.statocovid19italia.R;
 
 public class TrendUtils {
 
     public static int getColorByTrendKey(Context context, String key) {
         switch (key) {
-            case "deceduti":
+            case NationalDataStorage.DECEDUTI_KEY:
                 return Color.RED;
-            case "totale_casi":
+            case NationalDataStorage.TOTALE_CASI_KEY:
                 return context.getResources().getColor(R.color.orange);
-            case "dimessi_guariti":
+            case NationalDataStorage.GUARITI_KEY:
                 return Color.GREEN;
-            case "totale_attualmente_positivi":
+            case NationalDataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
                 return context.getResources().getColor(R.color.orangeLight);
-            case "nuovi_attualmente_positivi":
+            case NationalDataStorage.NUOVI_POSITIVI_KEY:
                 return context.getResources().getColor(R.color.orangeDark);
 
-            case "totale_ospedalizzati":
+            case NationalDataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
                 return context.getResources().getColor(R.color.blue);
-            case "terapia_intensiva":
+            case NationalDataStorage.TERAPIA_INTENSIVA_KEY:
                 return context.getResources().getColor(R.color.blueDark);
-            case "ricoverati_con_sintomi":
+            case NationalDataStorage.RICOVERATI_SINTOMI_KEY:
                 return context.getResources().getColor(R.color.blueLight);
-            case "isolamento_domiciliare":
+            case NationalDataStorage.ISOLAMENTO_DOMICILIARE_KEY:
                 return context.getResources().getColor(R.color.violet);
 
-            case "tamponi":
+            case NationalDataStorage.TAMPONI_KEY:
             default:
                 return Color.BLACK;
         }
@@ -37,25 +38,25 @@ public class TrendUtils {
 
     public static Integer getPositionByTrendKey(String key) {
         switch (key) {
-            case "totale_casi":
+            case NationalDataStorage.TOTALE_CASI_KEY:
                 return 0;
-            case "dimessi_guariti":
+            case NationalDataStorage.GUARITI_KEY:
                 return 1;
-            case "deceduti":
+            case NationalDataStorage.DECEDUTI_KEY:
                 return 2;
-            case "totale_attualmente_positivi":
+            case NationalDataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
                 return 3;
-            case "nuovi_attualmente_positivi":
+            case NationalDataStorage.NUOVI_POSITIVI_KEY:
                 return 4;
-            case "totale_ospedalizzati":
+            case NationalDataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
                 return 5;
-            case "terapia_intensiva":
+            case NationalDataStorage.TERAPIA_INTENSIVA_KEY:
                 return 6;
-            case "ricoverati_con_sintomi":
+            case NationalDataStorage.RICOVERATI_SINTOMI_KEY:
                 return 7;
-            case "isolamento_domiciliare":
+            case NationalDataStorage.ISOLAMENTO_DOMICILIARE_KEY:
                 return 8;
-            case "tamponi":
+            case NationalDataStorage.TAMPONI_KEY:
                 return 9;
 
             default:

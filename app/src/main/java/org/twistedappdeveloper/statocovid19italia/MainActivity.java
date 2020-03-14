@@ -23,14 +23,12 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.Data;
+import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
@@ -52,14 +50,14 @@ public class MainActivity extends AppCompatActivity {
 
     private int cursore;
 
-    private DataStorage dataStorage;
+    private NationalDataStorage nationalDataStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dataStorage = DataStorage.getIstance();
+        nationalDataStorage = NationalDataStorage.getIstance();
         dataList = new ArrayList<>();
 
         txtData = findViewById(R.id.txtName);
@@ -123,38 +121,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayData() {
         dataList.clear();
-        try {
-            JSONObject obj = dataStorage.getDatiNazionaliJson().getJSONObject(cursore);
-            String data = obj.getString("data");
-            for (Iterator<String> keys = obj.keys(); keys.hasNext(); ) {
-                String key = keys.next();
 
-                if (key.equalsIgnoreCase("data") ||
-                        key.equalsIgnoreCase("stato")
-                ) {
-                    continue;
-                }
-                String[] strings = key.split("_");
-                String name = "";
-                for (String string : strings) {
-                    name = String.format(
-                            "%s %s",
-                            name,
-                            String.format("%s%s", string.substring(0, 1).toUpperCase(), string.substring(1))
-                    );
-                }
-                String value = obj.getString(key);
-                dataList.add(new Data(name.trim(), value, getColorByTrendKey(getApplicationContext(), key), getPositionByTrendKey(key)));
-            }
-
-            txtData.setText(String.format("Relativo al %s", data));
-
-            Collections.sort(dataList);
-            adapter.notifyDataSetChanged();
-            btnEnableStatusCheck();
-        } catch (JSONException e) {
-            e.printStackTrace();
+        for (TrendInfo trendInfo: nationalDataStorage.getTrendsList()){
+            dataList.add(new Data(
+                    trendInfo.getName(),
+                    String.format("%s",trendInfo.getTrendValues().get(cursore).getValue()),
+                    getColorByTrendKey(getApplicationContext(), trendInfo.getKey()),
+                    getPositionByTrendKey(trendInfo.getKey())
+            ));
         }
+        txtData.setText(String.format("Relativo al %s", nationalDataStorage.getDateByIndex(cursore)));
+        Collections.sort(dataList);
+        adapter.notifyDataSetChanged();
+        btnEnableStatusCheck();
     }
 
     private void updateValues() {
@@ -172,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                         super.onSuccess(statusCode, headers, response);
                         Log.d("AndroTag", "onSuccessJSONArray");
 
-                        dataStorage.setDatiNazionaliJson(response);
+                        nationalDataStorage.setDatiNazionaliJson(response);
                         cursore = response.length() - 1;
 
                         runOnUiThread(new Runnable() {
@@ -202,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
             btnIndietro.setEnabled(false);
         }
 
-        if (cursore < dataStorage.getDatiNazionaliJson().length() - 1) {
+        if (cursore < nationalDataStorage.getDatiNazionaliLength() - 1) {
             btnAvanti.setEnabled(true);
         } else {
             btnAvanti.setEnabled(false);
@@ -214,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btnAvanti:
-                    if (cursore < dataStorage.getDatiNazionaliJson().length()) {
+                    if (cursore < nationalDataStorage.getDatiNazionaliLength()) {
                         cursore++;
                     }
                     break;

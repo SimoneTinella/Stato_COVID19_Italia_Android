@@ -2,11 +2,13 @@ package org.twistedappdeveloper.statocovid19italia.model;
 
 import java.util.ArrayList;
 
-public class TrendInfo{
+/*** This class is used to store trend information and values
+ * ***/
+public class TrendInfo {
     private String name, key;
-    private ArrayList<Integer> values;
+    private ArrayList<TrendValue> values;
 
-    public TrendInfo(String name, String key, ArrayList<Integer> values) {
+    public TrendInfo(String name, String key, ArrayList<TrendValue> values) {
         this.name = name;
         this.key = key;
         this.values = values;
@@ -16,24 +18,16 @@ public class TrendInfo{
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public ArrayList<Integer> getValues() {
+    public ArrayList<TrendValue> getTrendValues() {
         return values;
     }
 
-    public void setValues(ArrayList<Integer> values) {
-        this.values = values;
+    public TrendValue getLastValue(){
+        return values.get(values.size()-1);
     }
 
 }
