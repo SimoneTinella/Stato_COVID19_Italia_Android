@@ -38,36 +38,39 @@
 
         <Button
             android:id="@+id/btnSelectAll"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Seleziona tutto"
-            android:layout_weight="1"
             android:layout_margin="0dp"
+            android:layout_weight="1"
             android:padding="0dp"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@android:color/white"/>
+            android:text="Sel. tutto"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/btnDeselectAll"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Deseleziona tutto"
             android:layout_margin="0dp"
+            android:layout_weight="1"
             android:padding="0dp"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@android:color/white"/>
+            android:text="Desel. tutto"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
 
         <Button
             android:id="@+id/btnCloseTrendDialog"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="OK"
             android:layout_margin="0dp"
+            android:layout_weight="1"
             android:padding="0dp"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@android:color/white"/>
+            android:text="OK"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
     </LinearLayout>
 
 

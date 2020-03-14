@@ -1,13 +1,20 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -27,12 +35,16 @@ import com.github.mikephil.charting.listener.BarLineChartTouchListener;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
+import org.twistedappdeveloper.statocovid19italia.model.Data;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
+import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.model.TrendsSelection;
+import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,6 +95,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.setBackgroundColor(Color.WHITE);
         chart.setOnChartGestureListener(this);
 
+
+        chart.setMarker(new ChartActivityMaker(ChartActivity.this));
+
         // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
 
@@ -103,7 +118,6 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         xAxis.setDrawAxisLine(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setYOffset(-0.001f);
-
 
         YAxis leftAxis = chart.getAxisRight();
         leftAxis.setTextColor(Color.BLACK);
@@ -333,5 +347,80 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         BarLineChartTouchListener onTouchListener = (BarLineChartTouchListener) chart.getOnTouchListener();
         onTouchListener.stopDeceleration();
         chart.fitScreen();
+    }
+
+
+    public class ChartActivityMaker extends MarkerView {
+
+        private LinearLayout linearLayoutMarker;
+
+        public ChartActivityMaker(Context context) {
+            super(context, R.layout.chart_marker);
+            linearLayoutMarker = findViewById(R.id.linearLayoutMarker);
+        }
+
+        @Override
+        public MPPointF getOffset() {
+            super.getOffset().x = -getWidth();
+            super.getOffset().y = -getHeight();
+            return super.getOffset();
+        }
+
+        @Override
+        public void refreshContent(Entry e, Highlight highlight) {
+            int position = (int) e.getX();
+
+            linearLayoutMarker.removeAllViews();
+            LayoutParams lparams = new LayoutParams(
+                    LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+            Resources r = getApplicationContext().getResources();
+            lparams.bottomMargin = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP,
+                    5,
+                    r.getDisplayMetrics()
+            );
+            TextView txtTitle = new TextView(ChartActivity.this);
+            txtTitle.setLayoutParams(lparams);
+            txtTitle.setText("Variazioni con il giorno precedente");
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                txtTitle.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+            }
+            txtTitle.setGravity(CENTER_HORIZONTAL);
+            txtTitle.setTextColor(Color.BLACK);
+            txtTitle.setTypeface(txtTitle.getTypeface(), Typeface.BOLD);
+            linearLayoutMarker.addView(txtTitle);
+
+
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            for (TrendsSelection trendsSelection : trendList) {
+                if (trendsSelection.isSelected()) {
+                    TrendInfo trendInfo = trendsSelection.getTrendInfo();
+                    TrendValue currentTrendValue = trendInfo.getTrendValues().get(position);
+                    TrendValue precTrendValue;
+                    if (position > 0) {
+                        precTrendValue = trendInfo.getTrendValues().get(position - 1);
+                    } else {
+                        precTrendValue = new TrendValue(0, "NoData");
+                    }
+
+                    Data data = new Data(
+                            trendInfo.getName(),
+                            String.format("%s", currentTrendValue.getValue() - precTrendValue.getValue()),
+                            getColorByTrendKey(ChartActivity.this, trendInfo.getKey()),
+                            TrendUtils.getPositionByTrendKey(trendInfo.getKey())
+                    );
+
+                    View child = inflater.inflate(R.layout.list_data_marker, null);
+                    TextView txtName = child.findViewById(R.id.txtName);
+                    txtName.setText(data.getName());
+                    TextView txtValue = child.findViewById(R.id.txtValue);
+                    txtValue.setText(data.getValue());
+                    txtValue.setTextColor(data.getColor());
+                    linearLayoutMarker.addView(child);
+
+                }
+            }
+            super.refreshContent(e, highlight);
+        }
     }
 }
