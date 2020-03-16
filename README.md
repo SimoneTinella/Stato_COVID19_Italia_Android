@@ -5,20 +5,9 @@ I dati visualizzati vengono recuperati dal repository ufficiale della Protezione
 
 Screenshot Applicativo:
 
-**Pagina principale**<br/>
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.png)
-
-**Informativa**<br/>
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
-
-**Visualizzazione grafica**<br/>
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG)
-
-**Comparazione giorni**<br/>
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.png)
-
-**Selettore Trend**<br/>
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png)
-
-**Zoom**<br/>
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png)
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.png" alt="MainActivity"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.png" alt="DayDiff"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG" alt="Informativa"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG" alt="ChartActivity" />
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png" alt="TrendSelector"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png" alt="Zoom"/>
