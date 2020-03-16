@@ -102,14 +102,14 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         Legend l = chart.getLegend();
 
         // modify the legend ...
-        l.setForm(Legend.LegendForm.LINE);
-        l.setTextSize(11f);
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setTextSize(12f);
         l.setTextColor(Color.BLACK);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(true);
-        l.setYOffset(5f);
+        l.setYOffset(6f);
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setTextSize(11f);
@@ -138,9 +138,10 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private boolean isTrendSelected(String key) {
         switch (key) {
-            case NationalDataStorage.GUARITI_KEY:
-            case NationalDataStorage.TOTALE_CASI_KEY:
-            case NationalDataStorage.DECEDUTI_KEY:
+            case NationalDataStorage.C_NUOVI_DIMESSI_GUARITI:
+            case NationalDataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
+            case NationalDataStorage.C_NUOVI_DECEDUTI:
+            case NationalDataStorage.C_NUOVI_POSITIVI:
                 return true;
 
             default:
@@ -379,6 +380,13 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     5,
                     r.getDisplayMetrics()
             );
+            int margin = (int) TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP,
+                    5,
+                    r.getDisplayMetrics()
+            );
+            lparams.leftMargin = margin;
+            lparams.rightMargin = margin;
             TextView txtTitle = new TextView(ChartActivity.this);
             txtTitle.setLayoutParams(lparams);
             txtTitle.setText("Variazioni con il giorno precedente");
@@ -412,7 +420,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
                     View child = inflater.inflate(R.layout.list_data_marker, null);
                     TextView txtName = child.findViewById(R.id.txtName);
-                    txtName.setText(data.getName());
+                    txtName.setText(String.format("Diff. %s", data.getName()));
                     TextView txtValue = child.findViewById(R.id.txtValue);
                     txtValue.setText(data.getValue());
                     txtValue.setTextColor(data.getColor());
