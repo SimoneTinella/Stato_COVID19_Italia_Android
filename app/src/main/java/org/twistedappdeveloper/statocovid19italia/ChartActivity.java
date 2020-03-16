@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
@@ -80,9 +82,15 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
-        // no description text
-        chart.getDescription().setEnabled(false);
-        // enable touch gestures
+
+        DisplayMetrics ds = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(ds);
+        int width = ds.widthPixels;
+        Description description = chart.getDescription();
+        description.setText("Andamento Nazionale");
+        description.setTextSize(15f);
+        description.setPosition(width-getSPDimension(45), getSPDimension(15));
+
         chart.setTouchEnabled(true);
         chart.setDragDecelerationFrictionCoef(0.9f);
         // enable scaling and dragging
@@ -95,13 +103,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.setBackgroundColor(Color.WHITE);
         chart.setOnChartGestureListener(this);
 
-
         chart.setMarker(new ChartActivityMaker(ChartActivity.this));
 
-        // get the legend (only possible after setting data)
         Legend l = chart.getLegend();
-
-        // modify the legend ...
         l.setForm(Legend.LegendForm.SQUARE);
         l.setTextSize(12f);
         l.setTextColor(Color.BLACK);
@@ -110,6 +114,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(true);
         l.setYOffset(6f);
+        l.setXOffset(getSPDimension(4));
 
         XAxis xAxis = chart.getXAxis();
         xAxis.setTextSize(11f);
@@ -350,6 +355,14 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.fitScreen();
     }
 
+    private float getSPDimension(int value){
+        Resources r = getApplicationContext().getResources();
+        return  TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_SP,
+                value,
+                r.getDisplayMetrics()
+        );
+    }
 
     public class ChartActivityMaker extends MarkerView {
 
@@ -380,11 +393,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     5,
                     r.getDisplayMetrics()
             );
-            int margin = (int) TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_SP,
-                    5,
-                    r.getDisplayMetrics()
-            );
+            int margin = (int) getSPDimension(5);
             lparams.leftMargin = margin;
             lparams.rightMargin = margin;
             TextView txtTitle = new TextView(ChartActivity.this);
@@ -430,5 +439,6 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             }
             super.refreshContent(e, highlight);
         }
+
     }
 }
