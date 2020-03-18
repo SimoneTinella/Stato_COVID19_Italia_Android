@@ -140,8 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_confronto_regionale:
                 if (dataStorage.getMainDataLength() > 0) {
-                    //TODO creare activity con grafico a barre
-                    Toast.makeText(MainActivity.this, "Prossimamente arriverà un grafico a barre per il confronto fra regioni", Toast.LENGTH_LONG).show();
+                    Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
+                    startActivity(barChartActivity);
                 } else {
                     Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
                 }

@@ -16,11 +16,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
-        <activity android:name=".RegionalActivity"></activity>
+        <activity android:name=".BarChartActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity"/>
+        <activity android:name=".RegionalActivity" />
         <activity
             android:name=".ChartActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="userLandscape"
+            android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity" />
         <activity
