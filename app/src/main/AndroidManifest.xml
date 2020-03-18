@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="LockedOrientationActivity">
+        <activity android:name=".RegionalActivity"></activity>
         <activity
             android:name=".ChartActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

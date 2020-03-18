@@ -24,7 +24,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
-import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorage;
+import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.Data;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
@@ -53,14 +53,14 @@ public class MainActivity extends AppCompatActivity {
 
     private int cursore;
 
-    private NationalDataStorage nationalDataStorage;
+    private DataStorage dataStorage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        nationalDataStorage = NationalDataStorage.getIstance();
+        dataStorage = DataStorage.getIstance();
         dataList = new ArrayList<>();
 
         txtData = findViewById(R.id.txtName);
@@ -111,8 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.action_chart:
-                if (nationalDataStorage.getDatiNazionaliLength() > 0) {
+                if (dataStorage.getMainDataLength() > 0) {
                     Intent chartActivity = new Intent(getApplicationContext(), ChartActivity.class);
+                    chartActivity.putExtra("contesto", dataStorage.getContestoDati());
                     startActivity(chartActivity);
                 } else {
                     Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
@@ -120,6 +121,30 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_update:
                 updateValues();
+                break;
+            case R.id.action_regional_data:
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                final String[] regioni = dataStorage.getSecondaryKeys().toArray(new String[0]);
+                builder.setSingleChoiceItems(regioni, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent regionalActivity = new Intent(getApplicationContext(), RegionalActivity.class);
+                        regionalActivity.putExtra("regione", regioni[which]);
+                        startActivity(regionalActivity);
+                    }
+                });
+                builder.setTitle("Seleziona Regione");
+                AlertDialog alert = builder.create();
+                alert.show();
+                break;
+            case R.id.action_confronto_regionale:
+                if (dataStorage.getMainDataLength() > 0) {
+                    //TODO creare activity con grafico a barre
+                    Toast.makeText(MainActivity.this, "Prossimamente arriverà un grafico a barre per il confronto fra regioni", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -129,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     private void displayData() {
         dataList.clear();
 
-        for (TrendInfo trendInfo : nationalDataStorage.getTrendsList()) {
+        for (TrendInfo trendInfo : dataStorage.getMainTrendsList()) {
             dataList.add(new Data(
                     trendInfo.getName(),
                     String.format("%s", trendInfo.getTrendValues().get(cursore).getValue()),
@@ -137,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
                     getPositionByTrendKey(trendInfo.getKey())
             ));
         }
-        txtData.setText(String.format("Relativo al %s", nationalDataStorage.getDateByIndex(cursore)));
+        txtData.setText(String.format("Relativo al %s", dataStorage.getDateByIndex(cursore)));
         Collections.sort(dataList);
         adapter.notifyDataSetChanged();
         btnEnableStatusCheck();
@@ -152,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         pdialog = ProgressDialog.show(MainActivity.this, "", "Attendere prego...", true);
         txtData.setText("In Aggiornamento");
 
-        new Thread(new Runnable() {
+        final Thread threadDatiNazionali = new Thread(new Runnable() {
 
             SyncHttpClient client = new SyncHttpClient();
 
@@ -163,19 +188,52 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        nationalDataStorage.setDatiNazionaliJson(response);
+                        dataStorage.setMainDataJson(response);
                         cursore = response.length() - 1;
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                displayData();
-                            }
-                        });
-                        pdialog.dismiss();
                     }
 
                 });
+            }
+        });
+
+        final Thread threadDatiRegionali = new Thread(new Runnable() {
+
+            SyncHttpClient client = new SyncHttpClient();
+
+            @Override
+            public void run() {
+                client.get("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json", new JsonHttpResponseHandler() {
+
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                        super.onSuccess(statusCode, headers, response);
+                        dataStorage.setSecondaryDataJson(response);
+                    }
+
+                });
+            }
+        });
+
+        threadDatiNazionali.start();
+        threadDatiRegionali.start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    threadDatiNazionali.join();
+                    threadDatiRegionali.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            displayData();
+                            pdialog.dismiss();
+                        }
+                    });
+                }
             }
         }).start();
     }
@@ -195,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
             btnIndietro.setTextColor(Color.DKGRAY);
         }
 
-        if (cursore < nationalDataStorage.getDatiNazionaliLength() - 1) {
+        if (cursore < dataStorage.getMainDataLength() - 1) {
             btnAvanti.setEnabled(true);
             btnAvanti.setTextColor(Color.WHITE);
         } else {
@@ -209,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btnAvanti:
-                    if (cursore < nationalDataStorage.getDatiNazionaliLength()) {
+                    if (cursore < dataStorage.getMainDataLength()) {
                         cursore++;
                     }
                     break;

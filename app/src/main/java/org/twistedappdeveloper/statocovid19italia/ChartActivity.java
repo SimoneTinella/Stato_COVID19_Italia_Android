@@ -40,7 +40,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.twistedappdeveloper.statocovid19italia.DataStorage.NationalDataStorage;
+import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.Data;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
@@ -56,13 +56,15 @@ import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getCol
 
 public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener, OnChartGestureListener {
     private LineChart chart;
-    private NationalDataStorage nationalDataStorage;
+    private DataStorage dataStorage;
     private TextView txtMarkerData;
 
     private List<TrendsSelection> trendList;
 
     private int precIndex = 0;
     FloatingActionButton fabResetZoom;
+
+    String contestoDati;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_chart);
 
-        nationalDataStorage = NationalDataStorage.getIstance();
+        contestoDati = getIntent().getStringExtra("contesto");
+
+        dataStorage = DataStorage.getIstance().getDataStorageByContestoDati(contestoDati);
         txtMarkerData = findViewById(R.id.txtMarkerData);
         FloatingActionButton fabTrends = findViewById(R.id.fabTrends);
         fabResetZoom = findViewById(R.id.fabResetZoom);
@@ -87,9 +91,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         this.getWindowManager().getDefaultDisplay().getMetrics(ds);
         int width = ds.widthPixels;
         Description description = chart.getDescription();
-        description.setText("Andamento Nazionale");
+        description.setText(String.format("Andamento %s", contestoDati));
         description.setTextSize(15f);
-        description.setPosition(width-getSPDimension(45), getSPDimension(15));
+        description.setPosition(width - getSPDimension(45), getSPDimension(15));
 
         chart.setTouchEnabled(true);
         chart.setDragDecelerationFrictionCoef(0.9f);
@@ -133,7 +137,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.getAxisLeft().setEnabled(false);
 
         trendList = new ArrayList<>();
-        for (TrendInfo trendInfo : nationalDataStorage.getTrendsList()) {
+        for (TrendInfo trendInfo : dataStorage.getMainTrendsList()) {
             trendList.add(new TrendsSelection(trendInfo, isTrendSelected(trendInfo.getKey())));
         }
         Collections.sort(trendList);
@@ -143,10 +147,10 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private boolean isTrendSelected(String key) {
         switch (key) {
-            case NationalDataStorage.C_NUOVI_DIMESSI_GUARITI:
-            case NationalDataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
-            case NationalDataStorage.C_NUOVI_DECEDUTI:
-            case NationalDataStorage.C_NUOVI_POSITIVI:
+            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
+            case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
+            case DataStorage.C_NUOVI_DECEDUTI:
+            case DataStorage.C_NUOVI_POSITIVI:
                 return true;
 
             default:
@@ -196,12 +200,12 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public void onNothingSelected() {
-        int index = nationalDataStorage.getDatiNazionaliLength() - 1;
+        int index = dataStorage.getMainDataLength() - 1;
         updateLegend(index);
     }
 
     private void updateLegend(int index) {
-        txtMarkerData.setText(String.format("Dati relativi al %s", nationalDataStorage.getDateByIndex(index).substring(0, 10)));
+        txtMarkerData.setText(String.format("Dati relativi al %s", dataStorage.getDateByIndex(index).substring(0, 10)));
 
 
         for (TrendsSelection trendSelection : trendList) {
@@ -355,9 +359,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.fitScreen();
     }
 
-    private float getSPDimension(int value){
+    private float getSPDimension(int value) {
         Resources r = getApplicationContext().getResources();
-        return  TypedValue.applyDimension(
+        return TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_SP,
                 value,
                 r.getDisplayMetrics()
