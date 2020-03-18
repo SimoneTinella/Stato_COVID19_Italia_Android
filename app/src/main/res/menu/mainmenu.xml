@@ -2,22 +2,34 @@
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:id="@+id/action_info"
-        android:title="Informazioni"
-        android:orderInCategory="100"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/baseline_info_white_24"/>
-
     <item android:id="@+id/action_chart"
-        android:title="Grafico andamento Nazionale"
+        android:title="Grafico Temporale Nazionale"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
         android:icon="@drawable/baseline_show_chart_white_24"/>
 
-    <item android:id="@+id/action_update"
-        android:title="Controlla nuovi Dati"
+    <item android:id="@+id/action_regional_data"
+        android:title="Andamento Regionale"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
+        android:icon="@drawable/baseline_location_on_white_24"/>
+
+    <item android:id="@+id/action_confronto_regionale"
+        android:title="Confronto Regionale"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/baseline_assessment_white_24"/>
+
+    <item android:id="@+id/action_update"
+        android:title="Verifica nuovi i dati"
+        android:orderInCategory="100"
+        app:showAsAction="never"
         android:icon="@drawable/baseline_refresh_white_24"/>
+
+    <item android:id="@+id/action_info"
+        android:title="Informazioni"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:icon="@drawable/baseline_info_white_24"/>
 
 </menu>
