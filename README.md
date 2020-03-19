@@ -18,3 +18,4 @@ Screenshot Applicativo:
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/SelezioneRegionale.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
