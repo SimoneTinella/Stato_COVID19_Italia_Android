@@ -9,9 +9,12 @@ In questo repository è presente un progetto Open Source con scopo la realizzazi
 
 Screenshot Applicativo:
 
-<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.png" alt="MainActivity"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.PNG" alt="MainActivity"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/RegionalActivity.PNG" alt="RegionalActivity"/>
 <img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.png" alt="DayDiff"/>
 <img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG" alt="Informativa"/>
 <img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG" alt="ChartActivity" />
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/barchart.PNG" alt="barchart"/>
 <img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png" alt="TrendSelector"/>
 <img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png" alt="Zoom"/>
+<img src="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/SelezioneRegionale.PNG" alt="SelezioneRegionale"/>
