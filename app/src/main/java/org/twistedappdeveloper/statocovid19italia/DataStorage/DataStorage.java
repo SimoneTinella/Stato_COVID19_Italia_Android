@@ -113,8 +113,15 @@ public class DataStorage {
                 if (discardedInfo.contains(key)) {
                     continue;
                 }
-                String name = getTrendNameByTrendKey(key);
 
+                //Escludo eventuali nuovi campi aggiunti nel json non rappresentanti segnali
+                try{
+                    Integer.parseInt(mainDataJson.getJSONObject(0).getString(key));
+                }catch (NumberFormatException e){
+                    continue;
+                }
+
+                String name = getTrendNameByTrendKey(key);
                 ArrayList<TrendValue> values = new ArrayList<>();
                 for (int i = 0; i < mainDataJson.length(); i++) {
                     JSONObject jsonObject = mainDataJson.getJSONObject(i);

@@ -1,10 +1,14 @@
 package org.twistedappdeveloper.statocovid19italia;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -16,15 +20,29 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
+import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
+import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class BarChartActivity extends AppCompatActivity {
+public class BarChartActivity extends AppCompatActivity implements View.OnClickListener{
 
     private BarChart chart;
     private DataStorage dataStorage;
     private TextView txtMarkerData;
+
+    private Button btnIndietro, btnAvanti, btnCambiaMisura;
+
+    private int cursore;
+    private int dataLen;
+
+    private String selectedTrendKey;
+
+    private TrendInfo[] trendInfoList;
+    private String[] trendsName;
+    private int checkedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +53,18 @@ public class BarChartActivity extends AppCompatActivity {
 
         txtMarkerData = findViewById(R.id.txtMarkerData);
         chart = findViewById(R.id.barChart);
+        btnIndietro = findViewById(R.id.btnIndietro);
+        btnAvanti = findViewById(R.id.btnAvanti);
+        btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+
+        btnIndietro.setOnClickListener(this);
+        btnAvanti.setOnClickListener(this);
+        btnCambiaMisura.setOnClickListener(this);
 
         dataStorage = DataStorage.getIstance();
+        dataLen = dataStorage.getRegionalDataStorageByDenRegione(dataStorage.getSecondaryKeys().get(0)).getMainDataLength();
+        cursore = dataLen - 1;
+
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -54,42 +82,127 @@ public class BarChartActivity extends AppCompatActivity {
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // only intervals of 1 day
+        xAxis.setGranularity(1f);
         xAxis.setLabelCount(21);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
 
-        setData();
+        chart.getAxisRight().setAxisMinimum(0);
+        chart.getAxisLeft().setAxisMinimum(0);
+
+        btnEnableStatusCheck();
+
+        List<TrendInfo> trendInfoListTmp = dataStorage.getMainTrendsList();
+        trendInfoList = new TrendInfo[trendInfoListTmp.size()];
+        trendsName = new String[trendInfoListTmp.size()];
+        for(int i =0; i< trendInfoListTmp.size(); i++){
+            int pos = TrendUtils.getPositionByTrendKey(trendInfoListTmp.get(i).getKey());
+            trendInfoList[pos] = trendInfoListTmp.get(i);
+            trendsName[pos] = trendInfoListTmp.get(i).getName();
+        }
+
+        selectedTrendKey= trendInfoList[checkedItem].getKey();
+
+        setData(selectedTrendKey);
     }
 
-    private void setData() {
+    private void setData(String trendKey) {
         ArrayList<BarEntry> values = new ArrayList<>();
 
-        //FIXME: simulazione dataset
-        for (int i = 0; i < 21; i++) {
-            float val = (float) (Math.random() * (10));
-            values.add(new BarEntry(i, val));
+        int i = 0;
+        for (String regione : dataStorage.getSecondaryKeys()) {
+            DataStorage regionalDataStore = dataStorage.getRegionalDataStorageByDenRegione(regione);
+            TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValues().get(cursore);
+            values.add(new BarEntry(i++, trendValue.getValue()));
+            txtMarkerData.setText(String.format("Dati relativi al %s",trendValue.getDate()));
+        }
 
-            BarDataSet barDataSet;
-            barDataSet = new BarDataSet(values, "Totale casi");
-            barDataSet.setDrawIcons(false);
-            barDataSet.setColor(TrendUtils.getColorByTrendKey(BarChartActivity.this, "totale_casi"));
+        BarDataSet barDataSet;
+        barDataSet = new BarDataSet(values, TrendUtils.getTrendNameByTrendKey(trendKey));
+        barDataSet.setDrawIcons(false);
+        barDataSet.setColor(TrendUtils.getColorByTrendKey(BarChartActivity.this, trendKey));
 
-            ArrayList<IBarDataSet> dataSets = new ArrayList<>();
-            dataSets.add(barDataSet);
+        ArrayList<IBarDataSet> dataSets = new ArrayList<>();
+        dataSets.add(barDataSet);
 
-            BarData data = new BarData(dataSets);
-            data.setValueTextSize(10f);
-            data.setBarWidth(0.9f);
-            chart.setData(data);
+        BarData data = new BarData(dataSets);
+        data.setValueTextSize(10f);
+        data.setBarWidth(0.9f);
+        chart.setData(data);
+
+        chart.animateY(1000);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.btnAvanti:
+                if (cursore < dataStorage.getMainDataLength()) {
+                    cursore++;
+                }
+                btnEnableStatusCheck();
+                setData(selectedTrendKey);
+                break;
+            case R.id.btnIndietro:
+                if (cursore > 0) {
+                    cursore--;
+                }
+                btnEnableStatusCheck();
+                setData(selectedTrendKey);
+                break;
+            case R.id.btnCambiaMisura:
+                AlertDialog.Builder builder = new AlertDialog.Builder(BarChartActivity.this);
+
+                builder.setSingleChoiceItems(trendsName, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        setData(trendInfoList[which].getKey());
+                        checkedItem = which;
+                    }
+                });
+                builder.setTitle("Seleziona Misura");
+                AlertDialog alert = builder.create();
+                alert.show();
+                break;
+        }
+    }
+
+    private void btnEnableStatusCheck() {
+        if (cursore > 0) {
+            btnIndietro.setEnabled(true);
+            btnIndietro.setTextColor(Color.WHITE);
+        } else {
+            btnIndietro.setEnabled(false);
+            btnIndietro.setTextColor(Color.DKGRAY);
+        }
+
+        if (cursore < dataLen - 1) {
+            btnAvanti.setEnabled(true);
+            btnAvanti.setTextColor(Color.WHITE);
+        } else {
+            btnAvanti.setEnabled(false);
+            btnAvanti.setTextColor(Color.DKGRAY);
         }
     }
 
     private class RegioniFormatter extends ValueFormatter {
 
+        List<String> nomiRegioni = DataStorage.getIstance().getSecondaryKeys();
+        private static final int maxLen = 10;
+
         @Override
         public String getFormattedValue(float value) {
-            return "Lomb.";
+            String nomeRegione = nomiRegioni.get((int) value);
+            if (nomeRegione.length() > maxLen) {
+                return String.format("%s.", nomeRegione.substring(0, getMaxLength(nomeRegione)));
+            } else {
+                return nomeRegione.substring(0, getMaxLength(nomeRegione));
+            }
+        }
+
+        private int getMaxLength(String nomeRegione) {
+            return Math.min(maxLen, nomeRegione.length());
         }
     }
 }

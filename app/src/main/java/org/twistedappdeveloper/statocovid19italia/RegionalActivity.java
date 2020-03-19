@@ -97,7 +97,14 @@ public class RegionalActivity extends AppCompatActivity {
             case R.id.action_regional_data:
                 AlertDialog.Builder builder = new AlertDialog.Builder(RegionalActivity.this);
                 final String[] regioni = DataStorage.getIstance().getSecondaryKeys().toArray(new String[0]);
-                builder.setSingleChoiceItems(regioni, 0, new DialogInterface.OnClickListener() {
+                int checkedItem = 0;
+                for (int i = 0; i < regioni.length; i++) {
+                    if (regioni[i].equalsIgnoreCase(regione)) {
+                        checkedItem = i;
+                        break;
+                    }
+                }
+                builder.setSingleChoiceItems(regioni, checkedItem, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();

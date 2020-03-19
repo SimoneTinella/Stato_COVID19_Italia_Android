@@ -36,7 +36,7 @@
         android:background="@color/colorPrimary">
 
         <Button
-            android:id="@+id/btnSelectAll"
+            android:id="@+id/btnIndietro"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +48,19 @@
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/btnDeselectAll"
+            android:id="@+id/btnCambiaMisura"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:text="cambia misura"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+        <Button
+            android:id="@+id/btnAvanti"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,17 +71,6 @@
             android:textColor="@android:color/white"
             android:textSize="12sp" />
 
-        <Button
-            android:id="@+id/btnCloseTrendDialog"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="0dp"
-            android:layout_weight="1"
-            android:padding="0dp"
-            android:text="cambia misura"
-            android:textColor="@android:color/white"
-            android:textSize="12sp" />
     </LinearLayout>
 
 </RelativeLayout>
