@@ -8,6 +8,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +28,7 @@ import java.util.List;
 
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
 
 public class RegionalActivity extends AppCompatActivity {
 
@@ -63,8 +65,36 @@ public class RegionalActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.listView);
         adapter = new DataAdapter(getApplicationContext(), R.layout.list_data, dataList);
         listView.setAdapter(adapter);
-
         listView.setEmptyView(findViewById(R.id.txtEmpty));
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String key = dataList.get(position).getKey();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(RegionalActivity.this);
+                builder.setTitle(getTrendNameByTrendKey(key));
+                builder.setMessage(String.format("Vuoi vedere il confronto tra Regioni relativo al %s?", dataStorage.getDateByIndex(cursore)));
+                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
+                        barChartActivity.putExtra("trendKey", key);
+                        barChartActivity.putExtra("cursore", cursore);
+                        startActivity(barChartActivity);
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
         btnIndietro.setOnClickListener(listener);
         btnAvanti.setOnClickListener(listener);
@@ -118,6 +148,15 @@ public class RegionalActivity extends AppCompatActivity {
                 AlertDialog alert = builder.create();
                 alert.show();
                 break;
+            case R.id.action_confronto_regionale:
+                if (dataStorage.getMainDataLength() > 0) {
+                    Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
+                    barChartActivity.putExtra("cursore", cursore);
+                    startActivity(barChartActivity);
+                } else {
+                    Toast.makeText(RegionalActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -130,7 +169,8 @@ public class RegionalActivity extends AppCompatActivity {
                     trendInfo.getName(),
                     String.format("%s", trendInfo.getTrendValues().get(cursore).getValue()),
                     getColorByTrendKey(getApplicationContext(), trendInfo.getKey()),
-                    getPositionByTrendKey(trendInfo.getKey())
+                    getPositionByTrendKey(trendInfo.getKey()),
+                    trendInfo.getKey()
             ));
         }
         txtData.setText(String.format("Relativo al %s", dataStorage.getDateByIndex(cursore)));

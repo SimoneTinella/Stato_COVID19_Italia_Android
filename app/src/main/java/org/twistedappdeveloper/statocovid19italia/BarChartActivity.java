@@ -1,8 +1,10 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -12,6 +14,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -27,7 +30,7 @@ import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BarChartActivity extends AppCompatActivity implements View.OnClickListener{
+public class BarChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     private BarChart chart;
     private DataStorage dataStorage;
@@ -63,8 +66,6 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
         dataStorage = DataStorage.getIstance();
         dataLen = dataStorage.getRegionalDataStorageByDenRegione(dataStorage.getSecondaryKeys().get(0)).getMainDataLength();
-        cursore = dataLen - 1;
-
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -90,21 +91,38 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart.getAxisRight().setAxisMinimum(0);
         chart.getAxisLeft().setAxisMinimum(0);
 
-        btnEnableStatusCheck();
-
         List<TrendInfo> trendInfoListTmp = dataStorage.getMainTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
         trendsName = new String[trendInfoListTmp.size()];
-        for(int i =0; i< trendInfoListTmp.size(); i++){
+        for (int i = 0; i < trendInfoListTmp.size(); i++) {
             int pos = TrendUtils.getPositionByTrendKey(trendInfoListTmp.get(i).getKey());
             trendInfoList[pos] = trendInfoListTmp.get(i);
             trendsName[pos] = trendInfoListTmp.get(i).getName();
         }
 
-        selectedTrendKey= trendInfoList[checkedItem].getKey();
+        cursore = getIntent().getIntExtra("cursore", dataLen - 1);
+        selectedTrendKey = getIntent().getStringExtra("trendKey");
+
+        if (selectedTrendKey == null || selectedTrendKey.isEmpty()) {
+            selectedTrendKey = trendInfoList[checkedItem].getKey();
+        }
+
+        Legend l = chart.getLegend();
+        l.setForm(Legend.LegendForm.SQUARE);
+        l.setTextSize(12f);
+        l.setTextColor(Color.BLACK);
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+        l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+        l.setDrawInside(true);
+        l.setYOffset(19f);
+        l.setXOffset(-5f);
+
+        btnEnableStatusCheck();
 
         setData(selectedTrendKey);
     }
+
 
     private void setData(String trendKey) {
         ArrayList<BarEntry> values = new ArrayList<>();
@@ -114,7 +132,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             DataStorage regionalDataStore = dataStorage.getRegionalDataStorageByDenRegione(regione);
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValues().get(cursore);
             values.add(new BarEntry(i++, trendValue.getValue()));
-            txtMarkerData.setText(String.format("Dati relativi al %s",trendValue.getDate()));
+            txtMarkerData.setText(String.format("Dati relativi al %s", trendValue.getDate()));
         }
 
         BarDataSet barDataSet;
@@ -135,7 +153,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnAvanti:
                 if (cursore < dataStorage.getMainDataLength()) {
                     cursore++;
@@ -157,7 +175,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        setData(trendInfoList[which].getKey());
+                        selectedTrendKey = trendInfoList[which].getKey();
+                        setData(selectedTrendKey);
                         checkedItem = which;
                     }
                 });

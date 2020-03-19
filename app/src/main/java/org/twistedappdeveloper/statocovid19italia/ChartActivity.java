@@ -147,9 +147,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private boolean isTrendSelected(String key) {
         switch (key) {
-            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
+//            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
-            case DataStorage.C_NUOVI_DECEDUTI:
+//            case DataStorage.C_NUOVI_DECEDUTI:
             case DataStorage.C_NUOVI_POSITIVI:
                 return true;
 
@@ -205,7 +205,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void updateLegend(int index) {
-        txtMarkerData.setText(String.format("Dati relativi al %s", dataStorage.getDateByIndex(index).substring(0, 10)));
+        txtMarkerData.setText(String.format("Dati relativi al %s", dataStorage.getDateByIndex(index)));
 
 
         for (TrendsSelection trendSelection : trendList) {
@@ -428,7 +428,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                             trendInfo.getName(),
                             String.format("%s", currentTrendValue.getValue() - precTrendValue.getValue()),
                             getColorByTrendKey(ChartActivity.this, trendInfo.getKey()),
-                            TrendUtils.getPositionByTrendKey(trendInfo.getKey())
+                            TrendUtils.getPositionByTrendKey(trendInfo.getKey()),
+                            trendInfo.getKey()
                     );
 
                     View child = inflater.inflate(R.layout.list_data_marker, null);

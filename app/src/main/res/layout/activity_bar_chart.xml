@@ -14,15 +14,16 @@
         android:id="@+id/txtMarkerData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="9sp"
-        android:layout_marginEnd="9sp"
+        android:layout_marginLeft="9sp"
+        android:layout_marginStart="9sp"
+        android:layout_marginTop="2sp"
         android:gravity="center_horizontal"
         android:text="Dati relativi al 2020-02-02"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_above="@id/listButton"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
         />
 
 

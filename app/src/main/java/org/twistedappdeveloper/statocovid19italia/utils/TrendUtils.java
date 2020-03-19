@@ -47,15 +47,15 @@ public class TrendUtils {
     public static Integer getPositionByTrendKey(String key) {
         switch (key) {
             case DataStorage.C_NUOVI_POSITIVI:
-                return 0;
-            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
                 return 1;
-            case DataStorage.C_NUOVI_DECEDUTI:
+            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
                 return 2;
-            case DataStorage.TOTALE_CASI_KEY:
+            case DataStorage.C_NUOVI_DECEDUTI:
                 return 3;
-            case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
+            case DataStorage.TOTALE_CASI_KEY:
                 return 4;
+            case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
+                return 0;
             case DataStorage.TOTALE_DIMESSI_GUARITI_KEY:
                 return 5;
             case DataStorage.TOTALE_DECEDUTI_KEY:

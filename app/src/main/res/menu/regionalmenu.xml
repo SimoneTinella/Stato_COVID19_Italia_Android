@@ -14,4 +14,10 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/baseline_location_on_white_24"/>
 
+    <item android:id="@+id/action_confronto_regionale"
+        android:title="Confronto Regionale"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/baseline_assessment_white_24"/>
+
 </menu>

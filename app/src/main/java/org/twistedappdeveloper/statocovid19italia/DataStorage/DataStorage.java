@@ -94,7 +94,7 @@ public class DataStorage {
     public String getDateByIndex(int index) {
         String date;
         try {
-            date = mainDataJson.getJSONObject(index).getString(DATA_KEY);
+            date = mainDataJson.getJSONObject(index).getString(DATA_KEY).substring(0, 10);
         } catch (JSONException e) {
             e.printStackTrace();
             date = "NoData";
@@ -115,9 +115,9 @@ public class DataStorage {
                 }
 
                 //Escludo eventuali nuovi campi aggiunti nel json non rappresentanti segnali
-                try{
+                try {
                     Integer.parseInt(mainDataJson.getJSONObject(0).getString(key));
-                }catch (NumberFormatException e){
+                } catch (NumberFormatException e) {
                     continue;
                 }
 
@@ -125,7 +125,7 @@ public class DataStorage {
                 ArrayList<TrendValue> values = new ArrayList<>();
                 for (int i = 0; i < mainDataJson.length(); i++) {
                     JSONObject jsonObject = mainDataJson.getJSONObject(i);
-                    String date = jsonObject.getString(DATA_KEY);
+                    String date = jsonObject.getString(DATA_KEY).substring(0, 10);
                     Integer value = jsonObject.getInt(key);
                     values.add(new TrendValue(value, date));
                 }
@@ -139,7 +139,7 @@ public class DataStorage {
             ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
             ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
 
-            String dataIniziale = jsonObjectIniziale.getString(DATA_KEY);
+            String dataIniziale = jsonObjectIniziale.getString(DATA_KEY).substring(0, 10);
             nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_ATTUALMENTE_POSITIVI_KEY), dataIniziale));
             nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
             nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
@@ -194,7 +194,7 @@ public class DataStorage {
     }
 
     private TrendValue computeDifferentialTrend(JSONObject jsonObjectCorrente, JSONObject jsonObjectPrecedente, String key) throws JSONException {
-        String date = jsonObjectCorrente.getString(DATA_KEY);
+        String date = jsonObjectCorrente.getString(DATA_KEY).substring(0, 10);
         Integer valoreCorrente = jsonObjectCorrente.getInt(key);
         Integer valorePrecendente = jsonObjectPrecedente.getInt(key);
         return new TrendValue(valoreCorrente - valorePrecendente, date);
