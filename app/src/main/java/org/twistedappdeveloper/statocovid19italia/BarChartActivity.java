@@ -78,6 +78,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart.setHighlightFullBarEnabled(false);
 
         chart.getAxisLeft().setEnabled(false);
+        chart.getAxisLeft().setAxisMinimum(0);
+        chart.getAxisRight().setAxisMinimum(0);
 
         ValueFormatter xAxisFormatter = new RegioniFormatter();
         XAxis xAxis = chart.getXAxis();
@@ -87,9 +89,6 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         xAxis.setLabelCount(21);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
-
-        chart.getAxisRight().setAxisMinimum(0);
-        chart.getAxisLeft().setAxisMinimum(0);
 
         List<TrendInfo> trendInfoListTmp = dataStorage.getMainTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
@@ -148,7 +147,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         data.setBarWidth(0.9f);
         chart.setData(data);
 
-        chart.animateY(1000);
+        chart.animateY(10);
     }
 
     @Override
@@ -205,7 +204,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private class RegioniFormatter extends ValueFormatter {
+    private static class RegioniFormatter extends ValueFormatter {
 
         List<String> nomiRegioni = DataStorage.getIstance().getSecondaryKeys();
         private static final int maxLen = 10;

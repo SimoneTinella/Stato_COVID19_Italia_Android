@@ -31,6 +31,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.BarLineChartTouchListener;
@@ -120,6 +121,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         l.setYOffset(6f);
         l.setXOffset(getSPDimension(4));
 
+
+        DataFormatter dataFormatter = new DataFormatter();
         XAxis xAxis = chart.getXAxis();
         xAxis.setTextSize(11f);
         xAxis.setTextColor(Color.BLACK);
@@ -127,6 +130,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         xAxis.setDrawAxisLine(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setYOffset(-0.001f);
+        xAxis.setValueFormatter(dataFormatter);
 
         YAxis leftAxis = chart.getAxisRight();
         leftAxis.setTextColor(Color.BLACK);
@@ -205,7 +209,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void updateLegend(int index) {
-        txtMarkerData.setText(String.format("Dati relativi al %s", dataStorage.getDateByIndex(index)));
+        txtMarkerData.setText(String.format("Dati relativi al %s", dataStorage.getFullDateByIndex(index)));
 
 
         for (TrendsSelection trendSelection : trendList) {
@@ -443,6 +447,16 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 }
             }
             super.refreshContent(e, highlight);
+        }
+    }
+
+    private static class DataFormatter extends ValueFormatter {
+
+        DataStorage dataStorage = DataStorage.getIstance();
+
+        @Override
+        public String getFormattedValue(float value) {
+            return dataStorage.getSimpleDateByIndex((int) value);
         }
 
     }

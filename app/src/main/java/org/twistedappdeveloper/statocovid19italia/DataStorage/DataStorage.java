@@ -8,8 +8,12 @@ import org.json.JSONObject;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,6 +65,10 @@ public class DataStorage {
 
     private String contestoDati;
 
+    private final DateFormat dateFormatRead = new SimpleDateFormat("yyyy-MM-dd");
+    private final DateFormat dateFormatWriteSimple = new SimpleDateFormat("dd/MM");
+    private final DateFormat dateFormatWriteFull = new SimpleDateFormat("dd/MM/yyyy");
+
     private DataStorage(String contestoDati) {
         this.contestoDati = contestoDati;
         mainTrendsMap = new HashMap<>();
@@ -91,10 +99,21 @@ public class DataStorage {
         return 0;
     }
 
-    public String getDateByIndex(int index) {
+    public String getFullDateByIndex(int index) {
         String date;
         try {
-            date = mainDataJson.getJSONObject(index).getString(DATA_KEY).substring(0, 10);
+            date = getFullDateFromJSONObject(mainDataJson.getJSONObject(index));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            date = "NoData";
+        }
+        return date;
+    }
+
+    public String getSimpleDateByIndex(int index) {
+        String date;
+        try {
+            date = getSimpleDateFromJSONObject(mainDataJson.getJSONObject(index));
         } catch (JSONException e) {
             e.printStackTrace();
             date = "NoData";
@@ -125,7 +144,7 @@ public class DataStorage {
                 ArrayList<TrendValue> values = new ArrayList<>();
                 for (int i = 0; i < mainDataJson.length(); i++) {
                     JSONObject jsonObject = mainDataJson.getJSONObject(i);
-                    String date = jsonObject.getString(DATA_KEY).substring(0, 10);
+                    String date = getFullDateFromJSONObject(jsonObject);
                     Integer value = jsonObject.getInt(key);
                     values.add(new TrendValue(value, date));
                 }
@@ -139,7 +158,7 @@ public class DataStorage {
             ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
             ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
 
-            String dataIniziale = jsonObjectIniziale.getString(DATA_KEY).substring(0, 10);
+            String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
             nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_ATTUALMENTE_POSITIVI_KEY), dataIniziale));
             nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
             nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
@@ -194,7 +213,7 @@ public class DataStorage {
     }
 
     private TrendValue computeDifferentialTrend(JSONObject jsonObjectCorrente, JSONObject jsonObjectPrecedente, String key) throws JSONException {
-        String date = jsonObjectCorrente.getString(DATA_KEY).substring(0, 10);
+        String date = getFullDateFromJSONObject(jsonObjectCorrente);
         Integer valoreCorrente = jsonObjectCorrente.getInt(key);
         Integer valorePrecendente = jsonObjectPrecedente.getInt(key);
         return new TrendValue(valoreCorrente - valorePrecendente, date);
@@ -226,4 +245,24 @@ public class DataStorage {
         }
     }
 
+
+    private String getFullDateFromJSONObject(JSONObject jsonObject) throws JSONException {
+        try {
+            Date date=dateFormatRead.parse(jsonObject.getString(DATA_KEY));
+            return dateFormatWriteFull.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "NoData";
+        }
+    }
+
+    private String getSimpleDateFromJSONObject(JSONObject jsonObject) throws JSONException {
+        try {
+            Date date=dateFormatRead.parse(jsonObject.getString(DATA_KEY));
+            return dateFormatWriteSimple.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "NoData";
+        }
+    }
 }

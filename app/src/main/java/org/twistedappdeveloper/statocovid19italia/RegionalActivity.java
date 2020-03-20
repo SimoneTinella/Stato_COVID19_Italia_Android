@@ -74,7 +74,7 @@ public class RegionalActivity extends AppCompatActivity {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(RegionalActivity.this);
                 builder.setTitle(getTrendNameByTrendKey(key));
-                builder.setMessage(String.format("Vuoi vedere il confronto tra Regioni relativo al %s?", dataStorage.getDateByIndex(cursore)));
+                builder.setMessage(String.format("Vuoi vedere il confronto tra Regioni relativo al %s?", dataStorage.getFullDateByIndex(cursore)));
                 builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -173,7 +173,7 @@ public class RegionalActivity extends AppCompatActivity {
                     trendInfo.getKey()
             ));
         }
-        txtData.setText(String.format("Relativo al %s", dataStorage.getDateByIndex(cursore)));
+        txtData.setText(String.format("Relativo al %s", dataStorage.getFullDateByIndex(cursore)));
         Collections.sort(dataList);
         adapter.notifyDataSetChanged();
         btnEnableStatusCheck();
