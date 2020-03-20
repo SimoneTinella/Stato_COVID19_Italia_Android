@@ -1,10 +1,8 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -65,7 +63,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         btnCambiaMisura.setOnClickListener(this);
 
         dataStorage = DataStorage.getIstance();
-        dataLen = dataStorage.getRegionalDataStorageByDenRegione(dataStorage.getSecondaryKeys().get(0)).getMainDataLength();
+        dataLen = dataStorage.getRegionalDataStorageByDenRegione(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -90,7 +88,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
 
-        List<TrendInfo> trendInfoListTmp = dataStorage.getMainTrendsList();
+        List<TrendInfo> trendInfoListTmp = dataStorage.getTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
         trendsName = new String[trendInfoListTmp.size()];
         for (int i = 0; i < trendInfoListTmp.size(); i++) {
@@ -127,9 +125,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         ArrayList<BarEntry> values = new ArrayList<>();
 
         int i = 0;
-        for (String regione : dataStorage.getSecondaryKeys()) {
+        for (String regione : dataStorage.getSubLevelDataKeys()) {
             DataStorage regionalDataStore = dataStorage.getRegionalDataStorageByDenRegione(regione);
-            TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValues().get(cursore);
+            TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
             values.add(new BarEntry(i++, trendValue.getValue()));
             txtMarkerData.setText(String.format("Dati relativi al %s", trendValue.getDate()));
         }
@@ -154,7 +152,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnAvanti:
-                if (cursore < dataStorage.getMainDataLength()) {
+                if (cursore < dataStorage.getDataLength()) {
                     cursore++;
                 }
                 btnEnableStatusCheck();
@@ -206,7 +204,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
     private static class RegioniFormatter extends ValueFormatter {
 
-        List<String> nomiRegioni = DataStorage.getIstance().getSecondaryKeys();
+        List<String> nomiRegioni = DataStorage.getIstance().getSubLevelDataKeys();
         private static final int maxLen = 10;
 
         @Override

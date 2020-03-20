@@ -52,7 +52,7 @@ public class RegionalActivity extends AppCompatActivity {
         regione = getIntent().getStringExtra("regione");
 
         dataStorage = DataStorage.getIstance().getRegionalDataStorageByDenRegione(regione);
-        cursore = dataStorage.getMainDataLength() - 1;
+        cursore = dataStorage.getDataLength() - 1;
         dataList = new ArrayList<>();
 
         TextView txtTitle = findViewById(R.id.txtTitle);
@@ -116,9 +116,9 @@ public class RegionalActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_chart:
-                if (dataStorage.getMainDataLength() > 0) {
+                if (dataStorage.getDataLength() > 0) {
                     Intent chartActivity = new Intent(getApplicationContext(), ChartActivity.class);
-                    chartActivity.putExtra("contesto", dataStorage.getContestoDati());
+                    chartActivity.putExtra("contesto", dataStorage.getDataContext());
                     startActivity(chartActivity);
                 } else {
                     Toast.makeText(RegionalActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
@@ -126,7 +126,7 @@ public class RegionalActivity extends AppCompatActivity {
                 break;
             case R.id.action_regional_data:
                 AlertDialog.Builder builder = new AlertDialog.Builder(RegionalActivity.this);
-                final String[] regioni = DataStorage.getIstance().getSecondaryKeys().toArray(new String[0]);
+                final String[] regioni = DataStorage.getIstance().getSubLevelDataKeys().toArray(new String[0]);
                 int checkedItem = 0;
                 for (int i = 0; i < regioni.length; i++) {
                     if (regioni[i].equalsIgnoreCase(regione)) {
@@ -149,7 +149,7 @@ public class RegionalActivity extends AppCompatActivity {
                 alert.show();
                 break;
             case R.id.action_confronto_regionale:
-                if (dataStorage.getMainDataLength() > 0) {
+                if (dataStorage.getDataLength() > 0) {
                     Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
                     barChartActivity.putExtra("cursore", cursore);
                     startActivity(barChartActivity);
@@ -164,10 +164,10 @@ public class RegionalActivity extends AppCompatActivity {
     private void displayData() {
         dataList.clear();
 
-        for (TrendInfo trendInfo : dataStorage.getMainTrendsList()) {
+        for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
             dataList.add(new Data(
                     trendInfo.getName(),
-                    String.format("%s", trendInfo.getTrendValues().get(cursore).getValue()),
+                    String.format("%s", trendInfo.getTrendValueByIndex(cursore).getValue()),
                     getColorByTrendKey(getApplicationContext(), trendInfo.getKey()),
                     getPositionByTrendKey(trendInfo.getKey()),
                     trendInfo.getKey()
@@ -188,7 +188,7 @@ public class RegionalActivity extends AppCompatActivity {
             btnIndietro.setTextColor(Color.DKGRAY);
         }
 
-        if (cursore < dataStorage.getMainDataLength() - 1) {
+        if (cursore < dataStorage.getDataLength() - 1) {
             btnAvanti.setEnabled(true);
             btnAvanti.setTextColor(Color.WHITE);
         } else {
@@ -202,7 +202,7 @@ public class RegionalActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btnAvanti:
-                    if (cursore < dataStorage.getMainDataLength()) {
+                    if (cursore < dataStorage.getDataLength()) {
                         cursore++;
                     }
                     break;

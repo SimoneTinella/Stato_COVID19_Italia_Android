@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
@@ -25,6 +26,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.Data;
@@ -141,9 +144,9 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.action_chart:
-                if (dataStorage.getMainDataLength() > 0) {
+                if (dataStorage.getDataLength() > 0) {
                     Intent chartActivity = new Intent(getApplicationContext(), ChartActivity.class);
-                    chartActivity.putExtra("contesto", dataStorage.getContestoDati());
+                    chartActivity.putExtra("contesto", dataStorage.getDataContext());
                     startActivity(chartActivity);
                 } else {
                     Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
@@ -154,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_regional_data:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                final String[] regioni = dataStorage.getSecondaryKeys().toArray(new String[0]);
+                final String[] regioni = dataStorage.getSubLevelDataKeys().toArray(new String[0]);
                 builder.setSingleChoiceItems(regioni, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -169,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
                 break;
             case R.id.action_confronto_regionale:
-                if (dataStorage.getMainDataLength() > 0) {
+                if (dataStorage.getDataLength() > 0) {
                     Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
                     barChartActivity.putExtra("cursore", cursore);
                     startActivity(barChartActivity);
@@ -185,10 +188,10 @@ public class MainActivity extends AppCompatActivity {
     private void displayData() {
         dataList.clear();
 
-        for (TrendInfo trendInfo : dataStorage.getMainTrendsList()) {
+        for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
             dataList.add(new Data(
                     trendInfo.getName(),
-                    String.format("%s", trendInfo.getTrendValues().get(cursore).getValue()),
+                    String.format("%s", trendInfo.getTrendValueByIndex(cursore).getValue()),
                     getColorByTrendKey(getApplicationContext(), trendInfo.getKey()),
                     getPositionByTrendKey(trendInfo.getKey()),
                     trendInfo.getKey()
@@ -198,6 +201,74 @@ public class MainActivity extends AppCompatActivity {
         Collections.sort(dataList);
         adapter.notifyDataSetChanged();
         btnEnableStatusCheck();
+    }
+
+
+    private String formatText(int n) {
+        if (n == 1) {
+            return String.format("%s versione", n);
+        }
+        return String.format("%s versioni", n);
+    }
+
+    private void checkAppVersion() {
+        if (!Utils.isDeviceOnline(MainActivity.this)) {
+            return;
+        }
+
+        new Thread(new Runnable() {
+            SyncHttpClient client = new SyncHttpClient();
+
+            @Override
+            public void run() {
+                client.get("https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json", new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        try {
+                            final int latestVersion = response.getInt("latest_app_version");
+                            final int currentVersion = BuildConfig.VERSION_CODE;
+                            if (latestVersion > currentVersion) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                        builder.setTitle("Aggiornamento applicazione");
+                                        builder.setMessage(String.format("È stata rilasciata una nuova versione dell'appliazione. Sei indietro di %s. Vuoi scaricare l'ultima versione?", formatText(latestVersion - currentVersion)));
+                                        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                                i.setData(Uri.parse("https://github.com/SimoneTinella/Stato_COVID19_Italia_Android"));
+                                                startActivity(i);
+                                            }
+                                        });
+                                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                dialog.dismiss();
+                                            }
+                                        });
+                                        AlertDialog alert = builder.create();
+                                        alert.show();
+                                    }
+                                });
+                            }else if (latestVersion < currentVersion){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(MainActivity.this,"Hai una versione preview dell'App", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     private void updateValues() {
@@ -220,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        dataStorage.setMainDataJson(response);
+                        dataStorage.setDataArrayJson(response);
                         cursore = response.length() - 1;
                     }
 
@@ -239,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        dataStorage.setSecondaryDataJson(response);
+                        dataStorage.setSubLvlDataArrayJson(response);
                     }
 
                 });
@@ -274,6 +345,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         updateValues();
+        checkAppVersion();
     }
 
     private void btnEnableStatusCheck() {
@@ -285,7 +357,7 @@ public class MainActivity extends AppCompatActivity {
             btnIndietro.setTextColor(Color.DKGRAY);
         }
 
-        if (cursore < dataStorage.getMainDataLength() - 1) {
+        if (cursore < dataStorage.getDataLength() - 1) {
             btnAvanti.setEnabled(true);
             btnAvanti.setTextColor(Color.WHITE);
         } else {
@@ -299,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btnAvanti:
-                    if (cursore < dataStorage.getMainDataLength()) {
+                    if (cursore < dataStorage.getDataLength()) {
                         cursore++;
                     }
                     break;

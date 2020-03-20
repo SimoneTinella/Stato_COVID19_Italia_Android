@@ -76,7 +76,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         contestoDati = getIntent().getStringExtra("contesto");
 
-        dataStorage = DataStorage.getIstance().getDataStorageByContestoDati(contestoDati);
+        dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
         txtMarkerData = findViewById(R.id.txtMarkerData);
         FloatingActionButton fabTrends = findViewById(R.id.fabTrends);
         fabResetZoom = findViewById(R.id.fabResetZoom);
@@ -141,7 +141,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.getAxisLeft().setEnabled(false);
 
         trendList = new ArrayList<>();
-        for (TrendInfo trendInfo : dataStorage.getMainTrendsList()) {
+        for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
             trendList.add(new TrendsSelection(trendInfo, isTrendSelected(trendInfo.getKey())));
         }
         Collections.sort(trendList);
@@ -169,7 +169,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             if (trendSelection.isSelected()) {
                 List<Entry> values = new ArrayList<>();
                 for (int i = 0; i < trendSelection.getTrendInfo().getTrendValues().size(); i++) {
-                    values.add(new Entry(i, trendSelection.getTrendInfo().getTrendValues().get(i).getValue()));
+                    values.add(new Entry(i, trendSelection.getTrendInfo().getTrendValueByIndex(i).getValue()));
                 }
                 LineDataSet dataSet = new LineDataSet(values, trendSelection.getTrendInfo().getName());
                 dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
@@ -204,7 +204,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public void onNothingSelected() {
-        int index = dataStorage.getMainDataLength() - 1;
+        int index = dataStorage.getDataLength() - 1;
         updateLegend(index);
     }
 
@@ -215,7 +215,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 ILineDataSet dataSetByLabel = chart.getLineData().getDataSetByLabel(
-                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValues().get(precIndex).getValue()),
+                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValueByIndex(precIndex).getValue()),
                         false
                 );
                 if (dataSetByLabel == null) {
@@ -224,7 +224,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 if (dataSetByLabel != null) {
                     dataSetByLabel
                             .setLabel(
-                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValues().get(index).getValue()));
+                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValueByIndex(index).getValue()));
                 }
             }
         }
@@ -420,10 +420,10 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             for (TrendsSelection trendsSelection : trendList) {
                 if (trendsSelection.isSelected()) {
                     TrendInfo trendInfo = trendsSelection.getTrendInfo();
-                    TrendValue currentTrendValue = trendInfo.getTrendValues().get(position);
+                    TrendValue currentTrendValue = trendInfo.getTrendValueByIndex(position);
                     TrendValue precTrendValue;
                     if (position > 0) {
-                        precTrendValue = trendInfo.getTrendValues().get(position - 1);
+                        precTrendValue = trendInfo.getTrendValueByIndex(position-1);
                     } else {
                         precTrendValue = new TrendValue(0, "NoData");
                     }

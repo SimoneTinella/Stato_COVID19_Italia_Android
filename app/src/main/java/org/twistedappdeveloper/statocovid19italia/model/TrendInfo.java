@@ -26,8 +26,8 @@ public class TrendInfo {
         return values;
     }
 
-    public TrendValue getLastValue(){
-        return values.get(values.size()-1);
+    public TrendValue getTrendValueByIndex(int index) {
+        return values.get(index);
     }
 
 }
