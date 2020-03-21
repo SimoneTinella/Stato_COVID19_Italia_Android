@@ -195,9 +195,6 @@ public class DataStorage {
     public void setSubLvlDataArrayJson(JSONArray subLevelDataJSONArray) {
         this.subLevelDataStorageMap.clear();
 
-        //aggiungo il datastore nazionale così si può tornare alla visualizzazione nazionale da pulsante cambio contesto
-        subLevelDataStorageMap.put(dataContext, this);
-
         Map<String, JSONArray> regionalJsonArrayMap = new HashMap<>();
         try {
             for (int i = 0; i < subLevelDataJSONArray.length(); i++) {

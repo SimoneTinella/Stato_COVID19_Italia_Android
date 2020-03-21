@@ -29,6 +29,9 @@ import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.fragments.DataVisualizerFragment;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
@@ -93,7 +96,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_change_datacontex:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                final String[] dataContexs = DataStorage.getIstance().getSubLevelDataKeys().toArray(new String[0]);
+                List<String> regioni = new ArrayList<>();
+                regioni.add(DataStorage.defaultDataContext);
+                regioni.addAll(DataStorage.getIstance().getSubLevelDataKeys());
+                final String[] dataContexs = regioni.toArray(new String[0]);
                 int checkedItem = 0;
                 for (int i = 0; i < dataContexs.length; i++) {
                     if (dataContexs[i].equalsIgnoreCase(currentFragment.getDataStorage().getDataContext())) {
