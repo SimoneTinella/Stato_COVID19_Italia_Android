@@ -20,7 +20,7 @@ import org.twistedappdeveloper.statocovid19italia.BarChartActivity;
 import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.R;
 import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
-import org.twistedappdeveloper.statocovid19italia.model.Data;
+import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
@@ -63,7 +63,7 @@ public class DataVisualizerFragment extends Fragment {
     private String dataContext;
 
     private DataAdapter adapter;
-    private List<Data> dataList;
+    private List<RowData> rowDataList;
 
     private Button btnAvanti, btnIndietro;
     private TextView txtData;
@@ -88,7 +88,7 @@ public class DataVisualizerFragment extends Fragment {
 
         Bundle arguments = getArguments();
 
-        dataList = new ArrayList<>();
+        rowDataList = new ArrayList<>();
         dataContext = arguments.getString(DATA_CONTEXT_KEY);
 
         dataStorage = DataStorage.getIstance().getDataStorageByDataContext(dataContext);
@@ -108,10 +108,10 @@ public class DataVisualizerFragment extends Fragment {
     }
 
     private void displayData() {
-        dataList.clear();
+        rowDataList.clear();
 
         for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
-            dataList.add(new Data(
+            rowDataList.add(new RowData(
                     trendInfo.getName(),
                     String.format("%s", trendInfo.getTrendValueByIndex(cursore).getValue()),
                     getColorByTrendKey(getContext(), trendInfo.getKey()),
@@ -120,7 +120,7 @@ public class DataVisualizerFragment extends Fragment {
             ));
         }
         txtData.setText(String.format("Relativo al %s", dataStorage.getFullDateByIndex(cursore)));
-        Collections.sort(dataList);
+        Collections.sort(rowDataList);
         adapter.notifyDataSetChanged();
         btnEnableStatusCheck();
     }
@@ -175,14 +175,14 @@ public class DataVisualizerFragment extends Fragment {
         btnIndietro = root.findViewById(R.id.btnIndietro);
 
         ListView listView = root.findViewById(R.id.listView);
-        adapter = new DataAdapter(getContext(), R.layout.list_data, dataList);
+        adapter = new DataAdapter(getContext(), R.layout.list_data, rowDataList);
         listView.setAdapter(adapter);
         listView.setEmptyView(root.findViewById(R.id.txtEmpty));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final String key = dataList.get(position).getKey();
+                final String key = rowDataList.get(position).getKey();
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setTitle(getTrendNameByTrendKey(key));

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -13,14 +14,13 @@
         android:id="@+id/txtMarkerData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="9sp"
         android:layout_marginStart="9sp"
+        android:layout_marginLeft="9sp"
         android:layout_marginTop="2sp"
         android:gravity="center_horizontal"
-        android:text="TextView"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        />
+        tools:text="TextView" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabTrends"

@@ -131,7 +131,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
             values.add(new BarEntry(i++, trendValue.getValue()));
-            txtMarkerData.setText(String.format("Dati relativi al %s", trendValue.getDate()));
+            txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
         }
 
         BarDataSet barDataSet;
@@ -179,7 +179,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                         checkedItem = which;
                     }
                 });
-                builder.setTitle("Seleziona Misura");
+                builder.setTitle(getResources().getString(R.string.sel_misura));
                 AlertDialog alert = builder.create();
                 alert.show();
                 break;

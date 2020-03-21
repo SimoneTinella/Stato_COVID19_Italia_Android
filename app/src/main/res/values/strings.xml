@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stato COVID-19 Italia</string>
+    <string name="app_name">Stato COVID-19</string>
     <string name="info">Informazioni</string>
     <string name="infoMessage">
         Questa applicazione ha il solo scopo di informare i cittadini e mettere a disposizione i dati raccolti relativi alla diffusione del virus COVID-19 in Italia per scopi comunicativi, di informazione e di analisi.
@@ -7,7 +7,40 @@
         L\'aggiornamento di tali dati avviene ogni giorno intorno alle ore 18:30 (ora italiana).
         \n\nIl codice sorgente dell\'applicativo è disponibile sotto licenza OpenSource \'Unlicense\' al seguente URL: https://github.com/SimoneTinella/Stato_COVID19_Italia_Android
     </string>
+    <string name="indietro">indietro</string>
+    <string name="cambia_misura">cambia misura</string>
+    <string name="avanti">avanti</string>
+    <string name="misure_da_visualizzare">Misure da visualizzare</string>
+    <string name="sel_tutto">Sel. tutto</string>
+    <string name="desel_tutto">Desel. tutto</string>
+    <string name="andamento_placeholder">Andamento Nazionale</string>
+    <string name="nessun_dato_disponibile">Nessun dato disponibile</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sel_misura">Seleziona misura</string>
+    <string name="sel_dataContext">Seleziona contesto dati</string>
+    <string name="no_data_to_display">Non sono presenti dati da graficare, prova ad aggiornare.</string>
+
+    <string name="app_update">Aggiornamento applicazione</string>
+    <string name="app_update_message">È stata rilasciata una nuova versione dell\'appliazione. Sei indietro di %s. Vuoi scaricare l\'ultima versione?</string>
+    <string name="si">Si</string>
+    <string name="no">No</string>
+    <string name="app_preview">Hai una versione preview dell\'App</string>
+    <string name="no_connection">Il dispositivo non ha accesso ad Internet, attiva la connessione e riprova.</string>
+    <string name="wait_pls">Attendere prego…</string>
+    <string name="versione">versione</string>
+    <string name="versioni">versioni</string>
+    <string name="dati_relativi_al">Dati relativi al %s</string>
+    <string name="seleziona_almeno_un_elem">Seleziona almeno un elemento</string>
+    <string name="variazioni_giorno_prec">Variazioni con il giorno precedente</string>
+    <string name="andamento">Andamento %s</string>
+
+    <string name="dataset_nazionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json</string>
+    <string name="dataset_regionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json</string>
+    <string name="notification_file">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json</string>
+    <string name="new_version_app_site">https://github.com/SimoneTinella/Stato_COVID19_Italia_Android</string>
+    <string name="grafico_temporale">Grafico Temporale</string>
+    <string name="andamento_regionale">Andamento Regionale</string>
+    <string name="confronto_regionale">Confronto Regionale</string>
+    <string name="verifica_nuovi_i_dati">Verifica nuovi i dati</string>
+
 </resources>

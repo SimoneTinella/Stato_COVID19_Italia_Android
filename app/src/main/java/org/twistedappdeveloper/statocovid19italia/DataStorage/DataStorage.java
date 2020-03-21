@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -65,9 +66,9 @@ public class DataStorage {
 
     private String dataContext;
 
-    private final DateFormat dateFormatRead = new SimpleDateFormat("yyyy-MM-dd");
-    private final DateFormat dateFormatWriteSimple = new SimpleDateFormat("dd/MM");
-    private final DateFormat dateFormatWriteFull = new SimpleDateFormat("dd/MM/yyyy");
+    private final DateFormat dateFormatRead = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALY);
+    private final DateFormat dateFormatWriteSimple = new SimpleDateFormat("dd/MM", Locale.ITALY);
+    private final DateFormat dateFormatWriteFull = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
 
     private DataStorage(String dataContext) {
         this.dataContext = dataContext;
@@ -81,9 +82,12 @@ public class DataStorage {
         discardedInfo.add(LONG_REGIONE_KEY);
     }
 
+
+    public static final String defaultDataContext = "Nazionale";
+
     public static DataStorage getIstance() {
         if (istance == null) {
-            istance = new DataStorage("Nazionale");
+            istance = new DataStorage(defaultDataContext);
         }
         return istance;
     }
@@ -191,6 +195,7 @@ public class DataStorage {
     public void setSubLvlDataArrayJson(JSONArray subLevelDataJSONArray) {
         this.subLevelDataStorageMap.clear();
 
+        //aggiungo il datastore nazionale così si può tornare alla visualizzazione nazionale da pulsante cambio contesto
         subLevelDataStorageMap.put(dataContext, this);
 
         Map<String, JSONArray> regionalJsonArrayMap = new HashMap<>();

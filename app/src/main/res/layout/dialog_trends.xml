@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:gravity="center_horizontal"
-        android:text="Misure da visualizzare"
+        android:text="@string/misure_da_visualizzare"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"
@@ -44,7 +44,7 @@
             android:layout_margin="0dp"
             android:layout_weight="1"
             android:padding="0dp"
-            android:text="Sel. tutto"
+            android:text="@string/sel_tutto"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
 
@@ -56,7 +56,7 @@
             android:layout_margin="0dp"
             android:layout_weight="1"
             android:padding="0dp"
-            android:text="Desel. tutto"
+            android:text="@string/desel_tutto"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
 
@@ -68,7 +68,7 @@
             android:layout_margin="0dp"
             android:layout_weight="1"
             android:padding="0dp"
-            android:text="OK"
+            android:text="@android:string/ok"
             android:textColor="@android:color/white"
             android:textSize="12sp" />
     </LinearLayout>

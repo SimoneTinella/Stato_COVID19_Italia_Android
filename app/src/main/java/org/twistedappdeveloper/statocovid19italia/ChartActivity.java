@@ -43,7 +43,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
-import org.twistedappdeveloper.statocovid19italia.model.Data;
+import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.model.TrendsSelection;
@@ -93,7 +93,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         this.getWindowManager().getDefaultDisplay().getMetrics(ds);
         int width = ds.widthPixels;
         Description description = chart.getDescription();
-        description.setText(String.format("Andamento %s", contestoDati));
+        description.setText(String.format(getString(R.string.andamento), contestoDati));
         description.setTextSize(15f);
         description.setPosition(width - getSPDimension(45), getSPDimension(15));
 
@@ -210,7 +210,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void updateLegend(int index) {
-        txtMarkerData.setText(String.format("Dati relativi al %s", dataStorage.getFullDateByIndex(index)));
+        txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), dataStorage.getFullDateByIndex(index)));
 
 
         for (TrendsSelection trendSelection : trendList) {
@@ -275,7 +275,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                         switch (v.getId()) {
                             case R.id.btnCloseTrendDialog:
                                 if (numberOfSelectedTrends() == 0) {
-                                    Toast.makeText(ChartActivity.this, "Seleziona almeno un elemento", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ChartActivity.this, getString(R.string.seleziona_almeno_un_elem), Toast.LENGTH_LONG).show();
                                 } else {
                                     dialog.dismiss();
                                     chart.getLineData().clearValues();
@@ -407,7 +407,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             lparams.rightMargin = margin;
             TextView txtTitle = new TextView(ChartActivity.this);
             txtTitle.setLayoutParams(lparams);
-            txtTitle.setText("Variazioni con il giorno precedente");
+            txtTitle.setText(getString(R.string.variazioni_giorno_prec));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 txtTitle.setTextAlignment(TEXT_ALIGNMENT_CENTER);
             }
@@ -429,7 +429,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                         precTrendValue = new TrendValue(0, "NoData");
                     }
 
-                    Data data = new Data(
+                    RowData rowData = new RowData(
                             trendInfo.getName(),
                             String.format("%s", currentTrendValue.getValue() - precTrendValue.getValue()),
                             getColorByTrendKey(ChartActivity.this, trendInfo.getKey()),
@@ -439,10 +439,10 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
                     View child = inflater.inflate(R.layout.list_data_marker, null);
                     TextView txtName = child.findViewById(R.id.txtName);
-                    txtName.setText(String.format("Diff. %s", data.getName()));
+                    txtName.setText(String.format("Diff. %s", rowData.getName()));
                     TextView txtValue = child.findViewById(R.id.txtValue);
-                    txtValue.setText(data.getValue());
-                    txtValue.setTextColor(data.getColor());
+                    txtValue.setText(rowData.getValue());
+                    txtValue.setTextColor(rowData.getColor());
                     linearLayoutMarker.addView(child);
 
                 }

@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 
-        currentFragment = DataVisualizerFragment.newInstance("Nazionale");
+        currentFragment = DataVisualizerFragment.newInstance(DataStorage.defaultDataContext);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.container, currentFragment);
         fragmentTransaction.commit();
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                     chartActivity.putExtra(Utils.DATACONTEXT_KEY, currentFragment.getDataStorage().getDataContext());
                     startActivity(chartActivity);
                 } else {
-                    Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.no_data_to_display), Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.action_update:
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                         currentFragment = newFragment;
                     }
                 });
-                builder.setTitle("Seleziona contesto dati");
+                builder.setTitle(getResources().getString(R.string.sel_dataContext));
                 AlertDialog alert = builder.create();
                 alert.show();
                 break;
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     barChartActivity.putExtra(Utils.CURSORE_KEY, currentFragment.getCursore());
                     startActivity(barChartActivity);
                 } else {
-                    Toast.makeText(MainActivity.this, "Non sono presenti dati da graficare, prova ad aggiornare.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getResources().getString(R.string.no_data_to_display), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -132,9 +132,9 @@ public class MainActivity extends AppCompatActivity {
 
     private String formatText(int n) {
         if (n == 1) {
-            return String.format("%s versione", n);
+            return String.format("%s %s", getResources().getString(R.string.versione), n);
         }
-        return String.format("%s versioni", n);
+        return String.format("%s %s", getResources().getString(R.string.versioni), n);
     }
 
     private void checkAppVersion() {
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                client.get("https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json", new JsonHttpResponseHandler() {
+                client.get(getResources().getString(R.string.notification_file), new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
@@ -159,18 +159,18 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void run() {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                        builder.setTitle("Aggiornamento applicazione");
-                                        builder.setMessage(String.format("È stata rilasciata una nuova versione dell'appliazione. Sei indietro di %s. Vuoi scaricare l'ultima versione?", formatText(latestVersion - currentVersion)));
-                                        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                        builder.setTitle(getResources().getString(R.string.app_update));
+                                        builder.setMessage(String.format(getResources().getString(R.string.app_update_message), formatText(latestVersion - currentVersion)));
+                                        builder.setPositiveButton(getResources().getString(R.string.si), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
                                                 Intent i = new Intent(Intent.ACTION_VIEW);
-                                                i.setData(Uri.parse("https://github.com/SimoneTinella/Stato_COVID19_Italia_Android"));
+                                                i.setData(Uri.parse(getResources().getString(R.string.new_version_app_site)));
                                                 startActivity(i);
                                             }
                                         });
-                                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        builder.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(MainActivity.this, "Hai una versione preview dell'App", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, getResources().getString(R.string.app_preview), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                             }
@@ -199,11 +199,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void recoverData() {
         if (!Utils.isDeviceOnline(MainActivity.this)) {
-            Toast.makeText(MainActivity.this, "Il dispositivo non ha accesso ad Internet, attiva la connessione e riprova.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        progressDialog = ProgressDialog.show(MainActivity.this, "", "Attendere prego...", true);
+        progressDialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.wait_pls), true);
 
         final Thread threadDatiNazionali = new Thread(new Runnable() {
 
@@ -211,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                client.get("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json", new JsonHttpResponseHandler() {
+                client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -229,7 +229,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                client.get("https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json", new JsonHttpResponseHandler() {
+                client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
 
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {

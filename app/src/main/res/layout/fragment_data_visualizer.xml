@@ -17,7 +17,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:gravity="center_horizontal"
-        android:text="Andamento Nazionale"
+        android:text="@string/andamento_placeholder"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@android:color/black"
@@ -50,7 +50,7 @@
         android:id="@+id/txtEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nessun dato disponibile"
+        android:text="@string/nessun_dato_disponibile"
         android:textColor="@android:color/black"
         android:textSize="20sp"
         android:visibility="gone"
@@ -87,25 +87,25 @@
 
         <Button
             android:id="@+id/btnIndietro"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Indietro"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@android:color/white"
             android:layout_margin="0dp"
-            android:padding="0dp"/>
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:text="@string/indietro"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/btnAvanti"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="Avanti"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@android:color/white"
             android:layout_margin="0dp"
-            android:padding="0dp"/>
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:text="@string/avanti"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
