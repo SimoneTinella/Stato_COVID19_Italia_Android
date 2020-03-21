@@ -1,37 +1,23 @@
-## Welcome to GitHub Pages
+![Android Build & Release](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/workflows/Android%20Build%20&%20Release/badge.svg)
 
-You can use the [editor on GitHub](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/edit/master/docs/index.md) to maintain and preview the content for your website in Markdown files.
+# Stato COVID19 Italia Android
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+In questo repository è presente un progetto Open Source con scopo la realizzazione di un’applicazione per smartphone, in particolare per dispositivi con sistema operativo Android, che renda facilmente accessibili i dati raccolti dalle istituzioni italiane relativi alla diffusione del virus COVID-19 in Italia. Le misure riportate vengono recuperate dal repository ufficiale della Protezione Civile (https://github.com/pcm-dpc/COVID-19) dove vengono pubblicati i dati forniti dal Ministero della Salute Italiana. L’applicazione consiste in una serie di schermate dove è possibile visualizzare i dati su andamento Nazionale o Regionale relativi ad uno specifico giorno, una schermata con il grafico che mostra l’andamento temporale delle stesse misure seguite poi da alcune statistiche comparative (come ad esempio la variazione fra giorni consecutivi) e un grafico a barre verticali (Istogramma) per mettere a confronto una singola misura fra le diverse regioni. Il progetto è nato con la finalità di offrire ai cittadini e alla comunità Open Source un canale rapido per la visualizzazione dei dati e delle statistiche principali, informazioni utili per fini comunicativi e di analisi.
 
-### Markdown
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+<a href="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/StatoCovid19Italia.apk"><h1 align="center">Download APK</h1></a>
 
-# Header 1
-## Header 2
-### Header 3
 
-- Bulleted
-- List
+Screenshot Applicativo:
 
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/RegionalActivity.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.png)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/barchart.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/SelezioneRegionale.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
