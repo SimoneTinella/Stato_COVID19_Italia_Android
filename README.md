@@ -1,4 +1,4 @@
-![Android Build & Release](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/workflows/Android%20Build%20&%20Release/badge.svg)
+![Android Gradle Build](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/workflows/Android%20Gradle%20Build/badge.svg?branch=master)
 
 # Stato COVID19 Italia Android
 
