@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Stato COVID-19</string>
+    <string name="app_name">COVID-19 Italia</string>
     <string name="info">Informazioni</string>
     <string name="infoMessage">
         Questa applicazione ha il solo scopo di informare i cittadini e mettere a disposizione i dati raccolti relativi alla diffusione del virus COVID-19 in Italia per scopi comunicativi, di informazione e di analisi.
@@ -37,7 +37,7 @@
     <string name="dataset_nazionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json</string>
     <string name="dataset_regionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json</string>
     <string name="notification_file">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json</string>
-    <string name="new_version_app_site">https://github.com/SimoneTinella/Stato_COVID19_Italia_Android</string>
+    <string name="new_version_app_site">https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/StatoCovid19Italia.apk</string>
     <string name="grafico_temporale">Grafico Temporale</string>
     <string name="andamento_regionale">Andamento Regionale</string>
     <string name="confronto_regionale">Confronto Regionale</string>
