@@ -7,4 +7,7 @@
         L\'aggiornamento di tali dati avviene ogni giorno intorno alle ore 18:30 (ora italiana).
         \n\nIl codice sorgente dell\'applicativo è disponibile sotto licenza OpenSource \'Unlicense\' al seguente URL: https://github.com/SimoneTinella/Stato_COVID19_Italia_Android
     </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

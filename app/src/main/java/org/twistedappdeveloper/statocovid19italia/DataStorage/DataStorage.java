@@ -141,7 +141,7 @@ public class DataStorage {
                 try {
                     Integer.parseInt(dataArrayJson.getJSONObject(0).getString(key));
                 } catch (NumberFormatException e) {
-                    Log.d("AndroTag",String.format("Valori della chiave %s scartati", key));
+                    Log.d("AndroTag", String.format("Valori della chiave %s scartati", key));
                     continue;
                 }
 
@@ -191,6 +191,8 @@ public class DataStorage {
     public void setSubLvlDataArrayJson(JSONArray subLevelDataJSONArray) {
         this.subLevelDataStorageMap.clear();
 
+        subLevelDataStorageMap.put(dataContext, this);
+
         Map<String, JSONArray> regionalJsonArrayMap = new HashMap<>();
         try {
             for (int i = 0; i < subLevelDataJSONArray.length(); i++) {
@@ -235,9 +237,6 @@ public class DataStorage {
         return trendsMap.get(trendKey);
     }
 
-    public DataStorage getRegionalDataStorageByDenRegione(String regione) {
-        return subLevelDataStorageMap.get(regione);
-    }
 
     public List<String> getSubLevelDataKeys() {
         List<String> keys = new ArrayList<>(subLevelDataStorageMap.keySet());
@@ -249,14 +248,14 @@ public class DataStorage {
         if (dataContext.equalsIgnoreCase(this.dataContext)) {
             return this;
         } else {
-            return getRegionalDataStorageByDenRegione(dataContext);
+            return subLevelDataStorageMap.get(dataContext);
         }
     }
 
 
     private String getFullDateFromJSONObject(JSONObject jsonObject) throws JSONException {
         try {
-            Date date=dateFormatRead.parse(jsonObject.getString(DATA_KEY));
+            Date date = dateFormatRead.parse(jsonObject.getString(DATA_KEY));
             return dateFormatWriteFull.format(date);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -266,7 +265,7 @@ public class DataStorage {
 
     private String getSimpleDateFromJSONObject(JSONObject jsonObject) throws JSONException {
         try {
-            Date date=dateFormatRead.parse(jsonObject.getString(DATA_KEY));
+            Date date = dateFormatRead.parse(jsonObject.getString(DATA_KEY));
             return dateFormatWriteSimple.format(date);
         } catch (ParseException e) {
             e.printStackTrace();

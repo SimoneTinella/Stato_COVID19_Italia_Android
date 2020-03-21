@@ -24,6 +24,7 @@ import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
+import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     private DataStorage dataStorage;
     private TextView txtMarkerData;
 
-    private Button btnIndietro, btnAvanti, btnCambiaMisura;
+    private Button btnIndietro;
+    private Button btnAvanti;
 
     private int cursore;
     private int dataLen;
@@ -56,14 +58,14 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart = findViewById(R.id.barChart);
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
-        btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+        Button btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
         btnCambiaMisura.setOnClickListener(this);
 
         dataStorage = DataStorage.getIstance();
-        dataLen = dataStorage.getRegionalDataStorageByDenRegione(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
+        dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -97,8 +99,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             trendsName[pos] = trendInfoListTmp.get(i).getName();
         }
 
-        cursore = getIntent().getIntExtra("cursore", dataLen - 1);
-        selectedTrendKey = getIntent().getStringExtra("trendKey");
+        cursore = getIntent().getIntExtra(Utils.CURSORE_KEY, dataLen - 1);
+        selectedTrendKey = getIntent().getStringExtra(Utils.TREND_KEY);
 
         if (selectedTrendKey == null || selectedTrendKey.isEmpty()) {
             selectedTrendKey = trendInfoList[checkedItem].getKey();
@@ -125,8 +127,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         ArrayList<BarEntry> values = new ArrayList<>();
 
         int i = 0;
-        for (String regione : dataStorage.getSubLevelDataKeys()) {
-            DataStorage regionalDataStore = dataStorage.getRegionalDataStorageByDenRegione(regione);
+        for (String dataContext : dataStorage.getSubLevelDataKeys()) {
+            DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
             values.add(new BarEntry(i++, trendValue.getValue()));
             txtMarkerData.setText(String.format("Dati relativi al %s", trendValue.getDate()));

@@ -48,6 +48,7 @@ import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.model.TrendsSelection;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
+import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +75,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_chart);
 
-        contestoDati = getIntent().getStringExtra("contesto");
+        contestoDati = getIntent().getStringExtra(Utils.DATACONTEXT_KEY);
 
         dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
         txtMarkerData = findViewById(R.id.txtMarkerData);

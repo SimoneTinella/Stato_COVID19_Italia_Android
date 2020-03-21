@@ -21,7 +21,6 @@
             android:screenOrientation="sensorLandscape"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".RegionalActivity" />
         <activity
             android:name=".ChartActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
