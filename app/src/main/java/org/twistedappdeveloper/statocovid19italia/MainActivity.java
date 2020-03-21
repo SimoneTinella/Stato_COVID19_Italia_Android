@@ -138,9 +138,9 @@ public class MainActivity extends AppCompatActivity {
 
     private String formatText(int n) {
         if (n == 1) {
-            return String.format("%s %s", getResources().getString(R.string.versione), n);
+            return String.format("%s %s", n, getResources().getString(R.string.versione));
         }
-        return String.format("%s %s", getResources().getString(R.string.versioni), n);
+        return String.format("%s %s", n, getResources().getString(R.string.versioni));
     }
 
     private void checkAppVersion() {

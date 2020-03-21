@@ -21,7 +21,7 @@
     <string name="no_data_to_display">Non sono presenti dati da graficare, prova ad aggiornare.</string>
 
     <string name="app_update">Aggiornamento applicazione</string>
-    <string name="app_update_message">È stata rilasciata una nuova versione dell\'appliazione. Sei indietro di %s. Vuoi scaricare l\'ultima versione?</string>
+    <string name="app_update_message">Stai usando una versione non aggiornata dell\'applicazione. Sei indietro di %s. Vuoi scaricare l\'ultima versione?</string>
     <string name="si">Si</string>
     <string name="no">No</string>
     <string name="app_preview">Hai una versione preview dell\'App</string>
