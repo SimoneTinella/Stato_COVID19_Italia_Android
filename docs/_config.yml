@@ -1,3 +1,4 @@
 theme: jekyll-theme-cayman
 title: Stato COVID-19 Italia Android
 description: Progetto Open Source per la realizzazione di una App Android per il monitoraggio della diffusione del virus in Italia
+show_downloads: true
