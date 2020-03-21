@@ -1,5 +1,5 @@
 
-name: Android Pull Request & Master CI
+name: Android Build & Release
 
 on:
   pull_request:
