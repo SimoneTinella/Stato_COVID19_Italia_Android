@@ -36,6 +36,7 @@ public class RowDataAdapter extends ArrayAdapter<RowData> {
         value.setTextColor(obj.getColor());
 
         List<RowData> subItems = obj.getSubItems();
+        //Nel caso in cui non si superino i 2 elementi siamo nei casi di P.A Trento/Bolzano o Valle d'Aosta. Evito di visualizzare i dati perché ridondanti
         if (!subItems.isEmpty() && subItems.size() > 2) {
             LinearLayout linearLayout = convertView.findViewById(R.id.subItems);
             for (RowData rowData : subItems) {

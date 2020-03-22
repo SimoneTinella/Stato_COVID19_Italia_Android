@@ -13,6 +13,7 @@
 
     <string name="indietro">indietro</string>
     <string name="cambia_misura">cambia misura</string>
+    <string name="barre_provinciale">province</string>
     <string name="avanti">avanti</string>
     <string name="misure_da_visualizzare">Misure da visualizzare</string>
     <string name="sel_tutto">Sel. tutto</string>
@@ -33,6 +34,7 @@
     <string name="versioni">versioni</string>
     <string name="dati_relativi_al">Dati relativi al %s</string>
     <string name="seleziona_almeno_un_elem">Seleziona almeno un elemento</string>
+    <string name="limite_selezione">Puoi selezionare un minimo di %d province e un massimo di %d.</string>
     <string name="variazioni_giorno_prec">Variazioni con il giorno precedente</string>
     <string name="andamento">Andamento %s</string>
     <string name="relativo_al">Relativo al %s</string>
@@ -78,5 +80,6 @@
     <string name="c_nuovi_positivi_name">Nuovi Positivi</string>
     <string name="c_nuovi_dimessi_guariti_name">Nuovi Dimessi Guariti</string>
     <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>
+    <string name="province_da_visualizzare">Province da visualizzare</string>
 
 </resources>

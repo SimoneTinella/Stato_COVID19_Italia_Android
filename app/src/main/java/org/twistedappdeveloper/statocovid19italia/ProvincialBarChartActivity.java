@@ -1,8 +1,6 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +11,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -40,45 +37,59 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BarChartActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProvincialBarChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     private BarChart chart;
     private DataStorage dataStorage;
     private TextView txtMarkerData;
 
-    private Button btnIndietro, btnAvanti;
+    private Button btnIndietro, btnAvanti, btnProvince;
 
     private int cursore, dataLen;
 
     private String selectedTrendKey;
 
-    private TrendInfo[] trendInfoList;
-    private String[] trendsName;
-    private int checkedItem;
+    private List<String> selectedProvince;
+
+    private Map<String, TrendInfo> trendInfoMap = new HashMap<>();
 
     private Map<String, List<ProvinceSelection>> provinceListMap;
+
+    private final int MIN_ELEMENTS = 3;
+    private final int MAX_ELEMENTS = 21;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bar_chart);
+        setContentView(R.layout.activity_provincial_bar_chart);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        dataStorage = DataStorage.getIstance();
+        dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
+
+        cursore = getIntent().getIntExtra(Utils.CURSORE_KEY, dataLen - 1);
+        selectedTrendKey = getIntent().getStringExtra(Utils.TREND_KEY);
+        selectedProvince = new ArrayList<>();
+        Collections.addAll(selectedProvince, getIntent().getStringArrayExtra(Utils.PROVINCE_ARRAY_KEY));
+
+        for (String regione : dataStorage.getSubLevelDataKeys()) {
+            for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
+                if (!provincia.equals("In fase di definizione/aggiornamento")) {
+                    trendInfoMap.put(provincia, dataStorage.getDataStorageByDataContext(regione).getDataStorageByDataContext(provincia).getTrendByKey(selectedTrendKey));
+                }
+            }
+        }
 
         txtMarkerData = findViewById(R.id.txtMarkerData);
         chart = findViewById(R.id.barChart);
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
-        Button btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
-        Button btnGraficoProvinciale = findViewById(R.id.btnProvinciale);
+        btnProvince = findViewById(R.id.btnProvinciale);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
-        btnCambiaMisura.setOnClickListener(this);
-        btnGraficoProvinciale.setOnClickListener(this);
-
-        dataStorage = DataStorage.getIstance();
-        dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
+        btnProvince.setOnClickListener(this);
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -94,7 +105,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setAxisMinimum(0);
 
-        ValueFormatter xAxisFormatter = new RegioniFormatter();
+        ValueFormatter xAxisFormatter = new ProvinceFormatter();
         XAxis xAxis = chart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
@@ -103,22 +114,6 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
 
-        List<TrendInfo> trendInfoListTmp = dataStorage.getTrendsList();
-        trendInfoList = new TrendInfo[trendInfoListTmp.size()];
-        trendsName = new String[trendInfoListTmp.size()];
-        for (int i = 0; i < trendInfoListTmp.size(); i++) {
-            int pos = TrendUtils.getPositionByTrendKey(trendInfoListTmp.get(i).getKey());
-            trendInfoList[pos] = trendInfoListTmp.get(i);
-            trendsName[pos] = trendInfoListTmp.get(i).getName();
-        }
-
-        cursore = getIntent().getIntExtra(Utils.CURSORE_KEY, dataLen - 1);
-        selectedTrendKey = getIntent().getStringExtra(Utils.TREND_KEY);
-
-        if (selectedTrendKey == null || selectedTrendKey.isEmpty()) {
-            selectedTrendKey = trendInfoList[checkedItem].getKey();
-        }
-
         Legend l = chart.getLegend();
         l.setForm(Legend.LegendForm.SQUARE);
         l.setTextSize(12f);
@@ -126,11 +121,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(true);
-        l.setYOffset(19f);
+        l.setDrawInside(false);
         l.setXOffset(-5f);
-
-        btnEnableStatusCheck();
 
         provinceListMap = new HashMap<>();
         for (String regione : dataStorage.getSubLevelDataKeys()) {
@@ -143,32 +135,35 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                         provinceSelections = new ArrayList<>();
                         provinceListMap.put(regione, provinceSelections);
                     }
-                    provinceSelections.add(new ProvinceSelection(provincia, false));
+                    provinceSelections.add(new ProvinceSelection(provincia, selectedProvince.contains(provincia)));
                 }
             }
         }
-        for(List<ProvinceSelection> provinceSelections: provinceListMap.values()){
+        for (List<ProvinceSelection> provinceSelections : provinceListMap.values()) {
             Collections.sort(provinceSelections);
         }
-        setData(selectedTrendKey);
+
+
+        btnEnableStatusCheck();
+
+        setData();
     }
 
 
-    private void setData(String trendKey) {
+    private void setData() {
         ArrayList<BarEntry> values = new ArrayList<>();
 
         int i = 0;
-        for (String dataContext : dataStorage.getSubLevelDataKeys()) {
-            DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
-            TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
+        for (String selectedProvincia : selectedProvince) {
+            TrendValue trendValue = trendInfoMap.get(selectedProvincia).getTrendValues().get(cursore);
             values.add(new BarEntry(i++, trendValue.getValue()));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
         }
 
         BarDataSet barDataSet;
-        barDataSet = new BarDataSet(values, TrendUtils.getTrendNameByTrendKey(getApplicationContext().getResources(), trendKey));
+        barDataSet = new BarDataSet(values, TrendUtils.getTrendNameByTrendKey(getApplicationContext().getResources(), selectedTrendKey));
         barDataSet.setDrawIcons(false);
-        barDataSet.setColor(TrendUtils.getColorByTrendKey(BarChartActivity.this, trendKey));
+        barDataSet.setColor(TrendUtils.getColorByTrendKey(ProvincialBarChartActivity.this, selectedTrendKey));
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(barDataSet);
@@ -176,8 +171,10 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);
         data.setBarWidth(0.9f);
-        chart.setData(data);
 
+        chart.setData(data);
+        data.notifyDataChanged();
+        chart.notifyDataSetChanged();
         chart.animateY(200);
     }
 
@@ -189,33 +186,17 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                     cursore++;
                 }
                 btnEnableStatusCheck();
-                setData(selectedTrendKey);
+                setData();
                 break;
             case R.id.btnIndietro:
                 if (cursore > 0) {
                     cursore--;
                 }
                 btnEnableStatusCheck();
-                setData(selectedTrendKey);
-                break;
-            case R.id.btnCambiaMisura:
-                AlertDialog.Builder builder = new AlertDialog.Builder(BarChartActivity.this);
-
-                builder.setSingleChoiceItems(trendsName, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        selectedTrendKey = trendInfoList[which].getKey();
-                        setData(selectedTrendKey);
-                        checkedItem = which;
-                    }
-                });
-                builder.setTitle(getResources().getString(R.string.sel_misura));
-                AlertDialog alert = builder.create();
-                alert.show();
+                setData();
                 break;
             case R.id.btnProvinciale:
-                final Dialog dialog = new Dialog(BarChartActivity.this, R.style.AppAlert);
+                final Dialog dialog = new Dialog(ProvincialBarChartActivity.this, R.style.AppAlert);
                 dialog.setContentView(R.layout.dialog_province);
 
                 final ListView listViewProvince = dialog.findViewById(R.id.listViewDialogProvince);
@@ -228,7 +209,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                 }
                 Collections.sort(provinceSelectionWrappers);
 
-                final ProvinceAdapter provinceAdapter = new ProvinceAdapter(BarChartActivity.this, R.layout.list_province, provinceSelectionWrappers);
+                final ProvinceAdapter provinceAdapter = new ProvinceAdapter(ProvincialBarChartActivity.this, R.layout.list_province, provinceSelectionWrappers);
                 listViewProvince.setAdapter(provinceAdapter);
 
                 View.OnClickListener clickListener = new View.OnClickListener() {
@@ -237,12 +218,10 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
                         switch (v.getId()) {
                             case R.id.btnCloseTrendDialog:
-                                if (numberOfSelectedElement() < 5 || numberOfSelectedElement() > 20) {
-                                    Toast.makeText(BarChartActivity.this, String.format(getString(R.string.limite_selezione), 5, 20), Toast.LENGTH_LONG).show();
+                                if (numberOfSelectedElement() < MIN_ELEMENTS || numberOfSelectedElement() > MAX_ELEMENTS) {
+                                    Toast.makeText(ProvincialBarChartActivity.this, String.format(getString(R.string.limite_selezione), MIN_ELEMENTS, MAX_ELEMENTS), Toast.LENGTH_LONG).show();
                                 } else {
-                                    dialog.dismiss();
-                                    Intent provincialBarActivity = new Intent(getApplicationContext(), ProvincialBarChartActivity.class);
-                                    List<String> selectedProvince = new ArrayList<>();
+                                    selectedProvince = new ArrayList<>();
                                     for (List<ProvinceSelection> provinceList : provinceListMap.values()) {
                                         for (ProvinceSelection provinceSelection : provinceList) {
                                             if (provinceSelection.isSelected()) {
@@ -250,10 +229,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                                             }
                                         }
                                     }
-                                    provincialBarActivity.putExtra(Utils.CURSORE_KEY, cursore);
-                                    provincialBarActivity.putExtra(Utils.TREND_KEY, DataStorage.TOTALE_CASI_KEY);
-                                    provincialBarActivity.putExtra(Utils.PROVINCE_ARRAY_KEY, selectedProvince.toArray(new String[0]));
-                                    startActivity(provincialBarActivity);
+                                    setData();
+                                    dialog.dismiss();
                                 }
                                 break;
                             case R.id.btnDeselectAll:
@@ -287,6 +264,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         return n;
     }
 
+
     private void btnEnableStatusCheck() {
         if (cursore > 0) {
             btnIndietro.setEnabled(true);
@@ -305,23 +283,24 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private static class RegioniFormatter extends ValueFormatter {
-
-        List<String> nomiRegioni = DataStorage.getIstance().getSubLevelDataKeys();
-        private static final int maxLen = 10;
+    private class ProvinceFormatter extends ValueFormatter {
+        private static final int maxLen = 8;
 
         @Override
         public String getFormattedValue(float value) {
-            String nomeRegione = nomiRegioni.get((int) value);
-            if (nomeRegione.length() > maxLen) {
-                return String.format("%s.", nomeRegione.substring(0, getMaxLength(nomeRegione)));
-            } else {
-                return nomeRegione.substring(0, getMaxLength(nomeRegione));
+            if (value < selectedProvince.size()) {
+                String nomeProvincia = selectedProvince.get((int) value);
+                if (nomeProvincia.length() > maxLen) {
+                    return String.format("%s.", nomeProvincia.substring(0, getMaxLength(nomeProvincia)));
+                } else {
+                    return nomeProvincia.substring(0, getMaxLength(nomeProvincia));
+                }
             }
+            return "";
         }
 
-        private int getMaxLength(String nomeRegione) {
-            return Math.min(maxLen, nomeRegione.length());
+        private int getMaxLength(String nomeProvincia) {
+            return Math.min(maxLen, nomeProvincia.length());
         }
     }
 }

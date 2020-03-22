@@ -1,6 +1,10 @@
 {
-  "latest_app_version" : 5,
+  "latest_app_version" : 6,
   "changelog": [
+  	{
+		"ver" : "1.1.0",
+		"description": "-Aggiunta visualizzazione dei totali casi Provinciali.\n-Aggiunto Istogramma per il confronto tra Province.\n-Minor refactor Grafico."
+	},
 	{
 		"ver" : "1.0.3",
 		"description": "-È stata aggiunta la descrizione delle misure che viene visualizzata al click nell'elenco.\n-Aggiunto Changelog."
