@@ -15,7 +15,7 @@
     <string name="cambia_misura">cambia misura</string>
     <string name="barre_provinciale">province</string>
     <string name="avanti">avanti</string>
-    <string name="misure_da_visualizzare">Misure da visualizzare</string>
+    <string name="misure_da_visualizzare">Elenco Misure</string>
     <string name="sel_tutto">Sel. tutto</string>
     <string name="desel_tutto">Desel. tutto</string>
     <string name="andamento_placeholder">Andamento Nazionale</string>
@@ -80,6 +80,6 @@
     <string name="c_nuovi_positivi_name">Nuovi Positivi</string>
     <string name="c_nuovi_dimessi_guariti_name">Nuovi Dimessi Guariti</string>
     <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>
-    <string name="province_da_visualizzare">Province da visualizzare</string>
+    <string name="province_da_visualizzare">Elenco Province</string>
 
 </resources>

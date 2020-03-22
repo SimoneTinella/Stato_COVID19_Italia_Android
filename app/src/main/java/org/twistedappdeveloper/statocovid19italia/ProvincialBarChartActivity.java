@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -209,7 +208,9 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
                 }
                 Collections.sort(provinceSelectionWrappers);
 
-                final ProvinceAdapter provinceAdapter = new ProvinceAdapter(ProvincialBarChartActivity.this, R.layout.list_province, provinceSelectionWrappers);
+                TextView textView = dialog.findViewById(R.id.txtProvinceDialogTitle);
+                textView.setText(String.format("%s (%s sel.)", getString(R.string.province_da_visualizzare), numberOfSelectedElement()));
+                final ProvinceAdapter provinceAdapter = new ProvinceAdapter(ProvincialBarChartActivity.this, R.layout.list_province, provinceSelectionWrappers, textView);
                 listViewProvince.setAdapter(provinceAdapter);
 
                 View.OnClickListener clickListener = new View.OnClickListener() {

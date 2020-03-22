@@ -3,7 +3,7 @@
   "changelog": [
   	{
 		"ver" : "1.1.0",
-		"description": "-Aggiunta visualizzazione dei totali casi Provinciali.\n-Aggiunto Istogramma per il confronto tra Province.\n-Minor refactor Grafico."
+		"description": "-Aggiunta visualizzazione dei Totali Casi per Provincia (Unico dato fornito dalla Protezione Civile).\n-Aggiunto Istogramma per il confronto tra Province.\n-Minor refactor Grafico."
 	},
 	{
 		"ver" : "1.0.3",

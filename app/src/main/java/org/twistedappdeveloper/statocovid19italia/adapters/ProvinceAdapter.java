@@ -19,8 +19,13 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class ProvinceAdapter extends ArrayAdapter<ProvinceSelectionWrapper> {
 
-    public ProvinceAdapter(Context context, int resource, List<ProvinceSelectionWrapper> objects) {
+    private TextView txtTitle;
+    private List<ProvinceSelectionWrapper> objects;
+
+    public ProvinceAdapter(Context context, int resource, List<ProvinceSelectionWrapper> objects, TextView textView) {
         super(context, resource, objects);
+        this.txtTitle = textView;
+        this.objects = objects;
     }
 
     @Override
@@ -43,6 +48,15 @@ public class ProvinceAdapter extends ArrayAdapter<ProvinceSelectionWrapper> {
                 @Override
                 public void onClick(View v) {
                     provinceSelection.setSelected(checkBox.isChecked());
+                    int n = 0;
+                    for (ProvinceSelectionWrapper provinceSelectionWrapper: objects) {
+                        for (ProvinceSelection provinceSelection : provinceSelectionWrapper.getProvinceSelectionList()) {
+                            if (provinceSelection.isSelected()) {
+                                n++;
+                            }
+                        }
+                    }
+                    txtTitle.setText(String.format("%s (%s sel.)", getContext().getResources().getString(R.string.province_da_visualizzare), n));
                 }
             });
 

@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -147,7 +146,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }
-        for(List<ProvinceSelection> provinceSelections: provinceListMap.values()){
+        for (List<ProvinceSelection> provinceSelections : provinceListMap.values()) {
             Collections.sort(provinceSelections);
         }
         setData(selectedTrendKey);
@@ -228,7 +227,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                 }
                 Collections.sort(provinceSelectionWrappers);
 
-                final ProvinceAdapter provinceAdapter = new ProvinceAdapter(BarChartActivity.this, R.layout.list_province, provinceSelectionWrappers);
+                TextView textView = dialog.findViewById(R.id.txtProvinceDialogTitle);
+                textView.setText(String.format("%s (%s sel.)", getString(R.string.province_da_visualizzare), numberOfSelectedElement()));
+                final ProvinceAdapter provinceAdapter = new ProvinceAdapter(BarChartActivity.this, R.layout.list_province, provinceSelectionWrappers, textView);
                 listViewProvince.setAdapter(provinceAdapter);
 
                 View.OnClickListener clickListener = new View.OnClickListener() {
@@ -253,7 +254,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                                     provincialBarActivity.putExtra(Utils.CURSORE_KEY, cursore);
                                     provincialBarActivity.putExtra(Utils.TREND_KEY, DataStorage.TOTALE_CASI_KEY);
                                     provincialBarActivity.putExtra(Utils.PROVINCE_ARRAY_KEY, selectedProvince.toArray(new String[0]));
-                                    startActivity(provincialBarActivity);
+                                    startActivityForResult(provincialBarActivity, 0);
                                 }
                                 break;
                             case R.id.btnDeselectAll:
