@@ -32,4 +32,10 @@
         app:showAsAction="never"
         android:icon="@drawable/baseline_info_white_24"/>
 
+    <item android:id="@+id/action_changelog"
+        android:title="@string/changelog"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:icon="@drawable/baseline_bug_report_white_24"/>
+
 </menu>

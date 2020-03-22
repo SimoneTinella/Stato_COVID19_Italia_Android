@@ -3,6 +3,7 @@ package org.twistedappdeveloper.statocovid19italia;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.fragments.DataVisualizerFragment;
+import org.twistedappdeveloper.statocovid19italia.model.Changelog;
 import org.twistedappdeveloper.statocovid19italia.network.NetworkUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     private DataVisualizerFragment currentFragment;
 
     private SyncHttpClient client = new SyncHttpClient();
+
+    private List<Changelog> changelogs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +67,39 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private void openChangelog() {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.setTitle(String.format(getString(R.string.ver_installata), BuildConfig.VERSION_NAME));
+        String versione = getString(R.string.versione).substring(0, 1).toUpperCase() + getString(R.string.versione).substring(1);
+        String msgChangelogs = "";
+        for (Changelog changelog : changelogs) {
+            msgChangelogs = String.format("%s\n\n%s %s\n%s", msgChangelogs, versione, changelog.getVersionaName(), changelog.getDescription());
+        }
+        if(changelogs.isEmpty()){
+            alertDialog.setMessage(getString(R.string.no_changelog));
+        }else{
+            alertDialog.setMessage(msgChangelogs.substring(2));
+        }
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog alertDialog;
         switch (item.getItemId()) {
             case R.id.action_info:
                 final SpannableString s =
                         new SpannableString(getString(R.string.infoMessage));
                 Linkify.addLinks(s, Linkify.WEB_URLS);
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog = alertDialogBuilder.create();
                 alertDialog.setTitle(getString(R.string.info));
                 alertDialog.setMessage(s);
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
@@ -85,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
                     txtDialog.setMovementMethod(LinkMovementMethod.getInstance());
                 }
                 break;
+            case R.id.action_changelog:
+                openChangelog();
+                break;
             case R.id.action_chart:
                 if (currentFragment.getDataStorage().getDataLength() > 0) {
                     Intent chartActivity = new Intent(getApplicationContext(), ChartActivity.class);
@@ -96,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_update:
                 recoverData();
+                checkAppVersion();
                 break;
             case R.id.action_change_datacontex:
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -162,6 +195,14 @@ public class MainActivity extends AppCompatActivity {
                         super.onSuccess(statusCode, headers, response);
                         try {
                             final int latestVersion = response.getInt("latest_app_version");
+
+                            changelogs.clear();
+                            JSONArray changelogJSONArray = response.getJSONArray("changelog");
+                            for (int i = 0; i < changelogJSONArray.length(); i++) {
+                                JSONObject jsonObject = changelogJSONArray.getJSONObject(i);
+                                changelogs.add(new Changelog(jsonObject.getString("ver"), jsonObject.getString("description")));
+                            }
+
                             final int currentVersion = BuildConfig.VERSION_CODE;
                             if (latestVersion > currentVersion) {
                                 runOnUiThread(new Runnable() {
@@ -196,6 +237,21 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.makeText(MainActivity.this, getResources().getString(R.string.app_preview), Toast.LENGTH_SHORT).show();
                                     }
                                 });
+                            } else {
+                                String key = "versione";
+                                SharedPreferences pref = getApplicationContext().getSharedPreferences("default", 0);
+                                int version = pref.getInt(key, 0);
+                                if (version < BuildConfig.VERSION_CODE) {
+                                    SharedPreferences.Editor editor = pref.edit();
+                                    editor.putInt(key, BuildConfig.VERSION_CODE);
+                                    editor.apply();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            openChangelog();
+                                        }
+                                    });
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
