@@ -3,7 +3,7 @@
   "changelog": [
 	{
 		"ver" : "1.0.3",
-		"description": "È stata aggiunta la descrizione delle misure. Viene visualizza al click nell'elenco."
+		"description": " -È stata aggiunta la descrizione delle misure che viene visualizzata al click nell'elenco.\n -Aggiunto Changelog."
 	}
   ]
 }
