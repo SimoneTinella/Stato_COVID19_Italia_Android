@@ -1,8 +1,12 @@
 package org.twistedappdeveloper.statocovid19italia.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RowData implements Comparable<RowData> {
     private String name, value, key;
     private Integer position, color;
+    private List<RowData> subItems;
 
     public RowData(String name, String value, int color, int position, String key) {
         this.name = name;
@@ -10,6 +14,7 @@ public class RowData implements Comparable<RowData> {
         this.color = color;
         this.position = position;
         this.key = key;
+        subItems = new ArrayList<>();
     }
 
     public String getName() {
@@ -34,6 +39,14 @@ public class RowData implements Comparable<RowData> {
 
     public String getKey() {
         return key;
+    }
+
+    public List<RowData> getSubItems() {
+        return subItems;
+    }
+
+    public void addSubItem(RowData subItem) {
+        this.subItems.add(subItem);
     }
 
     @Override

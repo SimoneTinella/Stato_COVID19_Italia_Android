@@ -47,13 +47,16 @@ public class DataStorage {
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
     public static final String C_NUOVI_DECEDUTI = "c_nuovi_deceduti";
 
-    //National and Regional no trend keys
+    //National, Regional and Provincial no trend keys
     private static final String DATA_KEY = "data";
     private static final String STATO_KEY = "stato";
-    private static final String DEN_REGIONE_KEY = "denominazione_regione";
+    public static final String DEN_REGIONE_KEY = "denominazione_regione";
+    public static final String DEN_PROVINCIA_KEY = "denominazione_provincia";
     private static final String COD_REGIONE_KEY = "codice_regione";
     private static final String LAT_REGIONE_KEY = "lat";
     private static final String LONG_REGIONE_KEY = "long";
+    private static final String COD_PROVINCIA_KEY = "codice_provincia";
+    private static final String SIGLA_PROVINCIA_KEY = "sigla_provincia";
 
 
     private final Set<String> discardedInfo = new HashSet<>();
@@ -67,6 +70,7 @@ public class DataStorage {
     private Map<String, DataStorage> subLevelDataStorageMap;
 
     private String dataContext;
+    private Scope dataContextScope;
 
     private final DateFormat dateFormatRead = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALY);
     private final DateFormat dateFormatWriteSimple = new SimpleDateFormat("dd/MM", Locale.ITALY);
@@ -74,9 +78,16 @@ public class DataStorage {
 
     private Resources resources;
 
-    private DataStorage(String dataContext, Resources resources) {
+    public enum Scope {
+        NAZIONALE,
+        REGIONALE,
+        PROVINCIALE
+    }
+
+    private DataStorage(String dataContext, Resources resources, Scope dataContextScope) {
         this.dataContext = dataContext;
         this.resources = resources;
+        this.dataContextScope = dataContextScope;
         trendsMap = new HashMap<>();
         subLevelDataStorageMap = new HashMap<>();
         discardedInfo.add(DATA_KEY);
@@ -86,13 +97,16 @@ public class DataStorage {
         discardedInfo.add(LAT_REGIONE_KEY);
         discardedInfo.add(LONG_REGIONE_KEY);
         discardedInfo.add(NUOVI_ATTUALMENTE_POSITIVI_KEY);
+        discardedInfo.add(SIGLA_PROVINCIA_KEY);
+        discardedInfo.add(COD_PROVINCIA_KEY);
+
     }
 
     public static final String defaultDataContext = "Nazionale";
 
-    public static DataStorage createAndGetIstanceIfNotExist(Resources resources) {
+    public static DataStorage createAndGetIstanceIfNotExist(Resources resources, Scope dataContextScope) {
         if (istance == null) {
-            istance = new DataStorage(defaultDataContext, resources);
+            istance = new DataStorage(defaultDataContext, resources, dataContextScope);
         }
         return istance;
     }
@@ -169,30 +183,32 @@ public class DataStorage {
                 trendsMap.put(key, new TrendInfo(name, key, values));
             }
 
-            //Custom computed trends
-            JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
+            if (this.dataContextScope == Scope.NAZIONALE || this.dataContextScope == Scope.REGIONALE) {
+                //Custom computed trends
+                JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
 
-            ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
-            ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
-            ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
+                ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
+                ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
+                ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
 
-            String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
-            nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_ATTUALMENTE_POSITIVI_KEY), dataIniziale));
-            nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
-            nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
+                String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
+                nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_ATTUALMENTE_POSITIVI_KEY), dataIniziale));
+                nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
+                nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
 
-            for (int i = 1; i < dataArrayJson.length(); i++) {
-                JSONObject jsonObjectCorrente = dataArrayJson.getJSONObject(i);
-                JSONObject jsonObjectPrecedente = dataArrayJson.getJSONObject(i - 1);
+                for (int i = 1; i < dataArrayJson.length(); i++) {
+                    JSONObject jsonObjectCorrente = dataArrayJson.getJSONObject(i);
+                    JSONObject jsonObjectPrecedente = dataArrayJson.getJSONObject(i - 1);
 
-                nuoviPositivi.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_CASI_KEY));
-                nuoviGuariti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DIMESSI_GUARITI_KEY));
-                nuoviDeceduti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DECEDUTI_KEY));
+                    nuoviPositivi.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_CASI_KEY));
+                    nuoviGuariti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DIMESSI_GUARITI_KEY));
+                    nuoviDeceduti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DECEDUTI_KEY));
+                }
+
+                trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
+                trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
+                trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
             }
-
-            trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
-            trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
-            trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
         } catch (JSONException e) {
             Log.e("AndroTagError", e.getMessage());
             e.printStackTrace();
@@ -201,7 +217,7 @@ public class DataStorage {
     }
 
     /*** Usato per settare nel DataStorage Nazionale i dati relativi alle regioni **/
-    public void setSubLvlDataArrayJson(JSONArray subLevelDataJSONArray) {
+    public void setSubLvlDataArrayJson(JSONArray subLevelDataJSONArray, String key, Scope dataContextScope) {
         this.subLevelDataStorageMap.clear();
 
         Map<String, JSONArray> regionalJsonArrayMap = new HashMap<>();
@@ -209,7 +225,7 @@ public class DataStorage {
             for (int i = 0; i < subLevelDataJSONArray.length(); i++) {
                 JSONObject jsonObject = subLevelDataJSONArray.getJSONObject(i);
 
-                String regione = jsonObject.getString(DEN_REGIONE_KEY);
+                String regione = jsonObject.getString(key);
                 JSONArray regionalJSONArray;
                 if (regionalJsonArrayMap.containsKey(regione)) {
                     regionalJSONArray = regionalJsonArrayMap.get(regione);
@@ -222,7 +238,7 @@ public class DataStorage {
 
             for (String dataContext : regionalJsonArrayMap.keySet()) {
                 JSONArray regionalJSONArray = regionalJsonArrayMap.get(dataContext);
-                DataStorage regionalDataStorage = new DataStorage(dataContext, resources);
+                DataStorage regionalDataStorage = new DataStorage(dataContext, resources, dataContextScope);
                 regionalDataStorage.setDataArrayJson(regionalJSONArray);
                 subLevelDataStorageMap.put(dataContext, regionalDataStorage);
             }
@@ -282,5 +298,9 @@ public class DataStorage {
             e.printStackTrace();
             return "NoData";
         }
+    }
+
+    public Scope getDataContextScope() {
+        return dataContextScope;
     }
 }

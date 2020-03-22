@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import org.twistedappdeveloper.statocovid19italia.BarChartActivity;
 import org.twistedappdeveloper.statocovid19italia.R;
-import org.twistedappdeveloper.statocovid19italia.adapters.DataAdapter;
+import org.twistedappdeveloper.statocovid19italia.adapters.RowDataAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
@@ -62,7 +62,7 @@ public class DataVisualizerFragment extends Fragment {
 
     private String dataContext;
 
-    private DataAdapter adapter;
+    private RowDataAdapter adapter;
     private List<RowData> rowDataList;
 
     private Button btnAvanti, btnIndietro;
@@ -91,7 +91,7 @@ public class DataVisualizerFragment extends Fragment {
         rowDataList = new ArrayList<>();
         dataContext = arguments.getString(DATACONTEXT_KEY);
 
-        dataStorage = DataStorage.createAndGetIstanceIfNotExist(getResources()).getDataStorageByDataContext(dataContext);
+        dataStorage = DataStorage.getIstance().getDataStorageByDataContext(dataContext);
         if (dataStorage.getDataLength() > 0) {
             int maxCursorValue = dataStorage.getDataLength() - 1;
             if (arguments.getBoolean(IS_CUSTOM_CURSOR, false)) {
@@ -111,13 +111,30 @@ public class DataVisualizerFragment extends Fragment {
         rowDataList.clear();
 
         for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
-            rowDataList.add(new RowData(
+            RowData rowData = new RowData(
                     trendInfo.getName(),
                     String.format("%s", trendInfo.getTrendValueByIndex(cursore).getValue()),
                     getColorByTrendKey(getContext(), trendInfo.getKey()),
                     getPositionByTrendKey(trendInfo.getKey()),
                     trendInfo.getKey()
-            ));
+            );
+            //Aggiungo i dati provinciali
+            if(dataStorage.getDataContextScope() == DataStorage.Scope.REGIONALE && trendInfo.getKey().equals(DataStorage.TOTALE_CASI_KEY)){
+                List<String> province = dataStorage.getSubLevelDataKeys();
+                Collections.sort(province);
+                for(String provincia: province){
+                    TrendInfo totaleCasiProvincia = dataStorage.getDataStorageByDataContext(provincia).getTrendByKey(DataStorage.TOTALE_CASI_KEY);
+                    RowData provincialRowData = new RowData(
+                            provincia,
+                            String.format("%s", totaleCasiProvincia.getTrendValueByIndex(cursore).getValue()),
+                            getColorByTrendKey(getContext(), totaleCasiProvincia.getKey()),
+                            0, //non usato in questo caso
+                            totaleCasiProvincia.getKey()
+                    );
+                    rowData.addSubItem(provincialRowData);
+                }
+            }
+            rowDataList.add(rowData);
         }
         txtData.setText(String.format(getString(R.string.relativo_al), dataStorage.getFullDateByIndex(cursore)));
         Collections.sort(rowDataList);
@@ -175,7 +192,7 @@ public class DataVisualizerFragment extends Fragment {
         btnIndietro = root.findViewById(R.id.btnIndietro);
 
         ListView listView = root.findViewById(R.id.listView);
-        adapter = new DataAdapter(getContext(), R.layout.list_data, rowDataList);
+        adapter = new RowDataAdapter(getContext(), R.layout.list_data, rowDataList);
         listView.setAdapter(adapter);
         listView.setEmptyView(root.findViewById(R.id.txtEmpty));
 

@@ -33,7 +33,9 @@ import org.twistedappdeveloper.statocovid19italia.network.NetworkUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -48,9 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Changelog> changelogs = new ArrayList<>();
 
+    private DataStorage nationalDataStorage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        nationalDataStorage = DataStorage.createAndGetIstanceIfNotExist(getResources(), DataStorage.Scope.NAZIONALE);
+
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
 
@@ -76,9 +82,9 @@ public class MainActivity extends AppCompatActivity {
         for (Changelog changelog : changelogs) {
             msgChangelogs = String.format("%s\n\n%s %s\n%s", msgChangelogs, versione, changelog.getVersionaName(), changelog.getDescription());
         }
-        if(changelogs.isEmpty()){
+        if (changelogs.isEmpty()) {
             alertDialog.setMessage(getString(R.string.no_changelog));
-        }else{
+        } else {
             alertDialog.setMessage(msgChangelogs.substring(2));
         }
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
@@ -134,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 List<String> regioni = new ArrayList<>();
                 regioni.add(DataStorage.defaultDataContext);
-                regioni.addAll(DataStorage.createAndGetIstanceIfNotExist(getResources()).getSubLevelDataKeys());
+                regioni.addAll(DataStorage.getIstance().getSubLevelDataKeys());
                 final String[] dataContexs = regioni.toArray(new String[0]);
                 int checkedItem = 0;
                 for (int i = 0; i < dataContexs.length; i++) {
@@ -159,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
                 break;
             case R.id.action_confronto_regionale:
-                if (DataStorage.createAndGetIstanceIfNotExist(getResources()).getSubLevelDataKeys().size() > 0) {
+                if (DataStorage.getIstance().getSubLevelDataKeys().size() > 0) {
                     Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
                     barChartActivity.putExtra(Utils.CURSORE_KEY, currentFragment.getCursore());
                     startActivity(barChartActivity);
@@ -270,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
         progressDialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.wait_pls), true);
 
-        final Thread threadDatiNazionali = new Thread(new Runnable() {
+        final Thread threadFetchData = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -279,37 +285,62 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        DataStorage.createAndGetIstanceIfNotExist(getResources()).setDataArrayJson(response);
+                        nationalDataStorage.setDataArrayJson(response);
+
+                        client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                                super.onSuccess(statusCode, headers, response);
+                                nationalDataStorage.setSubLvlDataArrayJson(response, DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
+
+                                client.get(getResources().getString(R.string.dataset_provinciale), new JsonHttpResponseHandler() {
+                                    @Override
+                                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                                        super.onSuccess(statusCode, headers, response);
+                                        Map<String, JSONArray> datiPerRegione = new HashMap<>();
+                                        for (int i = 0; i < response.length(); i++) {
+                                            try {
+                                                JSONObject jsonObject = response.getJSONObject(i);
+                                                String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
+                                                JSONArray datiProvince;
+                                                if (datiPerRegione.containsKey(regione)) {
+                                                    datiProvince = datiPerRegione.get(regione);
+                                                } else {
+                                                    datiProvince = new JSONArray();
+                                                    datiPerRegione.put(regione, datiProvince);
+                                                }
+                                                datiProvince.put(jsonObject);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        for (String regione : datiPerRegione.keySet()) {
+                                            nationalDataStorage
+                                                    .getDataStorageByDataContext(regione)
+                                                    .setSubLvlDataArrayJson(
+                                                            datiPerRegione.get(regione),
+                                                            DataStorage.DEN_PROVINCIA_KEY,
+                                                            DataStorage.Scope.PROVINCIALE
+                                                    );
+                                        }
+                                    }
+                                });
+                            }
+                        });
+
                     }
 
                 });
             }
         });
 
-        final Thread threadDatiRegionali = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
-
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        super.onSuccess(statusCode, headers, response);
-                        DataStorage.createAndGetIstanceIfNotExist(getResources()).setSubLvlDataArrayJson(response);
-                    }
-
-                });
-            }
-        });
-
-        threadDatiNazionali.start();
-        threadDatiRegionali.start();
+        threadFetchData.start();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    threadDatiNazionali.join();
-                    threadDatiRegionali.join();
+                    threadFetchData.join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } finally {

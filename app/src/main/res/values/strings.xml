@@ -43,7 +43,7 @@
     <string name="dataset_provinciale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-province.json</string>
 
     <string name="notification_file">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json</string>
-    <string name="new_version_app_site">https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/StatoCovid19Italia.apk</string>
+    <string name="new_version_app_site">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/StatoCovid19Italia.apk</string>
 
     <string name="grafico_temporale">Grafico Temporale</string>
     <string name="andamento_regionale">Andamento Regionale</string>
