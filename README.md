@@ -6,7 +6,7 @@ In questo repository è presente un progetto Open Source con scopo la realizzazi
 
 
 
-<a href="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/StatoCovid19Italia.apk"><h1 align="center">Download APK</h1></a>
+<a href="https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/StatoCovid19Italia.apk"><h1 align="center">Download APK per l'installazione</h1></a>
 
 
 Screenshot Applicativo:
