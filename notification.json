@@ -1,3 +1,9 @@
 {
-  "latest_app_version" : 4
+  "latest_app_version" : 4,
+  "changelog": [
+	{
+		"ver" : "1.0.3",
+		"description": "È stata aggiunta la descrizione delle misure. Viene visualizza al click nell'elenco."
+	}
+  ]
 }
