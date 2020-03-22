@@ -7,6 +7,7 @@
         L\'aggiornamento di tali dati avviene ogni giorno intorno alle ore 18:30 (ora italiana).
         \n\nIl codice sorgente dell\'applicativo è disponibile sotto licenza OpenSource \'Unlicense\' al seguente URL: https://github.com/SimoneTinella/Stato_COVID19_Italia_Android
     </string>
+
     <string name="indietro">indietro</string>
     <string name="cambia_misura">cambia misura</string>
     <string name="avanti">avanti</string>
@@ -15,11 +16,9 @@
     <string name="desel_tutto">Desel. tutto</string>
     <string name="andamento_placeholder">Andamento Nazionale</string>
     <string name="nessun_dato_disponibile">Nessun dato disponibile</string>
-
     <string name="sel_misura">Seleziona misura</string>
     <string name="sel_dataContext">Seleziona contesto dati</string>
     <string name="no_data_to_display">Non sono presenti dati da graficare, prova ad aggiornare.</string>
-
     <string name="app_update">Aggiornamento applicazione</string>
     <string name="app_update_message">Stai usando una versione non aggiornata dell\'applicazione. Sei indietro di %s. Vuoi scaricare l\'ultima versione?</string>
     <string name="si">Si</string>
@@ -33,14 +32,48 @@
     <string name="seleziona_almeno_un_elem">Seleziona almeno un elemento</string>
     <string name="variazioni_giorno_prec">Variazioni con il giorno precedente</string>
     <string name="andamento">Andamento %s</string>
+    <string name="relativo_al">Relativo al %s</string>
+
 
     <string name="dataset_nazionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json</string>
     <string name="dataset_regionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json</string>
+    <string name="dataset_provinciale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-province.json</string>
+
     <string name="notification_file">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json</string>
     <string name="new_version_app_site">https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/StatoCovid19Italia.apk</string>
+
     <string name="grafico_temporale">Grafico Temporale</string>
     <string name="andamento_regionale">Andamento Regionale</string>
     <string name="confronto_regionale">Confronto Regionale</string>
+    <string name="confronto_regionale_message">Vuoi visualizzare il confronto Regionale di questa misura relativa al %s?</string>
     <string name="verifica_nuovi_i_dati">Verifica nuovi i dati</string>
+
+    <string name="dimessi_guariti_desc">Totale persone dimesse guarite dall\'inizio.</string>
+    <string name="deceduti_desc">Totale persone decedute dall\'inizio.</string>
+    <string name="totale_casi_desc">Totale persone che hanno contratto il virus dall\'inizio.</string>
+    <string name="totale_attualmente_positivi_desc">Totale persone che attualmente hanno il virus.\n(Tot. Persone Ricoverate + Isolamento Domiciliare)</string>
+    <string name="nuovi_attualmente_positivi_desc">Netto casi positivi fra ieri e oggi.</string>
+    <string name="totale_ospedalizzati_desc">Persone attualmente ricoverate.\n(Terapia Intensiva + Ricoverati Con Sintomi)</string>
+    <string name="terapia_intensiva_desc">Persone ricoverate in terapia intensiva.</string>
+    <string name="ricoverati_con_sintomi_desc">Persone ricoverate non in terapia intensiva.</string>
+    <string name="isolamento_domiciliare_desc">Persone in isolamente domiciliare.</string>
+    <string name="tamponi_desc">Totale tamponi effettuati dall\'inizio.</string>
+    <string name="c_nuovi_positivi_desc">Numero di nuove persone contagiate.</string>
+    <string name="c_nuovi_dimessi_guariti_desc">Numero di nuove persone dimesse.</string>
+    <string name="c_nuovi_deceduti_desc">Numero di nuove persone decedute.</string>
+
+    <string name="dimessi_guariti_name">Totale Dimessi Guariti</string>
+    <string name="deceduti_name">Totale Deceduti</string>
+    <string name="totale_casi_name">Totale Casi</string>
+    <string name="totale_attualmente_positivi_name">Totale Attualmente Positivi</string>
+    <string name="nuovi_attualmente_positivi_name">Netto Nuovi Positivi</string>
+    <string name="totale_ospedalizzati_name">Tot. Persone Ricoverate</string>
+    <string name="terapia_intensiva_name">Terapia Intensiva</string>
+    <string name="ricoverati_con_sintomi_name">Ricoverati Con Sintomi</string>
+    <string name="isolamento_domiciliare_name">Isolamento Domiciliare</string>
+    <string name="tamponi_name">Tamponi Effettuati</string>
+    <string name="c_nuovi_positivi_name">Nuovi Positivi</string>
+    <string name="c_nuovi_dimessi_guariti_name">Nuovi Dimessi Guariti</string>
+    <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>
 
 </resources>

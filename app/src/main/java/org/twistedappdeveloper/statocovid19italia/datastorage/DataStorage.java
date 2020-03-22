@@ -1,5 +1,6 @@
-package org.twistedappdeveloper.statocovid19italia.DataStorage;
+package org.twistedappdeveloper.statocovid19italia.datastorage;
 
+import android.content.res.Resources;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -29,8 +30,7 @@ import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTre
  * **/
 public class DataStorage {
 
-    //National and Regional keys
-    private static final String DATA_KEY = "data";
+    //National and Regional trend keys
     public static final String TOTALE_DIMESSI_GUARITI_KEY = "dimessi_guariti";
     public static final String TOTALE_DECEDUTI_KEY = "deceduti";
     public static final String TOTALE_CASI_KEY = "totale_casi";
@@ -41,18 +41,20 @@ public class DataStorage {
     public static final String RICOVERATI_SINTOMI_KEY = "ricoverati_con_sintomi";
     public static final String ISOLAMENTO_DOMICILIARE_KEY = "isolamento_domiciliare";
     public static final String TAMPONI_KEY = "tamponi";
-    private static final String STATO_KEY = "stato";
-
-    //Regional keys
-    private static final String DEN_REGIONE_KEY = "denominazione_regione";
-    private static final String COD_REGIONE_KEY = "codice_regione";
-    private static final String LAT_REGIONE_KEY = "lat";
-    private static final String LONG_REGIONE_KEY = "long";
 
     //Computed trends keys
     public static final String C_NUOVI_POSITIVI = "c_nuovi_positivi";
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
     public static final String C_NUOVI_DECEDUTI = "c_nuovi_deceduti";
+
+    //National and Regional no trend keys
+    private static final String DATA_KEY = "data";
+    private static final String STATO_KEY = "stato";
+    private static final String DEN_REGIONE_KEY = "denominazione_regione";
+    private static final String COD_REGIONE_KEY = "codice_regione";
+    private static final String LAT_REGIONE_KEY = "lat";
+    private static final String LONG_REGIONE_KEY = "long";
+
 
     private final Set<String> discardedInfo = new HashSet<>();
 
@@ -70,8 +72,11 @@ public class DataStorage {
     private final DateFormat dateFormatWriteSimple = new SimpleDateFormat("dd/MM", Locale.ITALY);
     private final DateFormat dateFormatWriteFull = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
 
-    private DataStorage(String dataContext) {
+    private Resources resources;
+
+    private DataStorage(String dataContext, Resources resources) {
         this.dataContext = dataContext;
+        this.resources = resources;
         trendsMap = new HashMap<>();
         subLevelDataStorageMap = new HashMap<>();
         discardedInfo.add(DATA_KEY);
@@ -80,15 +85,19 @@ public class DataStorage {
         discardedInfo.add(DEN_REGIONE_KEY);
         discardedInfo.add(LAT_REGIONE_KEY);
         discardedInfo.add(LONG_REGIONE_KEY);
+        discardedInfo.add(NUOVI_ATTUALMENTE_POSITIVI_KEY);
     }
-
 
     public static final String defaultDataContext = "Nazionale";
 
-    public static DataStorage getIstance() {
+    public static DataStorage createAndGetIstanceIfNotExist(Resources resources) {
         if (istance == null) {
-            istance = new DataStorage(defaultDataContext);
+            istance = new DataStorage(defaultDataContext, resources);
         }
+        return istance;
+    }
+
+    public static DataStorage getIstance() {
         return istance;
     }
 
@@ -149,7 +158,7 @@ public class DataStorage {
                     continue;
                 }
 
-                String name = getTrendNameByTrendKey(key);
+                String name = getTrendNameByTrendKey(resources, key);
                 ArrayList<TrendValue> values = new ArrayList<>();
                 for (int i = 0; i < dataArrayJson.length(); i++) {
                     JSONObject jsonObject = dataArrayJson.getJSONObject(i);
@@ -181,9 +190,9 @@ public class DataStorage {
                 nuoviDeceduti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DECEDUTI_KEY));
             }
 
-            trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
-            trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
-            trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
+            trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
+            trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
+            trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
         } catch (JSONException e) {
             Log.e("AndroTagError", e.getMessage());
             e.printStackTrace();
@@ -211,11 +220,11 @@ public class DataStorage {
                 regionalJSONArray.put(jsonObject);
             }
 
-            for (String regione : regionalJsonArrayMap.keySet()) {
-                JSONArray regionalJSONArray = regionalJsonArrayMap.get(regione);
-                DataStorage regionalDataStorage = new DataStorage(regione);
+            for (String dataContext : regionalJsonArrayMap.keySet()) {
+                JSONArray regionalJSONArray = regionalJsonArrayMap.get(dataContext);
+                DataStorage regionalDataStorage = new DataStorage(dataContext, resources);
                 regionalDataStorage.setDataArrayJson(regionalJSONArray);
-                subLevelDataStorageMap.put(regione, regionalDataStorage);
+                subLevelDataStorageMap.put(dataContext, regionalDataStorage);
             }
         } catch (JSONException e) {
             Log.e("AndroTagError", e.getMessage());

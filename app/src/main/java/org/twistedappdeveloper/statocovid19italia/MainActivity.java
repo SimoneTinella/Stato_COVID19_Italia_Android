@@ -25,8 +25,9 @@ import com.loopj.android.http.SyncHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
+import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.fragments.DataVisualizerFragment;
+import org.twistedappdeveloper.statocovid19italia.network.NetworkUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
 import java.util.ArrayList;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
 
     private FragmentManager fragmentManager;
     private DataVisualizerFragment currentFragment;
+
+    private SyncHttpClient client = new SyncHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                         new SpannableString(getString(R.string.infoMessage));
                 Linkify.addLinks(s, Linkify.WEB_URLS);
                 AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle(R.string.info);
+                alertDialog.setTitle(getString(R.string.info));
                 alertDialog.setMessage(s);
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
                         new DialogInterface.OnClickListener() {
@@ -98,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 List<String> regioni = new ArrayList<>();
                 regioni.add(DataStorage.defaultDataContext);
-                regioni.addAll(DataStorage.getIstance().getSubLevelDataKeys());
+                regioni.addAll(DataStorage.createAndGetIstanceIfNotExist(getResources()).getSubLevelDataKeys());
                 final String[] dataContexs = regioni.toArray(new String[0]);
                 int checkedItem = 0;
                 for (int i = 0; i < dataContexs.length; i++) {
@@ -123,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                 alert.show();
                 break;
             case R.id.action_confronto_regionale:
-                if (DataStorage.getIstance().getSubLevelDataKeys().size() > 0) {
+                if (DataStorage.createAndGetIstanceIfNotExist(getResources()).getSubLevelDataKeys().size() > 0) {
                     Intent barChartActivity = new Intent(getApplicationContext(), BarChartActivity.class);
                     barChartActivity.putExtra(Utils.CURSORE_KEY, currentFragment.getCursore());
                     startActivity(barChartActivity);
@@ -144,12 +147,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkAppVersion() {
-        if (!Utils.isDeviceOnline(MainActivity.this)) {
+        if (!NetworkUtils.isDeviceOnline(MainActivity.this)) {
             return;
         }
 
         new Thread(new Runnable() {
-            SyncHttpClient client = new SyncHttpClient();
+
 
             @Override
             public void run() {
@@ -204,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void recoverData() {
-        if (!Utils.isDeviceOnline(MainActivity.this)) {
+        if (!NetworkUtils.isDeviceOnline(MainActivity.this)) {
             Toast.makeText(MainActivity.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -213,8 +216,6 @@ public class MainActivity extends AppCompatActivity {
 
         final Thread threadDatiNazionali = new Thread(new Runnable() {
 
-            SyncHttpClient client = new SyncHttpClient();
-
             @Override
             public void run() {
                 client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        DataStorage.getIstance().setDataArrayJson(response);
+                        DataStorage.createAndGetIstanceIfNotExist(getResources()).setDataArrayJson(response);
                     }
 
                 });
@@ -230,9 +231,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         final Thread threadDatiRegionali = new Thread(new Runnable() {
-
-            SyncHttpClient client = new SyncHttpClient();
-
             @Override
             public void run() {
                 client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
@@ -240,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        DataStorage.getIstance().setSubLvlDataArrayJson(response);
+                        DataStorage.createAndGetIstanceIfNotExist(getResources()).setSubLvlDataArrayJson(response);
                     }
 
                 });

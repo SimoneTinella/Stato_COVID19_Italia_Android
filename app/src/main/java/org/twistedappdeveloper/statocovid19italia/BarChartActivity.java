@@ -20,7 +20,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
-import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
+import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
@@ -135,7 +135,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
 
         BarDataSet barDataSet;
-        barDataSet = new BarDataSet(values, TrendUtils.getTrendNameByTrendKey(trendKey));
+        barDataSet = new BarDataSet(values, TrendUtils.getTrendNameByTrendKey(getApplicationContext().getResources(), trendKey));
         barDataSet.setDrawIcons(false);
         barDataSet.setColor(TrendUtils.getColorByTrendKey(BarChartActivity.this, trendKey));
 

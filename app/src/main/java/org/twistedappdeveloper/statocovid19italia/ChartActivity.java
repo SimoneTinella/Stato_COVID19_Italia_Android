@@ -41,7 +41,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.twistedappdeveloper.statocovid19italia.DataStorage.DataStorage;
+import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
