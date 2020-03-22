@@ -54,8 +54,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
     private Map<String, List<ProvinceSelection>> provinceListMap;
 
-    private final int MIN_ELEMENTS = 3;
-    private final int MAX_ELEMENTS = 21;
+    public static final int MIN_ELEMENTS = 3;
+    public static final int MAX_ELEMENTS = 21;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

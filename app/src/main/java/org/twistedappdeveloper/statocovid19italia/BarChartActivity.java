@@ -39,6 +39,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.twistedappdeveloper.statocovid19italia.ProvincialBarChartActivity.MAX_ELEMENTS;
+import static org.twistedappdeveloper.statocovid19italia.ProvincialBarChartActivity.MIN_ELEMENTS;
+
 public class BarChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     private BarChart chart;
@@ -238,8 +241,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
                         switch (v.getId()) {
                             case R.id.btnCloseTrendDialog:
-                                if (numberOfSelectedElement() < 5 || numberOfSelectedElement() > 20) {
-                                    Toast.makeText(BarChartActivity.this, String.format(getString(R.string.limite_selezione), 5, 20), Toast.LENGTH_LONG).show();
+                                if (numberOfSelectedElement() < MIN_ELEMENTS || numberOfSelectedElement() > MAX_ELEMENTS) {
+                                    Toast.makeText(BarChartActivity.this, String.format(getString(R.string.limite_selezione), MIN_ELEMENTS, MAX_ELEMENTS), Toast.LENGTH_LONG).show();
                                 } else {
                                     dialog.dismiss();
                                     Intent provincialBarActivity = new Intent(getApplicationContext(), ProvincialBarChartActivity.class);
