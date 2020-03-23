@@ -14,6 +14,7 @@ Screenshot Applicativo:
 
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/MainActivity.PNG)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/RegionalActivity.PNG)
+![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/DayDiff.png)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/ChartActivity.PNG)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/barchart.PNG)
@@ -22,5 +23,4 @@ Screenshot Applicativo:
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/TrendSelector.png)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/Zoom.png)
 ![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/SelezioneRegionale.PNG)
-![alt text](https://github.com/SimoneTinella/Stato_COVID19_Italia_Android/raw/master/img/InfoDialog.PNG)
 
