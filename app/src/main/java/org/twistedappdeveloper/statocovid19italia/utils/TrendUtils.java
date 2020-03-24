@@ -40,6 +40,7 @@ public class TrendUtils {
                 return context.getResources().getColor(R.color.violet);
 
             case DataStorage.TAMPONI_KEY:
+                return context.getResources().getColor(R.color.grey);
             default:
                 return Color.BLACK;
         }

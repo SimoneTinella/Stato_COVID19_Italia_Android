@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,7 +22,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
@@ -41,8 +39,8 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
+import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
@@ -89,13 +87,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
 
-        DisplayMetrics ds = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(ds);
-        int width = ds.widthPixels;
-        Description description = chart.getDescription();
-        description.setText(String.format(getString(R.string.andamento), contestoDati));
-        description.setTextSize(15f);
-        description.setPosition(width - getSPDimension(45), getSPDimension(15));
+        TextView txtContesto = findViewById(R.id.txtContesto);
+        txtContesto.setText(String.format(getString(R.string.andamento), contestoDati));
 
         chart.setTouchEnabled(true);
         chart.setDragDecelerationFrictionCoef(0.9f);
@@ -119,7 +112,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(true);
-        l.setYOffset(6f);
+//        l.setYOffset(4f);
         l.setXOffset(getSPDimension(4));
 
 
@@ -424,7 +417,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     TrendValue currentTrendValue = trendInfo.getTrendValueByIndex(position);
                     TrendValue precTrendValue;
                     if (position > 0) {
-                        precTrendValue = trendInfo.getTrendValueByIndex(position-1);
+                        precTrendValue = trendInfo.getTrendValueByIndex(position - 1);
                     } else {
                         precTrendValue = new TrendValue(0, "NoData");
                     }

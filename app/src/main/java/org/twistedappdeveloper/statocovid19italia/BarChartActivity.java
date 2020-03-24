@@ -1,8 +1,10 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -12,17 +14,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.MPPointF;
 
 import org.twistedappdeveloper.statocovid19italia.adapters.ProvinceAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
@@ -82,7 +89,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         dataStorage = DataStorage.getIstance();
         dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
 
-        chart.setTouchEnabled(false);
+        chart.setTouchEnabled(true);
         chart.setBackgroundColor(Color.WHITE);
         chart.setDrawBarShadow(false);
         chart.setDrawValueAboveBar(true);
@@ -90,7 +97,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart.setDoubleTapToZoomEnabled(false);
         chart.setDrawGridBackground(false);
         chart.getDescription().setEnabled(false);
-        chart.setHighlightFullBarEnabled(false);
+        chart.setHighlightFullBarEnabled(true);
 
         chart.getAxisLeft().setEnabled(false);
         chart.getAxisLeft().setAxisMinimum(0);
@@ -104,6 +111,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         xAxis.setLabelCount(21);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
+
+        BarChartActivityMaker barChartActivityMaker = new BarChartActivityMaker(BarChartActivity.this);
+        chart.setMarker(barChartActivityMaker);
 
         List<TrendInfo> trendInfoListTmp = dataStorage.getTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
@@ -152,22 +162,25 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             Collections.sort(provinceSelections);
         }
         setData(selectedTrendKey);
+
+        checkOrientation();
     }
 
 
     private void setData(String trendKey) {
-        ArrayList<BarEntry> values = new ArrayList<>();
+        ArrayList<BarEntry> barValues = new ArrayList<>();
 
+        barValues.clear();
         int i = 0;
         for (String dataContext : dataStorage.getSubLevelDataKeys()) {
             DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
-            values.add(new BarEntry(i++, trendValue.getValue()));
+            barValues.add(new BarEntry(i++, trendValue.getValue(), dataContext));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
         }
 
         BarDataSet barDataSet;
-        barDataSet = new BarDataSet(values, TrendUtils.getTrendNameByTrendKey(getApplicationContext().getResources(), trendKey));
+        barDataSet = new BarDataSet(barValues, TrendUtils.getTrendNameByTrendKey(getApplicationContext().getResources(), trendKey));
         barDataSet.setDrawIcons(false);
         barDataSet.setColor(TrendUtils.getColorByTrendKey(BarChartActivity.this, trendKey));
 
@@ -278,6 +291,20 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    private void checkOrientation() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            chart.getData().setDrawValues(true);
+        } else {
+            chart.getData().setDrawValues(false);
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        checkOrientation();
+    }
+
     private int numberOfSelectedElement() {
         int n = 0;
         for (List<ProvinceSelection> provinceList : provinceListMap.values()) {
@@ -325,6 +352,32 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
         private int getMaxLength(String nomeRegione) {
             return Math.min(maxLen, nomeRegione.length());
+        }
+    }
+
+    public class BarChartActivityMaker extends MarkerView {
+
+        TextView txtBarValue, txtRegione;
+
+        public BarChartActivityMaker(Context context) {
+            super(context, R.layout.bar_chart_marker);
+            txtBarValue = findViewById(R.id.txtBarValue);
+            txtRegione = findViewById(R.id.txtRegione);
+        }
+
+        @Override
+        public MPPointF getOffset() {
+            super.getOffset().x = -getWidth();
+            super.getOffset().y = -getHeight();
+            return super.getOffset();
+        }
+
+        @Override
+        public void refreshContent(Entry e, Highlight highlight) {
+            txtRegione.setText(e.getData().toString());
+            txtBarValue.setText(String.format("%s", e.getY()));
+
+            super.refreshContent(e, highlight);
         }
     }
 }

@@ -12,16 +12,16 @@
 
     <TextView
         android:id="@+id/txtMarkerData"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_marginTop="2sp"
-        android:gravity="center_horizontal"
-        android:textAlignment="center"
+        android:layout_marginEnd="5sp"
         android:textColor="@android:color/black"
-        tools:text="Dati relativi al 2020-02-02" />
+        tools:text="Dati relativi al 2020-02-02"
+        android:layout_marginRight="5sp" />
 
 
     <LinearLayout
