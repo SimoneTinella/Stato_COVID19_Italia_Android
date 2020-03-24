@@ -119,19 +119,21 @@ public class DataVisualizerFragment extends Fragment {
                     trendInfo.getKey()
             );
             //Aggiungo i dati provinciali
-            if(dataStorage.getDataContextScope() == DataStorage.Scope.REGIONALE && trendInfo.getKey().equals(DataStorage.TOTALE_CASI_KEY)){
+            if(dataStorage.getDataContextScope() == DataStorage.Scope.REGIONALE){
                 List<String> province = dataStorage.getSubLevelDataKeys();
                 Collections.sort(province);
                 for(String provincia: province){
-                    TrendInfo totaleCasiProvincia = dataStorage.getDataStorageByDataContext(provincia).getTrendByKey(DataStorage.TOTALE_CASI_KEY);
-                    RowData provincialRowData = new RowData(
-                            provincia,
-                            String.format("%s", totaleCasiProvincia.getTrendValueByIndex(cursore).getValue()),
-                            getColorByTrendKey(getContext(), totaleCasiProvincia.getKey()),
-                            0, //non usato in questo caso
-                            totaleCasiProvincia.getKey()
-                    );
-                    rowData.addSubItem(provincialRowData);
+                    TrendInfo totaleCasiProvincia = dataStorage.getDataStorageByDataContext(provincia).getTrendByKey(trendInfo.getKey());
+                    if(totaleCasiProvincia != null){
+                        RowData provincialRowData = new RowData(
+                                provincia,
+                                String.format("%s", totaleCasiProvincia.getTrendValueByIndex(cursore).getValue()),
+                                getColorByTrendKey(getContext(), totaleCasiProvincia.getKey()),
+                                0, //non usato in questo caso
+                                totaleCasiProvincia.getKey()
+                        );
+                        rowData.addSubItem(provincialRowData);
+                    }
                 }
             }
             rowDataList.add(rowData);

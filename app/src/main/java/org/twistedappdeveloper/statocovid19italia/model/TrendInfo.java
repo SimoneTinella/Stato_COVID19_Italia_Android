@@ -1,10 +1,12 @@
 package org.twistedappdeveloper.statocovid19italia.model;
 
+import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
+
 import java.util.ArrayList;
 
 /*** This class is used to store trend information and values
  * ***/
-public class TrendInfo {
+public class TrendInfo implements Comparable<TrendInfo> {
     private String name, key;
     private ArrayList<TrendValue> values;
 
@@ -30,4 +32,8 @@ public class TrendInfo {
         return values.get(index);
     }
 
+    @Override
+    public int compareTo(TrendInfo o) {
+        return TrendUtils.getPositionByTrendKey(key) - TrendUtils.getPositionByTrendKey(o.key);
+    }
 }

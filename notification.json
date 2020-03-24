@@ -1,6 +1,10 @@
 {
-  "latest_app_version" : 6,
+  "latest_app_version" : 7,
   "changelog": [
+	{
+		"ver" : "1.1.1",
+		"description": "-Aggiunta visualizzazione dei Nuovi Casi per Provincia (Dato calcolato a partire dai casi totali).\n-Minor refactor grafico.\nNota: I Nuovi Casi per Provincia possono risultare negativi in quanto a volte il Totale Casi di un giorno è inferiore al Totale Casi del giorno precedente a causa di una ridistribuzione dei dati."
+	},
   	{
 		"ver" : "1.1.0",
 		"description": "-Aggiunta visualizzazione dei Totali Casi per Provincia (Unico dato fornito dalla Protezione Civile).\n-Aggiunto Istogramma per il confronto tra Province.\n-Minor refactor Grafico."

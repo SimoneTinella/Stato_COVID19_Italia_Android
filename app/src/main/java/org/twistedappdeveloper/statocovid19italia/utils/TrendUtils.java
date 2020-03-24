@@ -62,18 +62,18 @@ public class TrendUtils {
             case DataStorage.TOTALE_DECEDUTI_KEY:
                 return 6;
 
-//            case DataStorage.NUOVI_ATTUALMENTE_POSITIVI_KEY:
-//                return 7;
-            case DataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
+            case DataStorage.NUOVI_ATTUALMENTE_POSITIVI_KEY:
                 return 7;
-            case DataStorage.TERAPIA_INTENSIVA_KEY:
+            case DataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
                 return 8;
-            case DataStorage.RICOVERATI_SINTOMI_KEY:
+            case DataStorage.TERAPIA_INTENSIVA_KEY:
                 return 9;
-            case DataStorage.ISOLAMENTO_DOMICILIARE_KEY:
+            case DataStorage.RICOVERATI_SINTOMI_KEY:
                 return 10;
-            case DataStorage.TAMPONI_KEY:
+            case DataStorage.ISOLAMENTO_DOMICILIARE_KEY:
                 return 11;
+            case DataStorage.TAMPONI_KEY:
+                return 12;
 
             default:
                 return Integer.MAX_VALUE;

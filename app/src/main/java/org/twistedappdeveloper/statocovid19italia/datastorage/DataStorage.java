@@ -96,7 +96,7 @@ public class DataStorage {
         discardedInfo.add(DEN_REGIONE_KEY);
         discardedInfo.add(LAT_REGIONE_KEY);
         discardedInfo.add(LONG_REGIONE_KEY);
-        discardedInfo.add(NUOVI_ATTUALMENTE_POSITIVI_KEY);
+//        discardedInfo.add(NUOVI_ATTUALMENTE_POSITIVI_KEY);
         discardedInfo.add(SIGLA_PROVINCIA_KEY);
         discardedInfo.add(COD_PROVINCIA_KEY);
 
@@ -183,8 +183,8 @@ public class DataStorage {
                 trendsMap.put(key, new TrendInfo(name, key, values));
             }
 
+            //Custom computed trends
             if (this.dataContextScope == Scope.NAZIONALE || this.dataContextScope == Scope.REGIONALE) {
-                //Custom computed trends
                 JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
 
                 ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
@@ -208,6 +208,17 @@ public class DataStorage {
                 trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
                 trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
                 trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
+            }else{
+                JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
+                ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
+                String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
+                nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_CASI_KEY), dataIniziale));
+                for (int i = 1; i < dataArrayJson.length(); i++) {
+                    JSONObject jsonObjectCorrente = dataArrayJson.getJSONObject(i);
+                    JSONObject jsonObjectPrecedente = dataArrayJson.getJSONObject(i - 1);
+                    nuoviPositivi.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_CASI_KEY));
+                }
+                trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
             }
         } catch (JSONException e) {
             Log.e("AndroTagError", e.getMessage());

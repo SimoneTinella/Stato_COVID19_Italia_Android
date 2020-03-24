@@ -1,6 +1,7 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -50,17 +52,22 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
     private List<String> selectedProvince;
 
-    private Map<String, TrendInfo> trendInfoMap = new HashMap<>();
+    //    private Map<String, TrendInfo> trendInfoMap = new HashMap<>();
+    private Map<String, DataStorage> dataStorageMap = new HashMap<>();
 
     private Map<String, List<ProvinceSelection>> provinceListMap;
 
+    private String[] trendsKey;
+    private String[] trendsName;
+    private int checkedItem;
+
     public static final int MIN_ELEMENTS = 3;
-    public static final int MAX_ELEMENTS = 21;
+    public static final int MAX_ELEMENTS = 30;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_provincial_bar_chart);
+        setContentView(R.layout.activity_bar_chart);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -75,8 +82,20 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         for (String regione : dataStorage.getSubLevelDataKeys()) {
             for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
                 if (!provincia.equals("In fase di definizione/aggiornamento")) {
-                    trendInfoMap.put(provincia, dataStorage.getDataStorageByDataContext(regione).getDataStorageByDataContext(provincia).getTrendByKey(selectedTrendKey));
+                    dataStorageMap.put(provincia, dataStorage.getDataStorageByDataContext(regione).getDataStorageByDataContext(provincia));
                 }
+            }
+        }
+
+        List<TrendInfo> trendInfoListTmp = dataStorageMap.values().iterator().next().getTrendsList();
+        Collections.sort(trendInfoListTmp);
+        trendsName = new String[trendInfoListTmp.size()];
+        trendsKey = new String[trendInfoListTmp.size()];
+        for (int i = 0; i < trendInfoListTmp.size(); i++) {
+            trendsKey[i] = trendInfoListTmp.get(i).getKey();
+            trendsName[i] = trendInfoListTmp.get(i).getName();
+            if (trendsKey[i].equals(selectedTrendKey)) {
+                checkedItem = i;
             }
         }
 
@@ -85,10 +104,12 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
         btnProvince = findViewById(R.id.btnProvinciale);
+        Button btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
         btnProvince.setOnClickListener(this);
+        btnCambiaMisura.setOnClickListener(this);
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -109,7 +130,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
-        xAxis.setLabelCount(21);
+        xAxis.setLabelCount(30);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
 
@@ -154,7 +175,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         int i = 0;
         for (String selectedProvincia : selectedProvince) {
-            TrendValue trendValue = trendInfoMap.get(selectedProvincia).getTrendValues().get(cursore);
+            TrendValue trendValue = dataStorageMap.get(selectedProvincia).getTrendByKey(selectedTrendKey).getTrendValues().get(cursore);
             values.add(new BarEntry(i++, trendValue.getValue()));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
         }
@@ -193,6 +214,22 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
                 }
                 btnEnableStatusCheck();
                 setData();
+                break;
+            case R.id.btnCambiaMisura:
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProvincialBarChartActivity.this);
+
+                builder.setSingleChoiceItems(trendsName, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        selectedTrendKey = trendsKey[which];
+                        setData();
+                        checkedItem = which;
+                    }
+                });
+                builder.setTitle(getResources().getString(R.string.sel_misura));
+                AlertDialog alert = builder.create();
+                alert.show();
                 break;
             case R.id.btnProvinciale:
                 final Dialog dialog = new Dialog(ProvincialBarChartActivity.this, R.style.AppAlert);

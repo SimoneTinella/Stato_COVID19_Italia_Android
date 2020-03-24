@@ -128,8 +128,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
-        l.setDrawInside(true);
-        l.setYOffset(19f);
+        l.setDrawInside(false);
         l.setXOffset(-5f);
 
         btnEnableStatusCheck();
