@@ -1,7 +1,6 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,16 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.MPPointF;
 
 import org.twistedappdeveloper.statocovid19italia.adapters.ProvinceAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
@@ -46,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static org.twistedappdeveloper.statocovid19italia.ProvincialBarChartActivity.MAX_ELEMENTS;
 import static org.twistedappdeveloper.statocovid19italia.ProvincialBarChartActivity.MIN_ELEMENTS;
 
@@ -55,7 +51,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     private DataStorage dataStorage;
     private TextView txtMarkerData;
 
-    private Button btnIndietro, btnAvanti;
+    private Button btnIndietro, btnAvanti, btnCambiaMisura;
 
     private int cursore, dataLen;
 
@@ -78,7 +74,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart = findViewById(R.id.barChart);
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
-        Button btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+        btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
         Button btnGraficoProvinciale = findViewById(R.id.btnProvinciale);
 
         btnIndietro.setOnClickListener(this);
@@ -89,7 +85,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         dataStorage = DataStorage.getIstance();
         dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
 
-        chart.setTouchEnabled(true);
+        chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
         chart.setDrawBarShadow(false);
         chart.setDrawValueAboveBar(true);
@@ -97,7 +93,6 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart.setDoubleTapToZoomEnabled(false);
         chart.setDrawGridBackground(false);
         chart.getDescription().setEnabled(false);
-        chart.setHighlightFullBarEnabled(true);
 
         chart.getAxisLeft().setEnabled(false);
         chart.getAxisLeft().setAxisMinimum(0);
@@ -111,9 +106,6 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         xAxis.setLabelCount(21);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
-
-        BarChartActivityMaker barChartActivityMaker = new BarChartActivityMaker(BarChartActivity.this);
-        chart.setMarker(barChartActivityMaker);
 
         List<TrendInfo> trendInfoListTmp = dataStorage.getTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
@@ -163,14 +155,13 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
         setData(selectedTrendKey);
 
-        checkOrientation();
+        cambiaTestoBtnMisure();
     }
 
 
     private void setData(String trendKey) {
         ArrayList<BarEntry> barValues = new ArrayList<>();
 
-        barValues.clear();
         int i = 0;
         for (String dataContext : dataStorage.getSubLevelDataKeys()) {
             DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
@@ -189,9 +180,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);
-        data.setBarWidth(0.9f);
         chart.setData(data);
-
         chart.animateY(200);
     }
 
@@ -291,20 +280,6 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void checkOrientation() {
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            chart.getData().setDrawValues(true);
-        } else {
-            chart.getData().setDrawValues(false);
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        checkOrientation();
-    }
-
     private int numberOfSelectedElement() {
         int n = 0;
         for (List<ProvinceSelection> provinceList : provinceListMap.values()) {
@@ -335,6 +310,21 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    public void cambiaTestoBtnMisure(){
+        Configuration configuration = getResources().getConfiguration();
+        if(configuration.orientation == ORIENTATION_LANDSCAPE){
+            btnCambiaMisura.setText(getString(R.string.cambia_misura));
+        }else{
+            btnCambiaMisura.setText(getString(R.string.cambia_misura_ridotto));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        cambiaTestoBtnMisure();
+    }
+
     private static class RegioniFormatter extends ValueFormatter {
 
         List<String> nomiRegioni = DataStorage.getIstance().getSubLevelDataKeys();
@@ -355,29 +345,4 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public class BarChartActivityMaker extends MarkerView {
-
-        TextView txtBarValue, txtRegione;
-
-        public BarChartActivityMaker(Context context) {
-            super(context, R.layout.bar_chart_marker);
-            txtBarValue = findViewById(R.id.txtBarValue);
-            txtRegione = findViewById(R.id.txtRegione);
-        }
-
-        @Override
-        public MPPointF getOffset() {
-            super.getOffset().x = -getWidth();
-            super.getOffset().y = -getHeight();
-            return super.getOffset();
-        }
-
-        @Override
-        public void refreshContent(Entry e, Highlight highlight) {
-            txtRegione.setText(e.getData().toString());
-            txtBarValue.setText(String.format("%s", e.getY()));
-
-            super.refreshContent(e, highlight);
-        }
-    }
 }

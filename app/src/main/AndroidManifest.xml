@@ -15,15 +15,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BarChartActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+        <activity
+            android:name=".BarChartActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
-            tools:ignore="LockedOrientationActivity"/>
-        <activity android:name=".ProvincialBarChartActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ProvincialBarChartActivity"
             android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChartActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"

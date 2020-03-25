@@ -2,6 +2,7 @@ package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,13 +40,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+
 public class ProvincialBarChartActivity extends AppCompatActivity implements View.OnClickListener {
 
     private BarChart chart;
     private DataStorage dataStorage;
     private TextView txtMarkerData;
 
-    private Button btnIndietro, btnAvanti, btnProvince;
+    private Button btnIndietro;
+    private Button btnAvanti, btnCambiaMisura;
 
     private int cursore, dataLen;
 
@@ -52,7 +57,6 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
     private List<String> selectedProvince;
 
-    //    private Map<String, TrendInfo> trendInfoMap = new HashMap<>();
     private Map<String, DataStorage> dataStorageMap = new HashMap<>();
 
     private Map<String, List<ProvinceSelection>> provinceListMap;
@@ -103,8 +107,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         chart = findViewById(R.id.barChart);
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
-        btnProvince = findViewById(R.id.btnProvinciale);
-        Button btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+        Button btnProvince = findViewById(R.id.btnProvinciale);
+        btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
@@ -130,7 +134,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
         xAxis.setGranularity(1f);
-        xAxis.setLabelCount(30);
+        xAxis.setLabelCount(MAX_ELEMENTS);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
 
@@ -167,6 +171,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnEnableStatusCheck();
 
         setData();
+
+        cambiaTestoBtnMisure();
     }
 
 
@@ -190,7 +196,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         BarData data = new BarData(dataSets);
         data.setValueTextSize(10f);
-        data.setBarWidth(0.9f);
+//        data.setBarWidth(0.9f);
 
         chart.setData(data);
         data.notifyDataChanged();
@@ -319,6 +325,21 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
             btnAvanti.setEnabled(false);
             btnAvanti.setTextColor(Color.DKGRAY);
         }
+    }
+
+    public void cambiaTestoBtnMisure() {
+        Configuration configuration = getResources().getConfiguration();
+        if (configuration.orientation == ORIENTATION_LANDSCAPE) {
+            btnCambiaMisura.setText(getString(R.string.cambia_misura));
+        } else {
+            btnCambiaMisura.setText(getString(R.string.cambia_misura_ridotto));
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        cambiaTestoBtnMisure();
     }
 
     private class ProvinceFormatter extends ValueFormatter {
