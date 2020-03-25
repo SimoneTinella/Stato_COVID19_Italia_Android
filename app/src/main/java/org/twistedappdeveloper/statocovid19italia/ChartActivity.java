@@ -115,6 +115,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 //        l.setYOffset(4f);
         l.setXOffset(getSPDimension(4));
 
+        chart.getDescription().setEnabled(false);
 
         DataFormatter dataFormatter = new DataFormatter();
         XAxis xAxis = chart.getXAxis();
