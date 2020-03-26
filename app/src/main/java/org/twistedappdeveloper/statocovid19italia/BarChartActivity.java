@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     private BarChart chart;
     private DataStorage dataStorage;
     private TextView txtMarkerData;
+    ImageButton btnChangeOrder;
 
     private Button btnIndietro, btnAvanti, btnCambiaMisura;
 
@@ -62,6 +64,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     private int checkedItem;
 
     private Map<String, List<ProvinceSelection>> provinceListMap;
+
+    private boolean orderTrend = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +80,13 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         btnAvanti = findViewById(R.id.btnAvanti);
         btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
         Button btnGraficoProvinciale = findViewById(R.id.btnProvinciale);
+        btnChangeOrder = findViewById(R.id.btnChangeOrder);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
         btnCambiaMisura.setOnClickListener(this);
         btnGraficoProvinciale.setOnClickListener(this);
+        btnChangeOrder.setOnClickListener(this);
 
         dataStorage = DataStorage.getIstance();
         dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
@@ -155,7 +161,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
         setData(selectedTrendKey);
 
-        cambiaTestoBtnMisure();
+        controllaOrientamento();
     }
 
 
@@ -168,6 +174,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
             barValues.add(new BarEntry(i++, trendValue.getValue(), dataContext));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
+        }
+        if (orderTrend) {
+            Utils.quickSort(barValues, 0, barValues.size() - 1);
         }
 
         BarDataSet barDataSet;
@@ -182,6 +191,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         data.setValueTextSize(10f);
         chart.setData(data);
         chart.animateY(200);
+        checkBarValueVisualization();
     }
 
     @Override
@@ -277,6 +287,16 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                 btnDeselectAllTrends.setOnClickListener(clickListener);
                 dialog.show();
                 break;
+
+            case R.id.btnChangeOrder:
+                orderTrend = !orderTrend;
+                if(orderTrend){
+                    btnChangeOrder.setImageResource(R.drawable.baseline_bar_chart_white_24);
+                }else{
+                    btnChangeOrder.setImageResource(R.drawable.baseline_signal_cellular_alt_white_24);
+                }
+                setData(selectedTrendKey);
+                break;
         }
     }
 
@@ -310,11 +330,20 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    public void cambiaTestoBtnMisure(){
+    private void checkBarValueVisualization(){
         Configuration configuration = getResources().getConfiguration();
-        if(configuration.orientation == ORIENTATION_LANDSCAPE){
+        if (configuration.orientation == ORIENTATION_LANDSCAPE) {
+            chart.getData().setDrawValues(true);
+        } else {
+            chart.getData().setDrawValues(false);
+        }
+    }
+
+    private void controllaOrientamento() {
+        Configuration configuration = getResources().getConfiguration();
+        if (configuration.orientation == ORIENTATION_LANDSCAPE) {
             btnCambiaMisura.setText(getString(R.string.cambia_misura));
-        }else{
+        } else {
             btnCambiaMisura.setText(getString(R.string.cambia_misura_ridotto));
         }
     }
@@ -322,17 +351,17 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        cambiaTestoBtnMisure();
+        controllaOrientamento();
+        checkBarValueVisualization();
     }
 
-    private static class RegioniFormatter extends ValueFormatter {
-
-        List<String> nomiRegioni = DataStorage.getIstance().getSubLevelDataKeys();
+    private class RegioniFormatter extends ValueFormatter {
         private static final int maxLen = 10;
 
         @Override
         public String getFormattedValue(float value) {
-            String nomeRegione = nomiRegioni.get((int) value);
+            BarEntry barEntry = chart.getData().getDataSetByIndex(0).getEntryForIndex((int) value);
+            String nomeRegione = barEntry.getData().toString();
             if (nomeRegione.length() > maxLen) {
                 return String.format("%s.", nomeRegione.substring(0, getMaxLength(nomeRegione)));
             } else {

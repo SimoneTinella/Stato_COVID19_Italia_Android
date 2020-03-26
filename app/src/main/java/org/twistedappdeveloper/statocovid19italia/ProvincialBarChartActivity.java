@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +51,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
     private Button btnIndietro;
     private Button btnAvanti, btnCambiaMisura;
+    ImageButton btnChangeOrder;
 
     private int cursore, dataLen;
 
@@ -64,6 +66,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
     private String[] trendsKey;
     private String[] trendsName;
     private int checkedItem;
+
+    private boolean orderTrend = false;
 
     public static final int MIN_ELEMENTS = 3;
     public static final int MAX_ELEMENTS = 30;
@@ -109,11 +113,13 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnAvanti = findViewById(R.id.btnAvanti);
         Button btnProvince = findViewById(R.id.btnProvinciale);
         btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+        btnChangeOrder = findViewById(R.id.btnChangeOrder);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
         btnProvince.setOnClickListener(this);
         btnCambiaMisura.setOnClickListener(this);
+        btnChangeOrder.setOnClickListener(this);
 
         chart.setTouchEnabled(false);
         chart.setBackgroundColor(Color.WHITE);
@@ -172,7 +178,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         setData();
 
-        cambiaTestoBtnMisure();
+        controllaOrientamento();
     }
 
 
@@ -182,8 +188,11 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         int i = 0;
         for (String selectedProvincia : selectedProvince) {
             TrendValue trendValue = dataStorageMap.get(selectedProvincia).getTrendByKey(selectedTrendKey).getTrendValues().get(cursore);
-            values.add(new BarEntry(i++, trendValue.getValue()));
+            values.add(new BarEntry(i++, trendValue.getValue(), selectedProvincia));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
+        }
+        if (orderTrend) {
+            Utils.quickSort(values, 0, values.size() - 1);
         }
 
         BarDataSet barDataSet;
@@ -202,6 +211,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         data.notifyDataChanged();
         chart.notifyDataSetChanged();
         chart.animateY(200);
+
+        checkBarValueVisualization();
     }
 
     @Override
@@ -293,6 +304,15 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
                 btnDeselectAllTrends.setOnClickListener(clickListener);
                 dialog.show();
                 break;
+            case R.id.btnChangeOrder:
+                orderTrend = !orderTrend;
+                if (orderTrend) {
+                    btnChangeOrder.setImageResource(R.drawable.baseline_bar_chart_white_24);
+                } else {
+                    btnChangeOrder.setImageResource(R.drawable.baseline_signal_cellular_alt_white_24);
+                }
+                setData();
+                break;
         }
     }
 
@@ -327,7 +347,16 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         }
     }
 
-    public void cambiaTestoBtnMisure() {
+    private void checkBarValueVisualization() {
+        Configuration configuration = getResources().getConfiguration();
+        if (configuration.orientation == ORIENTATION_LANDSCAPE) {
+            chart.getData().setDrawValues(true);
+        } else {
+            chart.getData().setDrawValues(false);
+        }
+    }
+
+    private void controllaOrientamento() {
         Configuration configuration = getResources().getConfiguration();
         if (configuration.orientation == ORIENTATION_LANDSCAPE) {
             btnCambiaMisura.setText(getString(R.string.cambia_misura));
@@ -339,27 +368,26 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        cambiaTestoBtnMisure();
+        controllaOrientamento();
+        checkBarValueVisualization();
     }
 
     private class ProvinceFormatter extends ValueFormatter {
-        private static final int maxLen = 8;
+        private static final int maxLen = 10;
 
         @Override
         public String getFormattedValue(float value) {
-            if (value < selectedProvince.size()) {
-                String nomeProvincia = selectedProvince.get((int) value);
-                if (nomeProvincia.length() > maxLen) {
-                    return String.format("%s.", nomeProvincia.substring(0, getMaxLength(nomeProvincia)));
-                } else {
-                    return nomeProvincia.substring(0, getMaxLength(nomeProvincia));
-                }
+            BarEntry barEntry = chart.getData().getDataSetByIndex(0).getEntryForIndex((int) value);
+            String nomeRegione = barEntry.getData().toString();
+            if (nomeRegione.length() > maxLen) {
+                return String.format("%s.", nomeRegione.substring(0, getMaxLength(nomeRegione)));
+            } else {
+                return nomeRegione.substring(0, getMaxLength(nomeRegione));
             }
-            return "";
         }
 
-        private int getMaxLength(String nomeProvincia) {
-            return Math.min(maxLen, nomeProvincia.length());
+        private int getMaxLength(String nomeRegione) {
+            return Math.min(maxLen, nomeRegione.length());
         }
     }
 }
