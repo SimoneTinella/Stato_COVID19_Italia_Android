@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 8,
+  "latest_app_version": 9,
   "changelog": [
+    {
+      "ver": "1.1.3",
+      "description": "-Gli Istogrammi possono essere ordinati per valori crescenti."
+    },
     {
       "ver": "1.1.2",
       "description": "-Sbloccato orientamento grafici.\n-Migliorie minori."
