@@ -4,8 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingHorizontal="5sp"
-    android:paddingVertical="7sp"
+    android:paddingLeft="6sp"
+    android:paddingStart="6sp"
+    android:paddingRight="6sp"
+    android:paddingEnd="6sp"
+    android:paddingTop="7sp"
+    android:paddingBottom="7sp"
     android:id="@+id/checkLayout">
 
     <TextView

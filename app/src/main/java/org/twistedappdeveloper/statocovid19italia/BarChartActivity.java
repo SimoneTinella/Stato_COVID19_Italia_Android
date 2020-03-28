@@ -116,10 +116,10 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         List<TrendInfo> trendInfoListTmp = dataStorage.getTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
         trendsName = new String[trendInfoListTmp.size()];
-        for (int i = 0; i < trendInfoListTmp.size(); i++) {
-            int pos = TrendUtils.getPositionByTrendKey(trendInfoListTmp.get(i).getKey());
-            trendInfoList[pos] = trendInfoListTmp.get(i);
-            trendsName[pos] = trendInfoListTmp.get(i).getName();
+        for (TrendInfo trendInfo : trendInfoListTmp) {
+            int pos = TrendUtils.getPositionByTrendKey(trendInfo.getKey());
+            trendInfoList[pos] = trendInfo;
+            trendsName[pos] = trendInfo.getName();
         }
 
         cursore = getIntent().getIntExtra(Utils.CURSORE_KEY, dataLen - 1);
@@ -188,7 +188,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         dataSets.add(barDataSet);
 
         BarData data = new BarData(dataSets);
-        data.setValueTextSize(10f);
+        data.setValueTextSize(9f);
         chart.setData(data);
         chart.animateY(200);
         checkBarValueVisualization();

@@ -2,7 +2,6 @@ package org.twistedappdeveloper.statocovid19italia.datastorage;
 
 import android.content.res.Resources;
 import android.util.Log;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,16 +11,7 @@ import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
 
@@ -157,6 +147,7 @@ public class DataStorage {
         trendsMap.clear();
         try {
             JSONObject obj = dataArrayJson.getJSONObject(0);
+            JSONObject tmpObj = obj;
             for (Iterator<String> keys = obj.keys(); keys.hasNext(); ) {
                 String key = keys.next();
 
@@ -177,9 +168,14 @@ public class DataStorage {
                 for (int i = 0; i < dataArrayJson.length(); i++) {
                     JSONObject jsonObject = dataArrayJson.getJSONObject(i);
                     String date = getFullDateFromJSONObject(jsonObject);
-                    Integer value = jsonObject.getInt(key);
-                    values.add(new TrendValue(value, date));
+                    int value = jsonObject.getInt(key);
+                    int precValue = tmpObj.getInt(key);
+                    int delta = value - precValue;
+                    float percentage = (float) delta / (precValue == 0 ? 1 : precValue);
+                    values.add(new TrendValue(value, date, percentage, delta, precValue));
+                    tmpObj = jsonObject;
                 }
+                tmpObj = obj;
                 trendsMap.put(key, new TrendInfo(name, key, values));
             }
 
@@ -197,26 +193,21 @@ public class DataStorage {
                 nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
 
                 for (int i = 1; i < dataArrayJson.length(); i++) {
-                    JSONObject jsonObjectCorrente = dataArrayJson.getJSONObject(i);
-                    JSONObject jsonObjectPrecedente = dataArrayJson.getJSONObject(i - 1);
-
-                    nuoviPositivi.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_CASI_KEY));
-                    nuoviGuariti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DIMESSI_GUARITI_KEY));
-                    nuoviDeceduti.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_DECEDUTI_KEY));
+                    nuoviPositivi.add(computeDifferentialTrend(i, i - 1, TOTALE_CASI_KEY));
+                    nuoviGuariti.add(computeDifferentialTrend(i, i - 1, TOTALE_DIMESSI_GUARITI_KEY));
+                    nuoviDeceduti.add(computeDifferentialTrend(i, i - 1, TOTALE_DECEDUTI_KEY));
                 }
 
                 trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
                 trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
                 trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
-            }else{
+            } else {
                 JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
                 ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
                 String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
                 nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_CASI_KEY), dataIniziale));
                 for (int i = 1; i < dataArrayJson.length(); i++) {
-                    JSONObject jsonObjectCorrente = dataArrayJson.getJSONObject(i);
-                    JSONObject jsonObjectPrecedente = dataArrayJson.getJSONObject(i - 1);
-                    nuoviPositivi.add(computeDifferentialTrend(jsonObjectCorrente, jsonObjectPrecedente, TOTALE_CASI_KEY));
+                    nuoviPositivi.add(computeDifferentialTrend(i, i - 1, TOTALE_CASI_KEY));
                 }
                 trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
             }
@@ -260,11 +251,27 @@ public class DataStorage {
         Log.d("DataStorage", String.format("%s dati secondari settati", dataContext));
     }
 
-    private TrendValue computeDifferentialTrend(JSONObject jsonObjectCorrente, JSONObject jsonObjectPrecedente, String key) throws JSONException {
+    private TrendValue computeDifferentialTrend(int currentIndex, int precIndex, String key) throws JSONException {
+        JSONObject jsonObjectCorrente = this.dataArrayJson.getJSONObject(currentIndex);
+        JSONObject jsonObjectPrecedente = this.dataArrayJson.getJSONObject(precIndex);
+
+        int valoreCorrente = jsonObjectCorrente.getInt(key);
+        int valorePrecendente = jsonObjectPrecedente.getInt(key);
+        int deltaPrecedente = 0;
+        int valorePrecedenteAncora;
+
+        if (precIndex > 0) {
+            JSONObject jsonObjectPrecedenteAncora = this.dataArrayJson.getJSONObject(precIndex - 1);
+            valorePrecedenteAncora = jsonObjectPrecedenteAncora.getInt(key);
+            deltaPrecedente = valorePrecendente - valorePrecedenteAncora;
+        }
+
         String date = getFullDateFromJSONObject(jsonObjectCorrente);
-        Integer valoreCorrente = jsonObjectCorrente.getInt(key);
-        Integer valorePrecendente = jsonObjectPrecedente.getInt(key);
-        return new TrendValue(valoreCorrente - valorePrecendente, date);
+        int delta = valoreCorrente - valorePrecendente;
+
+        float percentage = (float) (delta - deltaPrecedente) / (deltaPrecedente == 0 ? 1 : deltaPrecedente);
+
+        return new TrendValue(delta, date, percentage, delta - deltaPrecedente, deltaPrecedente);
     }
 
     public List<TrendInfo> getTrendsList() {

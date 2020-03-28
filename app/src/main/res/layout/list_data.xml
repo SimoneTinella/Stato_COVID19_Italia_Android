@@ -4,8 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingHorizontal="6sp"
-    android:paddingVertical="7sp">
+    android:paddingLeft="6sp"
+    android:paddingStart="6sp"
+    android:paddingRight="6sp"
+    android:paddingEnd="6sp"
+    android:paddingTop="7sp"
+    android:paddingBottom="7sp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,6 +36,97 @@
             android:textColor="@android:color/holo_orange_dark"
             android:textSize="20sp"
             tools:text="Valore" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/infoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingLeft="3sp"
+        android:paddingStart="3sp"
+        tools:ignore="RtlSymmetry"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtInfoPrec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                tools:text="Valore del giorno prima" />
+
+            <TextView
+                android:id="@+id/txtInfoValuePrec"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="12sp"
+                tools:text="Valore" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtInfoPercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                tools:text="Var. % rispetto al giorno prima" />
+
+            <TextView
+                android:id="@+id/txtInfoValuePercentage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="12sp"
+                tools:text="Valore" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/txtInfoDelta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="12sp"
+                tools:text="Var. rispetto al giorno prima" />
+
+            <TextView
+                android:id="@+id/txtInfoValueDelta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/holo_orange_dark"
+                android:textSize="12sp"
+                tools:text="Valore" />
+        </LinearLayout>
+
 
     </LinearLayout>
 

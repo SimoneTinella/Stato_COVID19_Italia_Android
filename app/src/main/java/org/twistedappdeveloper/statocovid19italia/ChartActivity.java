@@ -12,15 +12,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
@@ -38,7 +31,6 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
@@ -244,7 +236,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         switch (v.getId()) {
             case R.id.fabTrends:
                 final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
-                dialog.setCancelable(false);
+                //dialog.setCancelable(false);
                 dialog.setContentView(R.layout.dialog_trends);
 
                 final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
@@ -252,12 +244,20 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 final Button btnSelectAllTrends = dialog.findViewById(R.id.btnSelectAll);
                 final Button btnDeselectAllTrends = dialog.findViewById(R.id.btnDeselectAll);
 
-                final TrendsAdapter trendsAdapter = new TrendsAdapter(ChartActivity.this, R.layout.list_trends, trendList);
+                final List<TrendsSelection> trendListTmp = new ArrayList<>();
+                for(TrendsSelection trendsSelection : trendList){
+                    try {
+                        trendListTmp.add((TrendsSelection) trendsSelection.clone());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                final TrendsAdapter trendsAdapter = new TrendsAdapter(ChartActivity.this, R.layout.list_trends, trendListTmp);
                 listViewTrends.setAdapter(trendsAdapter);
                 listViewTrends.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        trendList.get(position).setSelected(!trendList.get(position).isSelected());
+                        trendListTmp.get(position).setSelected(!trendListTmp.get(position).isSelected());
                         trendsAdapter.notifyDataSetChanged();
                     }
                 });
@@ -271,6 +271,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                                 if (numberOfSelectedTrends() == 0) {
                                     Toast.makeText(ChartActivity.this, getString(R.string.seleziona_almeno_un_elem), Toast.LENGTH_LONG).show();
                                 } else {
+                                    trendList = trendListTmp;
                                     dialog.dismiss();
                                     chart.getLineData().clearValues();
                                     chart.invalidate();
@@ -425,7 +426,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
                     RowData rowData = new RowData(
                             trendInfo.getName(),
-                            String.format("%s", currentTrendValue.getValue() - precTrendValue.getValue()),
+                            currentTrendValue.getValue() - precTrendValue.getValue(),
                             getColorByTrendKey(ChartActivity.this, trendInfo.getKey()),
                             TrendUtils.getPositionByTrendKey(trendInfo.getKey()),
                             trendInfo.getKey()
@@ -435,7 +436,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     TextView txtName = child.findViewById(R.id.txtName);
                     txtName.setText(String.format("Diff. %s", rowData.getName()));
                     TextView txtValue = child.findViewById(R.id.txtValue);
-                    txtValue.setText(rowData.getValue());
+                    txtValue.setText(String.format("%s", rowData.getValue()));
                     txtValue.setTextColor(rowData.getColor());
                     linearLayoutMarker.addView(child);
 

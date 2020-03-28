@@ -11,11 +11,9 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-
 import org.twistedappdeveloper.statocovid19italia.BarChartActivity;
 import org.twistedappdeveloper.statocovid19italia.R;
 import org.twistedappdeveloper.statocovid19italia.adapters.RowDataAdapter;
@@ -28,10 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendDescriptionByTrendKey;
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.*;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.CURSORE_KEY;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DATACONTEXT_KEY;
 
@@ -65,7 +60,7 @@ public class DataVisualizerFragment extends Fragment {
     private RowDataAdapter adapter;
     private List<RowData> rowDataList;
 
-    private Button btnAvanti, btnIndietro;
+    private Button btnAvanti, btnIndietro, btnChangeValues;
     private TextView txtData;
 
     private int cursore;
@@ -81,6 +76,8 @@ public class DataVisualizerFragment extends Fragment {
     }
 
     private boolean isDataAvailable;
+
+    private boolean displayPercentage = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,21 +110,24 @@ public class DataVisualizerFragment extends Fragment {
         for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
             RowData rowData = new RowData(
                     trendInfo.getName(),
-                    String.format("%s", trendInfo.getTrendValueByIndex(cursore).getValue()),
+                    trendInfo.getTrendValueByIndex(cursore).getValue(),
                     getColorByTrendKey(getContext(), trendInfo.getKey()),
                     getPositionByTrendKey(trendInfo.getKey()),
-                    trendInfo.getKey()
+                    trendInfo.getKey(),
+                    trendInfo.getTrendValueByIndex(cursore).getDeltaPercentage(),
+                    trendInfo.getTrendValueByIndex(cursore).getDelta(),
+                    trendInfo.getTrendValueByIndex(cursore).getPrecValue()
             );
             //Aggiungo i dati provinciali
-            if(dataStorage.getDataContextScope() == DataStorage.Scope.REGIONALE){
+            if (dataStorage.getDataContextScope() == DataStorage.Scope.REGIONALE) {
                 List<String> province = dataStorage.getSubLevelDataKeys();
                 Collections.sort(province);
-                for(String provincia: province){
+                for (String provincia : province) {
                     TrendInfo totaleCasiProvincia = dataStorage.getDataStorageByDataContext(provincia).getTrendByKey(trendInfo.getKey());
-                    if(totaleCasiProvincia != null){
+                    if (totaleCasiProvincia != null) {
                         RowData provincialRowData = new RowData(
                                 provincia,
-                                String.format("%s", totaleCasiProvincia.getTrendValueByIndex(cursore).getValue()),
+                                totaleCasiProvincia.getTrendValueByIndex(cursore).getValue(),
                                 getColorByTrendKey(getContext(), totaleCasiProvincia.getKey()),
                                 0, //non usato in questo caso
                                 totaleCasiProvincia.getKey()
@@ -162,6 +162,14 @@ public class DataVisualizerFragment extends Fragment {
         }
     }
 
+    private void checkExtraInfo(){
+        if(displayPercentage){
+            btnChangeValues.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_toggle_on_white_24, 0, 0, 0);
+        }else{
+            btnChangeValues.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_toggle_off_white_24, 0, 0, 0);
+        }
+    }
+
     private View.OnClickListener listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -175,6 +183,12 @@ public class DataVisualizerFragment extends Fragment {
                     if (cursore > 0) {
                         cursore--;
                     }
+                    break;
+                case R.id.btnChangeValues:
+                    displayPercentage = !displayPercentage;
+                    adapter.setDisplayInfo(displayPercentage);
+                    checkExtraInfo();
+                    displayData();
                     break;
             }
             displayData();
@@ -192,9 +206,10 @@ public class DataVisualizerFragment extends Fragment {
         txtData = root.findViewById(R.id.txtName);
         btnAvanti = root.findViewById(R.id.btnAvanti);
         btnIndietro = root.findViewById(R.id.btnIndietro);
+        btnChangeValues = root.findViewById(R.id.btnChangeValues);
 
         ListView listView = root.findViewById(R.id.listView);
-        adapter = new RowDataAdapter(getContext(), R.layout.list_data, rowDataList);
+        adapter = new RowDataAdapter(getContext(), R.layout.list_data, rowDataList, true);
         listView.setAdapter(adapter);
         listView.setEmptyView(root.findViewById(R.id.txtEmpty));
 
@@ -234,6 +249,7 @@ public class DataVisualizerFragment extends Fragment {
 
         btnIndietro.setOnClickListener(listener);
         btnAvanti.setOnClickListener(listener);
+        btnChangeValues.setOnClickListener(listener);
 
         btnAvanti.setEnabled(false);
         btnIndietro.setEnabled(false);
@@ -242,6 +258,7 @@ public class DataVisualizerFragment extends Fragment {
             displayData();
         }
 
+        checkExtraInfo();
         return root;
     }
 }

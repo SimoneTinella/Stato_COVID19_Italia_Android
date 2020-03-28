@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingHorizontal="5sp"
-    android:paddingVertical="7sp">
+    android:paddingLeft="5sp"
+    android:paddingStart="5sp"
+    android:paddingRight="5sp"
+    android:paddingEnd="5sp"
+    android:paddingTop="7sp"
+    android:paddingBottom="7sp">
 
     <CheckedTextView
         android:id="@+id/chkTextView"

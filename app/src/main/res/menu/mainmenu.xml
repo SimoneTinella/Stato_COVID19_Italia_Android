@@ -6,13 +6,13 @@
         android:title="@string/andamento_regionale"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@drawable/baseline_location_on_white_24"/>
+        android:icon="@drawable/baseline_pin_drop_white_24"/>
 
     <item android:id="@+id/action_chart"
         android:title="@string/grafico_temporale"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:icon="@drawable/baseline_show_chart_white_24"/>
+        android:icon="@drawable/baseline_timeline_white_24"/>
 
     <item android:id="@+id/action_confronto_regionale"
         android:title="@string/confronto_regionale"

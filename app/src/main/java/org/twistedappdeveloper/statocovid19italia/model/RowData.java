@@ -4,16 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RowData implements Comparable<RowData> {
-    private String name, value, key;
-    private Integer position, color;
+    private String name, key;
+    private int position, color, value, delta, precValue;
     private List<RowData> subItems;
+    private float deltaPercentage;
 
-    public RowData(String name, String value, int color, int position, String key) {
+    public RowData(String name, int value, int color, int position, String key) {
         this.name = name;
         this.value = value;
         this.color = color;
         this.position = position;
         this.key = key;
+        subItems = new ArrayList<>();
+    }
+
+    public RowData(String name, int value, int color, int position, String key, float deltaPercentage, int delta, int precValue) {
+        this.name = name;
+        this.value = value;
+        this.color = color;
+        this.position = position;
+        this.key = key;
+        this.deltaPercentage = deltaPercentage;
+        this.delta = delta;
+        this.precValue = precValue;
         subItems = new ArrayList<>();
     }
 
@@ -25,7 +38,7 @@ public class RowData implements Comparable<RowData> {
         this.name = name;
     }
 
-    public String getValue() {
+    public int getValue() {
         return this.value;
     }
 
@@ -45,12 +58,24 @@ public class RowData implements Comparable<RowData> {
         return subItems;
     }
 
+    public float getDeltaPercentage() {
+        return deltaPercentage;
+    }
+
+    public int getDelta() {
+        return delta;
+    }
+
+    public int getPrecValue() {
+        return precValue;
+    }
+
     public void addSubItem(RowData subItem) {
         this.subItems.add(subItem);
     }
 
     @Override
     public int compareTo(RowData o) {
-        return this.position.compareTo(o.position);
+        return Integer.valueOf(this.position).compareTo(o.position);
     }
 }

@@ -1,8 +1,9 @@
 package org.twistedappdeveloper.statocovid19italia.model;
 
+import androidx.annotation.NonNull;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 
-public class TrendsSelection implements Comparable<TrendsSelection> {
+public class TrendsSelection implements Cloneable, Comparable<TrendsSelection> {
     private TrendInfo trendInfo;
     private boolean selected;
 
@@ -26,5 +27,11 @@ public class TrendsSelection implements Comparable<TrendsSelection> {
     @Override
     public int compareTo(TrendsSelection o) {
         return TrendUtils.getPositionByTrendKey(this.getTrendInfo().getKey()).compareTo(TrendUtils.getPositionByTrendKey(o.getTrendInfo().getKey()));
+    }
+
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

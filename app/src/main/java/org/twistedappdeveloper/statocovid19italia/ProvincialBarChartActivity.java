@@ -204,7 +204,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         dataSets.add(barDataSet);
 
         BarData data = new BarData(dataSets);
-        data.setValueTextSize(10f);
+        data.setValueTextSize(9f);
 //        data.setBarWidth(0.9f);
 
         chart.setData(data);
