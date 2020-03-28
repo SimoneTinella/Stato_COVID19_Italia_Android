@@ -52,6 +52,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     private TextView txtMarkerData;
 
     private List<TrendsSelection> trendList;
+    private List<TrendsSelection> trendListTmp;
 
     private int precIndex = 0;
     FloatingActionButton fabResetZoom;
@@ -220,7 +221,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
 
-    private int numberOfSelectedTrends() {
+    private int numberOfSelectedTrends(List<TrendsSelection> trendList) {
         int n = 0;
         for (TrendsSelection trendsSelection : trendList) {
             if (trendsSelection.isSelected()) {
@@ -244,7 +245,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 final Button btnSelectAllTrends = dialog.findViewById(R.id.btnSelectAll);
                 final Button btnDeselectAllTrends = dialog.findViewById(R.id.btnDeselectAll);
 
-                final List<TrendsSelection> trendListTmp = new ArrayList<>();
+                trendListTmp = new ArrayList<>();
                 for(TrendsSelection trendsSelection : trendList){
                     try {
                         trendListTmp.add((TrendsSelection) trendsSelection.clone());
@@ -268,7 +269,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
                         switch (v.getId()) {
                             case R.id.btnCloseTrendDialog:
-                                if (numberOfSelectedTrends() == 0) {
+                                if (numberOfSelectedTrends(trendListTmp) == 0) {
                                     Toast.makeText(ChartActivity.this, getString(R.string.seleziona_almeno_un_elem), Toast.LENGTH_LONG).show();
                                 } else {
                                     trendList = trendListTmp;
@@ -281,13 +282,13 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                                 }
                                 break;
                             case R.id.btnSelectAll:
-                                for (TrendsSelection trendsSelection : trendList) {
+                                for (TrendsSelection trendsSelection : trendListTmp) {
                                     trendsSelection.setSelected(true);
                                 }
                                 trendsAdapter.notifyDataSetChanged();
                                 break;
                             case R.id.btnDeselectAll:
-                                for (TrendsSelection trendsSelection : trendList) {
+                                for (TrendsSelection trendsSelection : trendListTmp) {
                                     trendsSelection.setSelected(false);
                                 }
                                 trendsAdapter.notifyDataSetChanged();

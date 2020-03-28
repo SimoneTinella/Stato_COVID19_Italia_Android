@@ -1,9 +1,13 @@
 {
-  "latest_app_version": 10,
+  "latest_app_version": 11,
   "changelog": [
     {
+      "ver": "1.1.4.1",
+      "description": "-Minor Fix."
+    },
+    {
       "ver": "1.1.4",
-      "description": "-Aggiunte statistiche.\n-Aggiunta possibilità di visualizzare o nascondere le informazioni extra (statistiche e dati provinciali)."
+      "description": "-Aggiunte statistiche.\n-Aggiunta possibilità di visualizzare o nascondere le informazioni extra (statistiche e dati provinciali).\n-Cambiate alcune icone"
     },
     {
       "ver": "1.1.3",
