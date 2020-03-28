@@ -280,57 +280,66 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
-
+                client.get(getString(R.string.dataset_avvisi), new JsonHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                         super.onSuccess(statusCode, headers, response);
-                        nationalDataStorage.setDataArrayJson(response);
+                        nationalDataStorage.setAvvisiDataArrayJson(response);
 
-                        client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
+                        client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                                 super.onSuccess(statusCode, headers, response);
-                                nationalDataStorage.setSubLvlDataArrayJson(response, DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
+                                nationalDataStorage.setDataArrayJson(response);
 
-                                client.get(getResources().getString(R.string.dataset_provinciale), new JsonHttpResponseHandler() {
+                                client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
                                     @Override
                                     public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                                         super.onSuccess(statusCode, headers, response);
-                                        Map<String, JSONArray> datiPerRegione = new HashMap<>();
-                                        for (int i = 0; i < response.length(); i++) {
-                                            try {
-                                                JSONObject jsonObject = response.getJSONObject(i);
-                                                String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
-                                                JSONArray datiProvince;
-                                                if (datiPerRegione.containsKey(regione)) {
-                                                    datiProvince = datiPerRegione.get(regione);
-                                                } else {
-                                                    datiProvince = new JSONArray();
-                                                    datiPerRegione.put(regione, datiProvince);
+                                        nationalDataStorage.setSubLvlDataArrayJson(response, DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
+
+                                        client.get(getResources().getString(R.string.dataset_provinciale), new JsonHttpResponseHandler() {
+                                            @Override
+                                            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                                                super.onSuccess(statusCode, headers, response);
+                                                Map<String, JSONArray> datiPerRegione = new HashMap<>();
+                                                for (int i = 0; i < response.length(); i++) {
+                                                    try {
+                                                        JSONObject jsonObject = response.getJSONObject(i);
+                                                        String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
+                                                        JSONArray datiProvince;
+                                                        if (datiPerRegione.containsKey(regione)) {
+                                                            datiProvince = datiPerRegione.get(regione);
+                                                        } else {
+                                                            datiProvince = new JSONArray();
+                                                            datiPerRegione.put(regione, datiProvince);
+                                                        }
+                                                        datiProvince.put(jsonObject);
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
                                                 }
-                                                datiProvince.put(jsonObject);
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
+                                                for (String regione : datiPerRegione.keySet()) {
+                                                    nationalDataStorage
+                                                            .getDataStorageByDataContext(regione)
+                                                            .setSubLvlDataArrayJson(
+                                                                    datiPerRegione.get(regione),
+                                                                    DataStorage.DEN_PROVINCIA_KEY,
+                                                                    DataStorage.Scope.PROVINCIALE
+                                                            );
+                                                }
                                             }
-                                        }
-                                        for (String regione : datiPerRegione.keySet()) {
-                                            nationalDataStorage
-                                                    .getDataStorageByDataContext(regione)
-                                                    .setSubLvlDataArrayJson(
-                                                            datiPerRegione.get(regione),
-                                                            DataStorage.DEN_PROVINCIA_KEY,
-                                                            DataStorage.Scope.PROVINCIALE
-                                                    );
-                                        }
+                                        });
                                     }
                                 });
+
                             }
+
                         });
 
                     }
-
                 });
+
             }
         });
 

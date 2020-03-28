@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 11,
+  "latest_app_version": 12,
   "changelog": [
+    {
+      "ver": "1.1.5",
+      "description": "-Aggiunti avvisi relativi ai dati.\n\nNota: Se sono presenti avvisi sui dati visualizzati, vengono aggiunte delle icone vicino la data. È possibile premerle per visualizzare l'avviso."
+    },
     {
       "ver": "1.1.4.1",
       "description": "-Minor Fix."
@@ -19,7 +23,7 @@
     },
     {
       "ver": "1.1.1",
-      "description": "-Aggiunta visualizzazione dei Nuovi Casi per Provincia (Dato calcolato a partire dai casi totali).\n-Minor refactor grafico.\nNota: I Nuovi Casi per Provincia possono risultare negativi in quanto a volte il Totale Casi di un giorno è inferiore al Totale Casi del giorno precedente a causa di una ridistribuzione dei dati."
+      "description": "-Aggiunta visualizzazione dei Nuovi Casi per Provincia (Dato calcolato a partire dai casi totali).\n-Minor refactor grafico.\n\nNota: I Nuovi Casi per Provincia possono risultare negativi in quanto a volte il Totale Casi di un giorno è inferiore al Totale Casi del giorno precedente a causa di una ridistribuzione dei dati."
     },
     {
       "ver": "1.1.0",

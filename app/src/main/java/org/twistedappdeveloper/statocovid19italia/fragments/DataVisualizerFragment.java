@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +12,17 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
 import org.twistedappdeveloper.statocovid19italia.BarChartActivity;
 import org.twistedappdeveloper.statocovid19italia.R;
 import org.twistedappdeveloper.statocovid19italia.adapters.RowDataAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
+import org.twistedappdeveloper.statocovid19italia.model.Avviso;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
@@ -26,7 +31,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.*;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendDescriptionByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.CURSORE_KEY;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DATACONTEXT_KEY;
 
@@ -138,10 +146,20 @@ public class DataVisualizerFragment extends Fragment {
             }
             rowDataList.add(rowData);
         }
-        txtData.setText(String.format(getString(R.string.relativo_al), dataStorage.getFullDateByIndex(cursore)));
+        String data = dataStorage.getFullDateByIndex(cursore);
+        txtData.setText(String.format(getString(R.string.relativo_al), data));
         Collections.sort(rowDataList);
         adapter.notifyDataSetChanged();
         btnEnableStatusCheck();
+
+        Avviso nota = dataStorage.getAvvisoRelativoByDate(data);
+        if (nota != null) {
+            Toast.makeText(getContext(), "Avviso presente. Premi sulla data.", Toast.LENGTH_SHORT).show();
+            txtData.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_notification_important_black_24, 0, R.drawable.baseline_notification_important_black_24, 0);
+        } else {
+            txtData.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
+
     }
 
     private void btnEnableStatusCheck() {
@@ -162,10 +180,10 @@ public class DataVisualizerFragment extends Fragment {
         }
     }
 
-    private void checkExtraInfo(){
-        if(displayPercentage){
+    private void checkExtraInfo() {
+        if (displayPercentage) {
             btnChangeValues.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_toggle_on_white_24, 0, 0, 0);
-        }else{
+        } else {
             btnChangeValues.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_toggle_off_white_24, 0, 0, 0);
         }
     }
@@ -251,6 +269,27 @@ public class DataVisualizerFragment extends Fragment {
         btnAvanti.setOnClickListener(listener);
         btnChangeValues.setOnClickListener(listener);
 
+        txtData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Avviso avviso = dataStorage.getAvvisoRelativoByDate(dataStorage.getFullDateByIndex(cursore));
+                if (avviso != null) {
+                    String avvisoText = buildAvvisoText(avviso);
+                    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
+                    AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.setTitle("Avviso sui dati");
+                    alertDialog.setMessage(Html.fromHtml(avvisoText));
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
+                }
+            }
+        });
+
         btnAvanti.setEnabled(false);
         btnIndietro.setEnabled(false);
 
@@ -260,5 +299,22 @@ public class DataVisualizerFragment extends Fragment {
 
         checkExtraInfo();
         return root;
+    }
+
+    private String buildAvvisoText(Avviso avviso) {
+        String avvisoText = String.format("<b>Tipo Avviso:</b> %s<br><b>Avviso:</b> %s",
+                avviso.getTipoAvviso(),
+                avviso.getAvviso()
+        );
+        if (!avviso.getNote().isEmpty()) {
+            avvisoText = String.format("%s<br><b>Nota:</b> %s", avvisoText, avviso.getNote());
+        }
+        if (!avviso.getRegione().isEmpty()) {
+            avvisoText = String.format("%s<br><b>Regione:</b> %s", avvisoText, avviso.getRegione());
+        }
+        if (!avviso.getProvincia().isEmpty()) {
+            avvisoText = String.format("%s<br><b>Provincia:</b> %s", avvisoText, avviso.getProvincia());
+        }
+        return avvisoText;
     }
 }

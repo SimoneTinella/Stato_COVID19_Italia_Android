@@ -2,16 +2,27 @@ package org.twistedappdeveloper.statocovid19italia.datastorage;
 
 import android.content.res.Resources;
 import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.twistedappdeveloper.statocovid19italia.model.Avviso;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
 
@@ -47,6 +58,16 @@ public class DataStorage {
     private static final String LONG_REGIONE_KEY = "long";
     private static final String COD_PROVINCIA_KEY = "codice_provincia";
     private static final String SIGLA_PROVINCIA_KEY = "sigla_provincia";
+    private static final String NOTE_IT_KEY = "note_it";
+    private static final String NOTE_EN_KEY = "note_en";
+
+    //AVVISI
+    private static final String TIPO_AVVISO_KEY = "tipologia_avviso";
+    private static final String AVVISO_KEY = "avviso";
+    private static final String NOTE_KEY = "note";
+    private static final String COD_AVVISO_KEY = "codice";
+    private static final String REGIONE_KEY = "regione";
+    private static final String PROVINCIA_KEY = "provincia";
 
 
     private final Set<String> discardedInfo = new HashSet<>();
@@ -58,6 +79,10 @@ public class DataStorage {
     private Map<String, TrendInfo> trendsMap;
 
     private Map<String, DataStorage> subLevelDataStorageMap;
+
+    private Map<String, Avviso> mappaAvvisi = new HashMap<>(); //popolato solo nel datastorage nazionale
+
+    private Map<String, Avviso> avvisiRelativiMap = new HashMap<>(); //avvisi relativi al proprio dataset
 
     private String dataContext;
     private Scope dataContextScope;
@@ -74,6 +99,8 @@ public class DataStorage {
         PROVINCIALE
     }
 
+    public static final String defaultDataContext = "Nazionale";
+
     private DataStorage(String dataContext, Resources resources, Scope dataContextScope) {
         this.dataContext = dataContext;
         this.resources = resources;
@@ -86,13 +113,11 @@ public class DataStorage {
         discardedInfo.add(DEN_REGIONE_KEY);
         discardedInfo.add(LAT_REGIONE_KEY);
         discardedInfo.add(LONG_REGIONE_KEY);
-//        discardedInfo.add(NUOVI_ATTUALMENTE_POSITIVI_KEY);
         discardedInfo.add(SIGLA_PROVINCIA_KEY);
         discardedInfo.add(COD_PROVINCIA_KEY);
-
+        discardedInfo.add(NOTE_IT_KEY);
+        discardedInfo.add(NOTE_EN_KEY);
     }
-
-    public static final String defaultDataContext = "Nazionale";
 
     public static DataStorage createAndGetIstanceIfNotExist(Resources resources, Scope dataContextScope) {
         if (istance == null) {
@@ -142,6 +167,14 @@ public class DataStorage {
         return date;
     }
 
+    private Avviso getAvvisoByKey(String key) {
+        return getIstance().mappaAvvisi.get(key);
+    }
+
+    public Avviso getAvvisoRelativoByDate(String date) {
+        return avvisiRelativiMap.get(date);
+    }
+
     public void setDataArrayJson(JSONArray dataArrayJson) {
         this.dataArrayJson = dataArrayJson;
         trendsMap.clear();
@@ -177,6 +210,16 @@ public class DataStorage {
                 }
                 tmpObj = obj;
                 trendsMap.put(key, new TrendInfo(name, key, values));
+            }
+
+            for (int i = 0; i < dataArrayJson.length(); i++) {
+                JSONObject jsonObject = dataArrayJson.getJSONObject(i);
+                String data = getFullDateByIndex(i);
+                String noteKey = jsonObject.getString(NOTE_IT_KEY);
+                if (!noteKey.isEmpty()) {
+                    avvisiRelativiMap.put(data, getAvvisoByKey(noteKey));
+                }
+
             }
 
             //Custom computed trends
@@ -320,5 +363,25 @@ public class DataStorage {
 
     public Scope getDataContextScope() {
         return dataContextScope;
+    }
+
+    public void setAvvisiDataArrayJson(JSONArray avvisiDataArrayJson) {
+        for (int i = 0; i < avvisiDataArrayJson.length(); i++) {
+            try {
+                JSONObject jsonObject = avvisiDataArrayJson.getJSONObject(i);
+                String cod = jsonObject.getString(COD_AVVISO_KEY);
+                Avviso avviso = new Avviso(
+                        jsonObject.getString(TIPO_AVVISO_KEY),
+                        jsonObject.getString(AVVISO_KEY),
+                        jsonObject.getString(NOTE_KEY),
+                        jsonObject.getString(REGIONE_KEY),
+                        jsonObject.getString(PROVINCIA_KEY)
+                );
+                mappaAvvisi.put(cod, avviso);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 }
