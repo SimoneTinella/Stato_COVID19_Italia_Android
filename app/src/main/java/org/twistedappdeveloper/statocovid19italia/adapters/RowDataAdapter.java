@@ -52,9 +52,9 @@ public class RowDataAdapter extends ArrayAdapter<RowData> {
             TextView txtInfoValueDelta = convertView.findViewById(R.id.txtInfoValueDelta);
             TextView txtInfoPrec = convertView.findViewById(R.id.txtInfoPrec);
             TextView txtInfoValuePrec = convertView.findViewById(R.id.txtInfoValuePrec);
-            txtInfoPrec.setText("Valore del giorno prima");
-            txtInfoPercentage.setText("Var. % rispetto al giorno prima");
-            txtInfoDelta.setText("Var. rispetto al giorno prima");
+            txtInfoPrec.setText(R.string.val_giorno_prima);
+            txtInfoPercentage.setText(R.string.var_perc_giorno_prima);
+            txtInfoDelta.setText(R.string.var_giorno_prima);
             if (obj.getDeltaPercentage() >= 0f) {
                 txtInfoValueDelta.setText(String.format("+%s", obj.getDelta()));
                 txtInfoValuePercentage.setText(String.format(Locale.ITALIAN, "+%.2f %%", obj.getDeltaPercentage() * 100));

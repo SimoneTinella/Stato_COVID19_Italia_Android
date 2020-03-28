@@ -83,5 +83,8 @@
     <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>
     <string name="province_da_visualizzare">Elenco Province</string>
     <string name="ordinamento">Ordinamento</string>
+    <string name="val_giorno_prima">Valore del giorno prima</string>
+    <string name="var_perc_giorno_prima">Var. % rispetto al giorno prima</string>
+    <string name="var_giorno_prima">Var. rispetto al giorno prima</string>
 
 </resources>
