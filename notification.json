@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 12,
+  "latest_app_version": 13,
   "changelog": [
+    {
+      "ver": "1.1.6",
+      "description": "-Migliorata visualizzazione presenza avvisi sui dati."
+    },
     {
       "ver": "1.1.5",
       "description": "-Aggiunti avvisi relativi ai dati.\n\nNota: Se sono presenti avvisi sui dati visualizzati, vengono aggiunte delle icone vicino la data. È possibile premerle per visualizzare l'avviso."
