@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 13,
+  "latest_app_version": 14,
   "changelog": [
+    {
+      "ver": "1.1.6.1",
+      "description": "-Fix crash nella selezione delle province."
+    },
     {
       "ver": "1.1.6",
       "description": "-Migliorata visualizzazione presenza avvisi sui dati."

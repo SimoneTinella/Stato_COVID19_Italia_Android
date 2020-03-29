@@ -154,6 +154,17 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         l.setDrawInside(false);
         l.setXOffset(-5f);
 
+        calcolaProvinceListMap();
+
+
+        btnEnableStatusCheck();
+
+        setData();
+
+        controllaOrientamento();
+    }
+
+    private void calcolaProvinceListMap(){
         provinceListMap = new HashMap<>();
         for (String regione : dataStorage.getSubLevelDataKeys()) {
             for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
@@ -172,13 +183,6 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         for (List<ProvinceSelection> provinceSelections : provinceListMap.values()) {
             Collections.sort(provinceSelections);
         }
-
-
-        btnEnableStatusCheck();
-
-        setData();
-
-        controllaOrientamento();
     }
 
 
@@ -249,6 +253,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
                 alert.show();
                 break;
             case R.id.btnProvinciale:
+                calcolaProvinceListMap();
                 final Dialog dialog = new Dialog(ProvincialBarChartActivity.this, R.style.AppAlert);
                 dialog.setContentView(R.layout.dialog_province);
 
@@ -377,7 +382,11 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         @Override
         public String getFormattedValue(float value) {
-            BarEntry barEntry = chart.getData().getDataSetByIndex(0).getEntryForIndex((int) value);
+            IBarDataSet dataSetByIndex = chart.getData().getDataSetByIndex(0);
+            if(value >= dataSetByIndex.getEntryCount()){
+                return "";
+            }
+            BarEntry barEntry = dataSetByIndex.getEntryForIndex((int) value);
             String nomeRegione = barEntry.getData().toString();
             if (nomeRegione.length() > maxLen) {
                 return String.format("%s.", nomeRegione.substring(0, getMaxLength(nomeRegione)));
