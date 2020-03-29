@@ -87,5 +87,6 @@
     <string name="val_giorno_prima">Valore del giorno prima</string>
     <string name="var_perc_giorno_prima">Var. % rispetto al giorno prima</string>
     <string name="var_giorno_prima">Var. rispetto al giorno prima</string>
+    <string name="visualizza_avviso">Visualizza Avviso</string>
 
 </resources>
