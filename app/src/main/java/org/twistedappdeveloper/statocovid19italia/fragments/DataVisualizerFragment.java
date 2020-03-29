@@ -5,19 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.view.*;
+import android.widget.*;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-
 import org.twistedappdeveloper.statocovid19italia.BarChartActivity;
 import org.twistedappdeveloper.statocovid19italia.R;
 import org.twistedappdeveloper.statocovid19italia.adapters.RowDataAdapter;
@@ -31,10 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendDescriptionByTrendKey;
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.*;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.CURSORE_KEY;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DATACONTEXT_KEY;
 
@@ -68,7 +57,7 @@ public class DataVisualizerFragment extends Fragment {
     private RowDataAdapter adapter;
     private List<RowData> rowDataList;
 
-    private Button btnAvanti, btnIndietro, btnChangeValues;
+    private Button btnAvanti, btnIndietro, btnChangeValues, btnAvviso;
     private TextView txtData;
 
     private int cursore;
@@ -154,10 +143,9 @@ public class DataVisualizerFragment extends Fragment {
 
         Avviso nota = dataStorage.getAvvisoRelativoByDate(data);
         if (nota != null) {
-            Toast.makeText(getContext(), "Avviso presente. Premi sulla data.", Toast.LENGTH_SHORT).show();
-            txtData.setCompoundDrawablesWithIntrinsicBounds(R.drawable.baseline_notification_important_black_24, 0, R.drawable.baseline_notification_important_black_24, 0);
+            btnAvviso.setVisibility(View.VISIBLE);
         } else {
-            txtData.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            btnAvviso.setVisibility(View.GONE);
         }
 
     }
@@ -206,7 +194,6 @@ public class DataVisualizerFragment extends Fragment {
                     displayPercentage = !displayPercentage;
                     adapter.setDisplayInfo(displayPercentage);
                     checkExtraInfo();
-                    displayData();
                     break;
             }
             displayData();
@@ -225,6 +212,7 @@ public class DataVisualizerFragment extends Fragment {
         btnAvanti = root.findViewById(R.id.btnAvanti);
         btnIndietro = root.findViewById(R.id.btnIndietro);
         btnChangeValues = root.findViewById(R.id.btnChangeValues);
+        btnAvviso = root.findViewById(R.id.btnAvviso);
 
         ListView listView = root.findViewById(R.id.listView);
         adapter = new RowDataAdapter(getContext(), R.layout.list_data, rowDataList, true);
@@ -269,7 +257,7 @@ public class DataVisualizerFragment extends Fragment {
         btnAvanti.setOnClickListener(listener);
         btnChangeValues.setOnClickListener(listener);
 
-        txtData.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener listenerAvvisi = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Avviso avviso = dataStorage.getAvvisoRelativoByDate(dataStorage.getFullDateByIndex(cursore));
@@ -288,7 +276,8 @@ public class DataVisualizerFragment extends Fragment {
                     alertDialog.show();
                 }
             }
-        });
+        };
+        btnAvviso.setOnClickListener(listenerAvvisi);
 
         btnAvanti.setEnabled(false);
         btnIndietro.setEnabled(false);
@@ -298,6 +287,7 @@ public class DataVisualizerFragment extends Fragment {
         }
 
         checkExtraInfo();
+
         return root;
     }
 
@@ -317,4 +307,5 @@ public class DataVisualizerFragment extends Fragment {
         }
         return avvisoText;
     }
+
 }
