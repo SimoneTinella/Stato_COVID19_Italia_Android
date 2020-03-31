@@ -25,8 +25,10 @@
     <string name="sel_dataContext">Seleziona contesto dati</string>
     <string name="no_data_to_display">Non sono presenti dati da graficare, prova ad aggiornare.</string>
     <string name="app_update">Aggiornamento applicazione</string>
-    <string name="app_update_message">Stai usando una versione non aggiornata dell\'applicazione. Sei indietro di %s. Vuoi scaricare l\'ultima versione?</string>
+    <string name="app_update_message">Stai usando una versione non aggiornata dell\'applicazione.\nSei indietro di %s.\n\nVersione installata: %s\nUltima versione: %s</string>
     <string name="si">Si</string>
+    <string name="aggiorna">Aggiorna</string>
+    <string name="chiudi">Chiudi</string>
     <string name="no">No</string>
     <string name="app_preview">Hai una versione preview dell\'App</string>
     <string name="no_connection">Il dispositivo non ha accesso ad Internet, attiva la connessione e riprova.</string>

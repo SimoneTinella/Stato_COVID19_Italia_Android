@@ -216,17 +216,23 @@ public class MainActivity extends AppCompatActivity {
                                     public void run() {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                                         builder.setTitle(getResources().getString(R.string.app_update));
-                                        builder.setMessage(String.format(getResources().getString(R.string.app_update_message), formatText(latestVersion - currentVersion)));
-                                        builder.setPositiveButton(getResources().getString(R.string.si), new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                                i.setData(Uri.parse(getResources().getString(R.string.new_version_app_site)));
-                                                startActivity(i);
-                                            }
-                                        });
-                                        builder.setNegativeButton(getResources().getString(R.string.no), new DialogInterface.OnClickListener() {
+                                        builder.setMessage(String.format(getResources().getString(R.string.app_update_message),
+                                                formatText(latestVersion - currentVersion),
+                                                BuildConfig.VERSION_NAME,
+                                                changelogs.get(0).getVersionaName()
+                                        ));
+                                        if (BuildConfig.DEBUG) {
+                                            builder.setPositiveButton(getResources().getString(R.string.aggiorna), new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                                    i.setData(Uri.parse(getString(R.string.new_version_app_site)));
+                                                    startActivity(i);
+                                                }
+                                            });
+                                        }
+                                        builder.setNegativeButton(getString(R.string.chiudi), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();

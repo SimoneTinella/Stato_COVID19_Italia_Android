@@ -9,7 +9,8 @@
         android:id="@+id/chart1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="8sp"/>
+        android:layout_marginTop="8sp"
+        android:layout_above="@id/commandLayout"/>
 
     <TextView
         android:id="@+id/txtMarkerData"
@@ -37,21 +38,51 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabTrends"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/commandLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/baseline_format_list_bulleted_white_24"
-        app:backgroundTint="@color/colorPrimaryDark"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="5sp"
-        android:layout_marginLeft="5sp"
-        android:layout_marginBottom="40sp"
-        />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        style="?android:attr/buttonBarStyle"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/btnTrends"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:src="@drawable/baseline_format_list_bulleted_white_24"/>
+
+        <ImageButton
+            android:id="@+id/btnChangeContext"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:src="@drawable/baseline_pin_drop_white_24"/>
+
+        <ImageButton
+            android:id="@+id/btnDisplayValues"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:src="@drawable/baseline_visibility_white_24"/>
+
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabResetZoom"
@@ -59,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-        android:layout_above="@id/fabTrends"
+        android:layout_above="@id/commandLayout"
         android:layout_marginStart="5sp"
         android:layout_marginLeft="5sp"
         android:layout_marginBottom="10sp"

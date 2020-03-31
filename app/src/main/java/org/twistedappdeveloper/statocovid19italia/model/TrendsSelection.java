@@ -29,6 +29,10 @@ public class TrendsSelection implements Cloneable, Comparable<TrendsSelection> {
         return TrendUtils.getPositionByTrendKey(this.getTrendInfo().getKey()).compareTo(TrendUtils.getPositionByTrendKey(o.getTrendInfo().getKey()));
     }
 
+    public void setTrendInfo(TrendInfo trendInfo) {
+        this.trendInfo = trendInfo;
+    }
+
     @NonNull
     @Override
     public Object clone() throws CloneNotSupportedException {

@@ -2,6 +2,7 @@ package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -12,8 +13,17 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.MarkerView;
@@ -31,6 +41,7 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.MPPointF;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import org.twistedappdeveloper.statocovid19italia.adapters.TrendsAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
@@ -49,15 +60,40 @@ import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getCol
 public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener, OnChartGestureListener {
     private LineChart chart;
     private DataStorage dataStorage;
-    private TextView txtMarkerData;
+    private TextView txtMarkerData, txtContesto;
 
     private List<TrendsSelection> trendList;
     private List<TrendsSelection> trendListTmp;
 
     private int precIndex = 0;
-    FloatingActionButton fabResetZoom;
+    private FloatingActionButton fabResetZoom;
 
-    String contestoDati;
+    private String contestoDati;
+
+    private ImageButton btnDisplayValues;
+
+    private boolean displayValuesOnChart = true;
+
+    private static final int animDuration = 600;
+
+    private void updateContext() {
+        dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
+        txtContesto.setText(String.format(getString(R.string.andamento), contestoDati));
+
+        if (trendList != null) {
+            for (TrendsSelection trendsSelection : trendList) {
+                TrendInfo newTrendInfo = dataStorage.getTrendByKey(trendsSelection.getTrendInfo().getKey());
+                trendsSelection.setTrendInfo(newTrendInfo);
+            }
+        } else {
+            trendList = new ArrayList<>();
+            for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
+                trendList.add(new TrendsSelection(trendInfo, isTrendSelected(trendInfo.getKey())));
+            }
+            Collections.sort(trendList);
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,22 +102,25 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_chart);
 
-        contestoDati = getIntent().getStringExtra(Utils.DATACONTEXT_KEY);
+        txtContesto = findViewById(R.id.txtContesto);
 
-        dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
+        contestoDati = getIntent().getStringExtra(Utils.DATACONTEXT_KEY);
+        updateContext();
+
         txtMarkerData = findViewById(R.id.txtMarkerData);
-        FloatingActionButton fabTrends = findViewById(R.id.fabTrends);
+        ImageButton btnTrends = findViewById(R.id.btnTrends);
+        ImageButton btnChangeContext = findViewById(R.id.btnChangeContext);
+        btnDisplayValues = findViewById(R.id.btnDisplayValues);
         fabResetZoom = findViewById(R.id.fabResetZoom);
         fabResetZoom.setVisibility(View.INVISIBLE);
 
-        fabTrends.setOnClickListener(this);
+        btnTrends.setOnClickListener(this);
+        btnChangeContext.setOnClickListener(this);
         fabResetZoom.setOnClickListener(this);
+        btnDisplayValues.setOnClickListener(this);
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
-
-        TextView txtContesto = findViewById(R.id.txtContesto);
-        txtContesto.setText(String.format(getString(R.string.andamento), contestoDati));
 
         chart.setTouchEnabled(true);
         chart.setDragDecelerationFrictionCoef(0.9f);
@@ -128,20 +167,12 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         chart.getAxisLeft().setEnabled(false);
 
-        trendList = new ArrayList<>();
-        for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
-            trendList.add(new TrendsSelection(trendInfo, isTrendSelected(trendInfo.getKey())));
-        }
-        Collections.sort(trendList);
-
-        setData();
+        setData(animDuration);
     }
 
     private boolean isTrendSelected(String key) {
         switch (key) {
-//            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
-//            case DataStorage.C_NUOVI_DECEDUTI:
             case DataStorage.NUOVI_POSITIVI:
                 return true;
 
@@ -150,7 +181,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         }
     }
 
-    private void setData() {
+    private void setData(int animDuration) {
         LineData data = new LineData();
 
         for (TrendsSelection trendSelection : trendList) {
@@ -163,8 +194,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
                 dataSet.setColor(getColorByTrendKey(ChartActivity.this, trendSelection.getTrendInfo().getKey()));
                 dataSet.setCircleColor(Color.BLACK);
-                dataSet.setLineWidth(2f);
-                dataSet.setCircleRadius(3f);
+                dataSet.setLineWidth(1.8f);
+                dataSet.setCircleRadius(2f);
                 dataSet.setFillAlpha(65);
                 dataSet.setFillColor(Color.rgb(255, 131, 0));
                 dataSet.setHighLightColor(Color.rgb(244, 117, 117));
@@ -176,12 +207,19 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         chart.setData(data);
 
-        data.setValueTextColor(Color.BLACK);
-        data.setValueTextSize(10f);
+        if (displayValuesOnChart) {
+            data.setValueTextColor(Color.BLACK);
+            data.setValueTextSize(9.5f);
+            data.setDrawValues(true);
+        } else {
+            data.setDrawValues(false);
+        }
+
         data.setHighlightEnabled(true);
-        chart.animateX(1000);
+        chart.animateX(animDuration);
 
         onNothingSelected();
+        checkChangeVisibilityButton();
     }
 
     @Override
@@ -235,7 +273,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.fabTrends:
+            case R.id.btnTrends:
                 final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
                 //dialog.setCancelable(false);
                 dialog.setContentView(R.layout.dialog_trends);
@@ -246,7 +284,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 final Button btnDeselectAllTrends = dialog.findViewById(R.id.btnDeselectAll);
 
                 trendListTmp = new ArrayList<>();
-                for(TrendsSelection trendsSelection : trendList){
+                for (TrendsSelection trendsSelection : trendList) {
                     try {
                         trendListTmp.add((TrendsSelection) trendsSelection.clone());
                     } catch (CloneNotSupportedException e) {
@@ -277,8 +315,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                                     chart.getLineData().clearValues();
                                     chart.invalidate();
                                     chart.clear();
+                                    setData(animDuration);
                                     resetZoom();
-                                    setData();
                                 }
                                 break;
                             case R.id.btnSelectAll:
@@ -306,7 +344,56 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             case R.id.fabResetZoom:
                 resetZoom();
                 break;
+            case R.id.btnChangeContext:
+                AlertDialog.Builder builder = new AlertDialog.Builder(ChartActivity.this);
+                List<String> regioni = new ArrayList<>();
+                regioni.add(DataStorage.defaultDataContext);
+                regioni.addAll(DataStorage.getIstance().getSubLevelDataKeys());
+                final String[] dataContexs = regioni.toArray(new String[0]);
+                int checkedItem = 0;
+                for (int i = 0; i < dataContexs.length; i++) {
+                    if (dataContexs[i].equalsIgnoreCase(contestoDati)) {
+                        checkedItem = i;
+                        break;
+                    }
+                }
+                builder.setSingleChoiceItems(dataContexs, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        contestoDati = dataContexs[which];
+                        updateContext();
+                        setData(animDuration);
+                    }
+                });
+                builder.setTitle(getResources().getString(R.string.sel_dataContext));
+                AlertDialog alert = builder.create();
+                alert.show();
+                break;
+            case R.id.btnDisplayValues:
+                displayValuesOnChart = !displayValuesOnChart;
+                setData(0);
+                break;
         }
+    }
+
+    private void checkChangeVisibilityButton() {
+        if (isValuesVisualizable()) {
+            btnDisplayValues.setEnabled(true);
+            if (!displayValuesOnChart) {
+                btnDisplayValues.setImageResource(R.drawable.baseline_visibility_off_white_24);
+            } else {
+                btnDisplayValues.setImageResource(R.drawable.baseline_visibility_white_24);
+            }
+        } else {
+            btnDisplayValues.setEnabled(false);
+            btnDisplayValues.setImageResource(R.drawable.baseline_visibility_off_gray_24);
+        }
+    }
+
+    private boolean isValuesVisualizable() {
+        return chart.getData().getEntryCount() < chart.getMaxVisibleCount()
+                * chart.getViewPortHandler().getScaleX();
     }
 
     @Override
@@ -321,6 +408,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         } else {
             fabResetZoom.setVisibility(View.VISIBLE);
         }
+        checkChangeVisibilityButton();
     }
 
     @Override
@@ -358,6 +446,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         BarLineChartTouchListener onTouchListener = (BarLineChartTouchListener) chart.getOnTouchListener();
         onTouchListener.stopDeceleration();
         chart.fitScreen();
+        checkChangeVisibilityButton();
     }
 
     private float getSPDimension(int value) {
