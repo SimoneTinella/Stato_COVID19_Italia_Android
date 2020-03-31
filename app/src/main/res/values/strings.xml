@@ -59,7 +59,7 @@
     <string name="deceduti_desc">Totale persone decedute dall\'inizio.</string>
     <string name="totale_casi_desc">Totale persone che hanno contratto il virus dall\'inizio.</string>
     <string name="totale_attualmente_positivi_desc">Totale persone che attualmente hanno il virus.\n(Tot. Persone Ricoverate + Isolamento Domiciliare)</string>
-    <string name="nuovi_attualmente_positivi_desc">È la misura spesso diffusa erroneamente dai media, ma non rappresenta i nuovi contagiati ma bensì un netto fra i nuovi positivi e i nuovi guariti/deceduti.\n(Nuovi Positivi - Nuovi Guariti - Nuovi Deceduti)</string>
+    <string name="nuovi_attualmente_positivi_desc">È la misura spesso diffusa erroneamente dai media, ma non rappresenta i nuovi contagiati ma bensì la differenza della misura Totale Attualmente Positivi. È un netto fra i nuovi positivi e i nuovi guariti/deceduti.\n(Nuovi Positivi - Nuovi Guariti - Nuovi Deceduti)</string>
     <string name="totale_ospedalizzati_desc">Persone attualmente ricoverate.\n(Terapia Intensiva + Ricoverati Con Sintomi)</string>
     <string name="terapia_intensiva_desc">Persone ricoverate in terapia intensiva.</string>
     <string name="ricoverati_con_sintomi_desc">Persone ricoverate non in terapia intensiva.</string>

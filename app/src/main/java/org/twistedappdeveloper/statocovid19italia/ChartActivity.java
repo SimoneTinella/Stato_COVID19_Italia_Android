@@ -120,11 +120,11 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         xAxis.setYOffset(-0.001f);
         xAxis.setValueFormatter(dataFormatter);
 
-        YAxis leftAxis = chart.getAxisRight();
-        leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularityEnabled(true);
+        YAxis rightAxis = chart.getAxisRight();
+        rightAxis.setTextColor(Color.BLACK);
+        rightAxis.setAxisMinimum(0f);
+        rightAxis.setDrawGridLines(true);
+        rightAxis.setGranularityEnabled(true);
 
         chart.getAxisLeft().setEnabled(false);
 
@@ -142,7 +142,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 //            case DataStorage.C_NUOVI_DIMESSI_GUARITI:
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
 //            case DataStorage.C_NUOVI_DECEDUTI:
-            case DataStorage.C_NUOVI_POSITIVI:
+            case DataStorage.NUOVI_POSITIVI:
                 return true;
 
             default:

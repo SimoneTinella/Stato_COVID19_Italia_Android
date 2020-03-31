@@ -35,16 +35,16 @@ public class DataStorage {
     public static final String TOTALE_DIMESSI_GUARITI_KEY = "dimessi_guariti";
     public static final String TOTALE_DECEDUTI_KEY = "deceduti";
     public static final String TOTALE_CASI_KEY = "totale_casi";
-    public static final String TOTALE_ATTUALMENTE_POSITIVI_KEY = "totale_attualmente_positivi";
-    public static final String NUOVI_ATTUALMENTE_POSITIVI_KEY = "nuovi_attualmente_positivi";
+    public static final String TOTALE_ATTUALMENTE_POSITIVI_KEY = "totale_positivi";
+    public static final String NUOVI_ATTUALMENTE_POSITIVI_KEY = "variazione_totale_positivi";
     public static final String TOTALE_OSPEDALIZZAZIONI_KEY = "totale_ospedalizzati";
     public static final String TERAPIA_INTENSIVA_KEY = "terapia_intensiva";
     public static final String RICOVERATI_SINTOMI_KEY = "ricoverati_con_sintomi";
     public static final String ISOLAMENTO_DOMICILIARE_KEY = "isolamento_domiciliare";
     public static final String TAMPONI_KEY = "tamponi";
+    public static final String NUOVI_POSITIVI = "nuovi_positivi";
 
     //Computed trends keys
-    public static final String C_NUOVI_POSITIVI = "c_nuovi_positivi";
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
     public static final String C_NUOVI_DECEDUTI = "c_nuovi_deceduti";
 
@@ -226,22 +226,18 @@ public class DataStorage {
             if (this.dataContextScope == Scope.NAZIONALE || this.dataContextScope == Scope.REGIONALE) {
                 JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
 
-                ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
                 ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
                 ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
 
                 String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
-                nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_ATTUALMENTE_POSITIVI_KEY), dataIniziale));
                 nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
                 nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
 
                 for (int i = 1; i < dataArrayJson.length(); i++) {
-                    nuoviPositivi.add(computeDifferentialTrend(i, i - 1, TOTALE_CASI_KEY));
                     nuoviGuariti.add(computeDifferentialTrend(i, i - 1, TOTALE_DIMESSI_GUARITI_KEY));
                     nuoviDeceduti.add(computeDifferentialTrend(i, i - 1, TOTALE_DECEDUTI_KEY));
                 }
 
-                trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
                 trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
                 trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
             } else {
@@ -252,7 +248,7 @@ public class DataStorage {
                 for (int i = 1; i < dataArrayJson.length(); i++) {
                     nuoviPositivi.add(computeDifferentialTrend(i, i - 1, TOTALE_CASI_KEY));
                 }
-                trendsMap.put(C_NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_POSITIVI), C_NUOVI_POSITIVI, nuoviPositivi));
+                trendsMap.put(NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, NUOVI_POSITIVI), NUOVI_POSITIVI, nuoviPositivi));
             }
         } catch (JSONException e) {
             Log.e("AndroTagError", e.getMessage());

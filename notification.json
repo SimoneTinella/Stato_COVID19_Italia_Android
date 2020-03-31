@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 14,
+  "latest_app_version": 15,
   "changelog": [
+    {
+      "ver": "1.1.6.2",
+      "description": "-Fix dovuto al cambiamento del formato dati fornito dalla Protezione Civile."
+    },
     {
       "ver": "1.1.6.1",
       "description": "-Fix crash nella selezione delle province."
