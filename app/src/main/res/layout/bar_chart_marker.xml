@@ -2,31 +2,130 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayoutMarker"
-    android:layout_width="match_parent"
+    android:layout_width="200sp"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    android:padding="5sp" >
+    android:padding="5sp">
 
     <TextView
-        android:id="@+id/txtRegione"
+        android:id="@+id/txtBarMarkerTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="TextView"
+        tools:text="TextView"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="14sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/txtBarValue"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
-        android:gravity="center"
-        android:textAlignment="center"
-        android:textSize="14sp"
-        tools:text="TextView"
-        android:layout_marginTop="5sp"/>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtBarMarkerCurrentValueTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:layout_weight="1"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:text="Val. Corrente:" />
+
+        <TextView
+            android:id="@+id/txtBarMarkerCurrentValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="TextView"
+            android:textAlignment="textEnd"
+            android:gravity="end" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtBarPrecValueTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="Val. Precedente:"
+            android:layout_marginTop="5sp"/>
+
+        <TextView
+            android:id="@+id/txtBarPrecValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="TextView"
+            android:textAlignment="textEnd"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtBarMarkerVariazioneTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="Variazione:"
+            android:layout_marginTop="5sp"/>
+
+        <TextView
+            android:id="@+id/txtBarMarkerVariazione"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="TextView"
+            android:textAlignment="textEnd"
+            android:gravity="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtBarMarkerPercentageTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:layout_weight="1"
+            android:textSize="14sp"
+            android:text="Variazione Perc.:"
+            android:layout_marginTop="5sp"/>
+
+        <TextView
+            android:id="@+id/txtBarMarkerPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5sp"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            tools:text="TextView"
+            android:textAlignment="textEnd"
+            android:gravity="end"/>
+    </LinearLayout>
+
+
 </LinearLayout>

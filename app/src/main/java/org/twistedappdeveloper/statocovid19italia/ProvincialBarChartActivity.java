@@ -49,9 +49,9 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
     private DataStorage dataStorage;
     private TextView txtMarkerData;
 
-    private Button btnIndietro;
-    private Button btnAvanti, btnCambiaMisura;
-    ImageButton btnChangeOrder;
+    private ImageButton btnIndietro;
+    private ImageButton btnAvanti;
+    private ImageButton btnChangeOrder;
 
     private int cursore, dataLen;
 
@@ -78,6 +78,9 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         setContentView(R.layout.activity_bar_chart);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Button btnPercentage = findViewById(R.id.btnPercentage);
+        btnPercentage.setVisibility(View.GONE);
 
         dataStorage = DataStorage.getIstance();
         dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
@@ -112,7 +115,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
         Button btnProvince = findViewById(R.id.btnProvinciale);
-        btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+        ImageButton btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
         btnChangeOrder = findViewById(R.id.btnChangeOrder);
 
         btnIndietro.setOnClickListener(this);
@@ -160,8 +163,6 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnEnableStatusCheck();
 
         setData();
-
-        controllaOrientamento();
     }
 
     private void calcolaProvinceListMap(){
@@ -311,7 +312,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
                 break;
             case R.id.btnChangeOrder:
                 orderTrend = !orderTrend;
-                if (orderTrend) {
+                if (!orderTrend) {
                     btnChangeOrder.setImageResource(R.drawable.baseline_bar_chart_white_24);
                 } else {
                     btnChangeOrder.setImageResource(R.drawable.baseline_signal_cellular_alt_white_24);
@@ -337,18 +338,18 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
     private void btnEnableStatusCheck() {
         if (cursore > 0) {
             btnIndietro.setEnabled(true);
-            btnIndietro.setTextColor(Color.WHITE);
+            btnIndietro.setImageResource(R.drawable.baseline_keyboard_backspace_white_24);
         } else {
             btnIndietro.setEnabled(false);
-            btnIndietro.setTextColor(Color.DKGRAY);
+            btnIndietro.setImageResource(R.drawable.baseline_keyboard_backspace_gray_24);
         }
 
         if (cursore < dataLen - 1) {
             btnAvanti.setEnabled(true);
-            btnAvanti.setTextColor(Color.WHITE);
+            btnAvanti.setImageResource(R.drawable.baseline_keyboard_white_24);
         } else {
             btnAvanti.setEnabled(false);
-            btnAvanti.setTextColor(Color.DKGRAY);
+            btnAvanti.setImageResource(R.drawable.baseline_keyboard_gray_24);
         }
     }
 
@@ -361,19 +362,9 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         }
     }
 
-    private void controllaOrientamento() {
-        Configuration configuration = getResources().getConfiguration();
-        if (configuration.orientation == ORIENTATION_LANDSCAPE) {
-            btnCambiaMisura.setText(getString(R.string.cambia_misura));
-        } else {
-            btnCambiaMisura.setText(getString(R.string.cambia_misura_ridotto));
-        }
-    }
-
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        controllaOrientamento();
         checkBarValueVisualization();
     }
 

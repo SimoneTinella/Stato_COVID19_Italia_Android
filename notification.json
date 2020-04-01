@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 16,
+  "latest_app_version": 17,
   "changelog": [
+    {
+      "ver": "1.1.8",
+      "description": "-Aggiunta possibilità di confrontare la variazione percentuale delle misure nell'istogramma regionale. Adesso è anche possibile premere le barre dell'istogramma per visualizzare ulteriori dettagli.\n-Cambiate alcune icone\n\nNota: Questa funzionalità è stata aggiunta sono nell'istogramma relativo alle regioni in quanto le misure disponibili per le province sono poche e spesso poco affidabili."
+    },
     {
       "ver": "1.1.7",
       "description": "-Aggiunta possbilità di cambiare il contesto dati direttamente dal grafico temporale."
