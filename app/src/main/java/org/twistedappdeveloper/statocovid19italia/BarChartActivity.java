@@ -60,7 +60,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     ImageButton btnChangeOrder;
 
     private Button btnPercentage;
-    private ImageButton  btnIndietro, btnAvanti, btnCambiaMisura;
+    private ImageButton btnIndietro, btnAvanti, btnCambiaMisura;
 
     private int cursore, dataLen;
 
@@ -187,11 +187,11 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
             currentValues.put(dataContext, trendValue);
-            if(dispalyPercentage){
+            if (dispalyPercentage) {
                 chart.getAxisLeft().resetAxisMinimum();
                 chart.getAxisRight().resetAxisMinimum();
                 barValues.add(new BarEntry(i++, trendValue.getDeltaPercentage() * 100, dataContext));
-            }else{
+            } else {
                 chart.getAxisLeft().setAxisMinimum(0);
                 chart.getAxisRight().setAxisMinimum(0);
                 barValues.add(new BarEntry(i++, trendValue.getValue(), dataContext));
@@ -313,18 +313,18 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
             case R.id.btnChangeOrder:
                 orderTrend = !orderTrend;
-                if(!orderTrend){
+                if (!orderTrend) {
                     btnChangeOrder.setImageResource(R.drawable.baseline_bar_chart_white_24);
-                }else{
+                } else {
                     btnChangeOrder.setImageResource(R.drawable.baseline_signal_cellular_alt_white_24);
                 }
                 setData(selectedTrendKey);
                 break;
             case R.id.btnPercentage:
                 dispalyPercentage = !dispalyPercentage;
-                if(!dispalyPercentage){
+                if (!dispalyPercentage) {
                     btnPercentage.setText("123");
-                }else{
+                } else {
                     btnPercentage.setText("%");
                 }
                 setData(selectedTrendKey);
@@ -362,7 +362,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void checkBarValueVisualization(){
+    private void checkBarValueVisualization() {
         Configuration configuration = getResources().getConfiguration();
         if (configuration.orientation == ORIENTATION_LANDSCAPE) {
             chart.getData().setDrawValues(true);
@@ -420,14 +420,20 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         @Override
         public void refreshContent(Entry e, Highlight highlight) {
             int position = (int) e.getX();
-            String dataContext =  chart.getData().getDataSetByIndex(0).getEntryForIndex(position).getData().toString();
+            String dataContext = chart.getData().getDataSetByIndex(0).getEntryForIndex(position).getData().toString();
             txtBarMarkerTitle.setText(dataContext);
 
             TrendValue trendValue = currentValues.get(dataContext);
-            txtBarMarkerCurrentValue.setText(String.format("%s",trendValue.getValue()));
-            txtBarPrecValue.setText(String.format("%s",trendValue.getPrecValue()));
-            txtBarMarkerPercentage.setText(String.format(Locale.ITALIAN,"%.2f%%",trendValue.getDeltaPercentage()*100));
-            txtBarMarkerVariazione.setText(String.format("%s",trendValue.getDelta()));
+            txtBarMarkerCurrentValue.setText(String.format("%s", trendValue.getValue()));
+            txtBarPrecValue.setText(String.format("%s", trendValue.getPrecValue()));
+            txtBarMarkerPercentage.setText(String.format(Locale.ITALIAN, "%.2f%%", trendValue.getDeltaPercentage() * 100));
+            txtBarMarkerVariazione.setText(String.format("%s", trendValue.getDelta()));
+
+            int color = TrendUtils.getColorByTrendKey(getApplicationContext(), selectedTrendKey);
+            txtBarMarkerCurrentValue.setTextColor(color);
+            txtBarPrecValue.setTextColor(color);
+            txtBarMarkerVariazione.setTextColor(color);
+            txtBarMarkerPercentage.setTextColor(color);
 
             super.refreshContent(e, highlight);
         }

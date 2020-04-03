@@ -1,6 +1,7 @@
 package org.twistedappdeveloper.statocovid19italia;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -19,12 +20,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.MPPointF;
 
 import org.twistedappdeveloper.statocovid19italia.adapters.ProvinceAdapter;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
@@ -71,6 +76,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
     public static final int MIN_ELEMENTS = 3;
     public static final int MAX_ELEMENTS = 30;
+
+    private Map<String, TrendValue> currentValues = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,8 +130,9 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnProvince.setOnClickListener(this);
         btnCambiaMisura.setOnClickListener(this);
         btnChangeOrder.setOnClickListener(this);
+        btnPercentage.setOnClickListener(this);
 
-        chart.setTouchEnabled(false);
+        chart.setTouchEnabled(true);
         chart.setBackgroundColor(Color.WHITE);
         chart.setDrawBarShadow(false);
         chart.setDrawValueAboveBar(true);
@@ -137,6 +145,9 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         chart.getAxisLeft().setEnabled(false);
         chart.getAxisLeft().setAxisMinimum(0);
         chart.getAxisRight().setAxisMinimum(0);
+
+        BarChartActivityMaker maker = new BarChartActivityMaker(getApplicationContext());
+        chart.setMarker(maker);
 
         ValueFormatter xAxisFormatter = new ProvinceFormatter();
         XAxis xAxis = chart.getXAxis();
@@ -165,7 +176,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         setData();
     }
 
-    private void calcolaProvinceListMap(){
+    private void calcolaProvinceListMap() {
         provinceListMap = new HashMap<>();
         for (String regione : dataStorage.getSubLevelDataKeys()) {
             for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
@@ -188,11 +199,15 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
 
     private void setData() {
+        currentValues.clear();
         ArrayList<BarEntry> values = new ArrayList<>();
 
         int i = 0;
         for (String selectedProvincia : selectedProvince) {
             TrendValue trendValue = dataStorageMap.get(selectedProvincia).getTrendByKey(selectedTrendKey).getTrendValues().get(cursore);
+            currentValues.put(selectedProvincia, trendValue);
+            chart.getAxisLeft().setAxisMinimum(0);
+            chart.getAxisRight().setAxisMinimum(0);
             values.add(new BarEntry(i++, trendValue.getValue(), selectedProvincia));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
         }
@@ -374,7 +389,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         @Override
         public String getFormattedValue(float value) {
             IBarDataSet dataSetByIndex = chart.getData().getDataSetByIndex(0);
-            if(value >= dataSetByIndex.getEntryCount()){
+            if (value >= dataSetByIndex.getEntryCount()) {
                 return "";
             }
             BarEntry barEntry = dataSetByIndex.getEntryForIndex((int) value);
@@ -388,6 +403,46 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         private int getMaxLength(String nomeRegione) {
             return Math.min(maxLen, nomeRegione.length());
+        }
+    }
+
+    public class BarChartActivityMaker extends MarkerView {
+
+        private TextView txtBarMarkerTitle, txtBarMarkerCurrentValue, txtBarPrecValue, txtBarMarkerVariazione;
+
+        public BarChartActivityMaker(Context context) {
+            super(context, R.layout.bar_chart_marker);
+            txtBarMarkerTitle = findViewById(R.id.txtBarMarkerTitle);
+            txtBarMarkerCurrentValue = findViewById(R.id.txtBarMarkerCurrentValue);
+            txtBarPrecValue = findViewById(R.id.txtBarPrecValue);
+            txtBarMarkerVariazione = findViewById(R.id.txtBarMarkerVariazione);
+            findViewById(R.id.txtBarMarkerPercentage).setVisibility(GONE);
+            findViewById(R.id.txtBarMarkerPercentageTitle).setVisibility(GONE);
+        }
+
+        @Override
+        public MPPointF getOffset() {
+            super.getOffset().x = -getWidth();
+            super.getOffset().y = -getHeight();
+            return super.getOffset();
+        }
+
+        @Override
+        public void refreshContent(Entry e, Highlight highlight) {
+            int position = (int) e.getX();
+            String dataContext = chart.getData().getDataSetByIndex(0).getEntryForIndex(position).getData().toString();
+            txtBarMarkerTitle.setText(dataContext);
+
+            TrendValue trendValue = currentValues.get(dataContext);
+            txtBarMarkerCurrentValue.setText(String.format("%s", trendValue.getValue()));
+            txtBarPrecValue.setText(String.format("%s", trendValue.getPrecValue()));
+            txtBarMarkerVariazione.setText(String.format("%s", trendValue.getDelta()));
+            int color = TrendUtils.getColorByTrendKey(getApplicationContext(), selectedTrendKey);
+            txtBarMarkerCurrentValue.setTextColor(color);
+            txtBarPrecValue.setTextColor(color);
+            txtBarMarkerVariazione.setTextColor(color);
+
+            super.refreshContent(e, highlight);
         }
     }
 }

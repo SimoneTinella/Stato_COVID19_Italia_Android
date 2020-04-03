@@ -39,11 +39,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5sp"
+            android:gravity="end"
+            android:textAlignment="textEnd"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            tools:text="TextView"
-            android:textAlignment="textEnd"
-            android:gravity="end" />
+            android:textStyle="bold"
+            tools:text="TextView" />
     </LinearLayout>
 
     <LinearLayout
@@ -66,11 +67,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5sp"
+            android:gravity="end"
+            android:textAlignment="textEnd"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            tools:text="TextView"
-            android:textAlignment="textEnd"
-            android:gravity="end"/>
+            android:textStyle="bold"
+            tools:text="TextView" />
     </LinearLayout>
 
     <LinearLayout
@@ -93,11 +95,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5sp"
+            android:gravity="end"
+            android:textAlignment="textEnd"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            tools:text="TextView"
-            android:textAlignment="textEnd"
-            android:gravity="end"/>
+            android:textStyle="bold"
+            tools:text="TextView" />
     </LinearLayout>
 
     <LinearLayout
@@ -120,11 +123,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5sp"
+            android:gravity="end"
+            android:textAlignment="textEnd"
             android:textColor="@android:color/black"
             android:textSize="14sp"
-            tools:text="TextView"
-            android:textAlignment="textEnd"
-            android:gravity="end"/>
+            android:textStyle="bold"
+            tools:text="TextView" />
     </LinearLayout>
 
 
