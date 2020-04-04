@@ -1,1 +1,1 @@
-It is an application for simplified access to data on the spread of covid-19 in Italy
+Simplified access to data on the spread of covid-19 in Italy
