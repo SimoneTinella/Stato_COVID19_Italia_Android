@@ -72,6 +72,16 @@
             android:src="@drawable/baseline_pin_drop_white_24"/>
 
         <ImageButton
+            android:id="@+id/btnContextProvince"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:layout_weight="1"
+            android:padding="0dp"
+            android:src="@drawable/baseline_location_city_white_24"/>
+
+        <ImageButton
             android:id="@+id/btnDisplayValues"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"

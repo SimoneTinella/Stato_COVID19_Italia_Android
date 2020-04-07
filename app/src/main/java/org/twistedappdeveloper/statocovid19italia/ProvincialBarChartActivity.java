@@ -202,14 +202,18 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         currentValues.clear();
         ArrayList<BarEntry> values = new ArrayList<>();
 
+        boolean isMinimumZero = true;
+
         int i = 0;
         for (String selectedProvincia : selectedProvince) {
             TrendValue trendValue = dataStorageMap.get(selectedProvincia).getTrendByKey(selectedTrendKey).getTrendValues().get(cursore);
             currentValues.put(selectedProvincia, trendValue);
-            chart.getAxisLeft().setAxisMinimum(0);
-            chart.getAxisRight().setAxisMinimum(0);
-            values.add(new BarEntry(i++, trendValue.getValue(), selectedProvincia));
+            int value = trendValue.getValue();
+            values.add(new BarEntry(i++, value, selectedProvincia));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
+            if (value < 0) {
+                isMinimumZero = false;
+            }
         }
         if (orderTrend) {
             Utils.quickSort(values, 0, values.size() - 1);
@@ -222,6 +226,14 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(barDataSet);
+
+        if (isMinimumZero) {
+            chart.getAxisLeft().setAxisMinimum(0);
+            chart.getAxisRight().setAxisMinimum(0);
+        } else {
+            chart.getAxisLeft().resetAxisMinimum();
+            chart.getAxisRight().resetAxisMinimum();
+        }
 
         BarData data = new BarData(dataSets);
         data.setValueTextSize(9f);

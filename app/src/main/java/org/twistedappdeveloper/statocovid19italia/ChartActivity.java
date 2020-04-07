@@ -68,9 +68,9 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     private int precIndex = 0;
     private FloatingActionButton fabResetZoom;
 
-    private String contestoDati;
+    private String contestoDati, contestoDatiProvince;
 
-    private ImageButton btnDisplayValues;
+    private ImageButton btnDisplayValues, btnContextProvince;
 
     private boolean displayValuesOnChart = true;
 
@@ -80,11 +80,21 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
         txtContesto.setText(String.format(getString(R.string.andamento), contestoDati));
 
-        if (trendList != null) {
+        if (!contestoDati.equals(contestoDatiProvince)) {
+            dataStorage = dataStorage.getDataStorageByDataContext(contestoDatiProvince);
+            txtContesto.setText(String.format(getString(R.string.andamento), contestoDatiProvince));
+        }
+
+        if (trendList != null && trendList.size() == dataStorage.getTrendsList().size()) {
+            List<TrendsSelection> trendListNew = new ArrayList<>();
             for (TrendsSelection trendsSelection : trendList) {
                 TrendInfo newTrendInfo = dataStorage.getTrendByKey(trendsSelection.getTrendInfo().getKey());
-                trendsSelection.setTrendInfo(newTrendInfo);
+                if (newTrendInfo != null) {
+                    trendsSelection.setTrendInfo(newTrendInfo);
+                    trendListNew.add(trendsSelection);
+                }
             }
+            trendList = trendListNew;
         } else {
             trendList = new ArrayList<>();
             for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
@@ -93,6 +103,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             Collections.sort(trendList);
         }
 
+        checkProvinceButton();
     }
 
     @Override
@@ -103,21 +114,23 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         setContentView(R.layout.activity_chart);
 
         txtContesto = findViewById(R.id.txtContesto);
-
-        contestoDati = getIntent().getStringExtra(Utils.DATACONTEXT_KEY);
-        updateContext();
-
         txtMarkerData = findViewById(R.id.txtMarkerData);
         ImageButton btnTrends = findViewById(R.id.btnTrends);
         ImageButton btnChangeContext = findViewById(R.id.btnChangeContext);
         btnDisplayValues = findViewById(R.id.btnDisplayValues);
+        btnContextProvince = findViewById(R.id.btnContextProvince);
         fabResetZoom = findViewById(R.id.fabResetZoom);
         fabResetZoom.setVisibility(View.INVISIBLE);
+
+        contestoDati = getIntent().getStringExtra(Utils.DATACONTEXT_KEY);
+        contestoDatiProvince = contestoDati;
+        updateContext();
 
         btnTrends.setOnClickListener(this);
         btnChangeContext.setOnClickListener(this);
         fabResetZoom.setOnClickListener(this);
         btnDisplayValues.setOnClickListener(this);
+        btnContextProvince.setOnClickListener(this);
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -161,7 +174,6 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         YAxis rightAxis = chart.getAxisRight();
         rightAxis.setTextColor(Color.BLACK);
-        rightAxis.setAxisMinimum(0f);
         rightAxis.setDrawGridLines(true);
         rightAxis.setGranularityEnabled(true);
 
@@ -184,11 +196,17 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     private void setData(int animDuration) {
         LineData data = new LineData();
 
+        boolean isMinimumZero = true;
+
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 List<Entry> values = new ArrayList<>();
                 for (int i = 0; i < trendSelection.getTrendInfo().getTrendValues().size(); i++) {
-                    values.add(new Entry(i, trendSelection.getTrendInfo().getTrendValueByIndex(i).getValue()));
+                    int value = trendSelection.getTrendInfo().getTrendValueByIndex(i).getValue();
+                    values.add(new Entry(i, value));
+                    if (value < 0) {
+                        isMinimumZero = false;
+                    }
                 }
                 LineDataSet dataSet = new LineDataSet(values, trendSelection.getTrendInfo().getName());
                 dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
@@ -203,6 +221,14 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 dataSet.setDrawHorizontalHighlightIndicator(false);
                 data.addDataSet(dataSet);
             }
+        }
+
+        if (isMinimumZero) {
+            chart.getAxisLeft().setAxisMinimum(0);
+            chart.getAxisRight().setAxisMinimum(0);
+        } else {
+            chart.getAxisLeft().resetAxisMinimum();
+            chart.getAxisRight().resetAxisMinimum();
         }
 
         chart.setData(data);
@@ -271,11 +297,12 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     @Override
     public void onClick(View v) {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChartActivity.this);
+        AlertDialog alert;
+        int checkedItem = 0;
         switch (v.getId()) {
             case R.id.btnTrends:
                 final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
-                //dialog.setCancelable(false);
                 dialog.setContentView(R.layout.dialog_trends);
 
                 final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
@@ -345,12 +372,10 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 resetZoom();
                 break;
             case R.id.btnChangeContext:
-                AlertDialog.Builder builder = new AlertDialog.Builder(ChartActivity.this);
                 List<String> regioni = new ArrayList<>();
                 regioni.add(DataStorage.defaultDataContext);
                 regioni.addAll(DataStorage.getIstance().getSubLevelDataKeys());
                 final String[] dataContexs = regioni.toArray(new String[0]);
-                int checkedItem = 0;
                 for (int i = 0; i < dataContexs.length; i++) {
                     if (dataContexs[i].equalsIgnoreCase(contestoDati)) {
                         checkedItem = i;
@@ -362,18 +387,71 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         contestoDati = dataContexs[which];
+                        contestoDatiProvince = contestoDati;
                         updateContext();
                         setData(animDuration);
                     }
                 });
                 builder.setTitle(getResources().getString(R.string.sel_dataContext));
-                AlertDialog alert = builder.create();
+                alert = builder.create();
                 alert.show();
                 break;
             case R.id.btnDisplayValues:
                 displayValuesOnChart = !displayValuesOnChart;
                 setData(0);
                 break;
+            case R.id.btnContextProvince:
+                List<String> province = new ArrayList<>();
+                if (contestoDati.equals(contestoDatiProvince)) {
+                    province.add(dataStorage.getDataContext());
+                    province.addAll(dataStorage.getSubLevelDataKeys());
+                } else {
+                    DataStorage dataStorageRegionale = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
+                    province.add(dataStorageRegionale.getDataContext());
+                    province.addAll(dataStorageRegionale.getSubLevelDataKeys());
+                }
+                province.remove("In fase di definizione/aggiornamento");
+                final String[] provinceContexs = province.toArray(new String[0]);
+
+                for (int i = 0; i < provinceContexs.length; i++) {
+                    if (provinceContexs[i].equalsIgnoreCase(contestoDatiProvince)) {
+                        checkedItem = i;
+                        break;
+                    }
+                }
+                builder.setSingleChoiceItems(provinceContexs, checkedItem, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        contestoDatiProvince = provinceContexs[which];
+                        updateContext();
+                        setData(animDuration);
+                    }
+                });
+                builder.setTitle(getResources().getString(R.string.sel_dataContext_sub));
+                alert = builder.create();
+                alert.show();
+                break;
+        }
+    }
+
+    private void checkProvinceButton() {
+        if (dataStorage.getDataContextScope().equals(DataStorage.Scope.NAZIONALE)) {
+            btnContextProvince.setEnabled(false);
+            btnContextProvince.setImageResource(R.drawable.baseline_location_city_gray_24);
+        } else {
+            if (dataStorage.getDataContextScope().equals(DataStorage.Scope.REGIONALE)) {
+                if (dataStorage.getSubLevelDataKeys().size() > 2) {
+                    btnContextProvince.setEnabled(true);
+                    btnContextProvince.setImageResource(R.drawable.baseline_location_city_white_24);
+                } else {
+                    btnContextProvince.setEnabled(false);
+                    btnContextProvince.setImageResource(R.drawable.baseline_location_city_gray_24);
+                }
+            } else {
+                btnContextProvince.setEnabled(true);
+                btnContextProvince.setImageResource(R.drawable.baseline_location_city_white_24);
+            }
         }
     }
 

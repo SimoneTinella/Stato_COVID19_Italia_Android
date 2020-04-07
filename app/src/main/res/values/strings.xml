@@ -23,6 +23,7 @@
     <string name="nessun_dato_disponibile">Nessun dato disponibile</string>
     <string name="sel_misura">Seleziona misura</string>
     <string name="sel_dataContext">Seleziona contesto dati</string>
+    <string name="sel_dataContext_sub">Seleziona sotto-contesto dati</string>
     <string name="no_data_to_display">Non sono presenti dati da graficare, prova ad aggiornare.</string>
     <string name="app_update">Aggiornamento applicazione</string>
     <string name="app_update_message">Stai usando una versione non aggiornata dell\'applicazione.\nSei indietro di %s.\n\nVersione installata: %s\nUltima versione: %s</string>

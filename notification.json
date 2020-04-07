@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 18,
+  "latest_app_version": 19,
   "changelog": [
+    {
+      "ver": "1.1.9",
+      "description": "-Aggiunta visualizzazione temporale per i dati delle Province.\n-Fix visualizzazione avvisi multipli."
+    },
     {
       "ver": "1.1.8.1",
       "description": "-Adesso è possibile premere le barre dell'istogramma Provinciale per visualizzare ulteriori dettagli.\n-Piccole migliorie grafiche."

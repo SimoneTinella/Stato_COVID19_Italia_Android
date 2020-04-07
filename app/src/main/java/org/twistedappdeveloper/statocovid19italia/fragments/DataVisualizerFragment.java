@@ -5,11 +5,18 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+
 import org.twistedappdeveloper.statocovid19italia.BarChartActivity;
 import org.twistedappdeveloper.statocovid19italia.R;
 import org.twistedappdeveloper.statocovid19italia.adapters.RowDataAdapter;
@@ -23,7 +30,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.*;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendDescriptionByTrendKey;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getTrendNameByTrendKey;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.CURSORE_KEY;
 import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DATACONTEXT_KEY;
 
@@ -141,8 +151,8 @@ public class DataVisualizerFragment extends Fragment {
         adapter.notifyDataSetChanged();
         btnEnableStatusCheck();
 
-        Avviso nota = dataStorage.getAvvisoRelativoByDate(data);
-        if (nota != null) {
+        List<Avviso> note = dataStorage.getAvvisiRelativoByDate(data);
+        if (note != null && note.size() > 0) {
             btnAvviso.setVisibility(View.VISIBLE);
         } else {
             btnAvviso.setVisibility(View.GONE);
@@ -260,9 +270,9 @@ public class DataVisualizerFragment extends Fragment {
         View.OnClickListener listenerAvvisi = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Avviso avviso = dataStorage.getAvvisoRelativoByDate(dataStorage.getFullDateByIndex(cursore));
-                if (avviso != null) {
-                    String avvisoText = buildAvvisoText(avviso);
+                List<Avviso> avvisi = dataStorage.getAvvisiRelativoByDate(dataStorage.getFullDateByIndex(cursore));
+                if (avvisi != null && avvisi.size() > 0) {
+                    String avvisoText = buildAvvisoText(avvisi);
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());
                     AlertDialog alertDialog = alertDialogBuilder.create();
                     alertDialog.setTitle("Avviso sui dati");
@@ -291,21 +301,27 @@ public class DataVisualizerFragment extends Fragment {
         return root;
     }
 
-    private String buildAvvisoText(Avviso avviso) {
-        String avvisoText = String.format("<b>Tipo Avviso:</b> %s<br><b>Avviso:</b> %s",
-                avviso.getTipoAvviso(),
-                avviso.getAvviso()
-        );
-        if (!avviso.getNote().isEmpty()) {
-            avvisoText = String.format("%s<br><b>Nota:</b> %s", avvisoText, avviso.getNote());
+    private String buildAvvisoText(List<Avviso> avvisi) {
+        List<String> avvisiText = new ArrayList<>();
+
+        for (Avviso avviso : avvisi) {
+            String avvisoText = String.format("<b>Tipo Avviso:</b> %s<br><b>Avviso:</b> %s",
+                    avviso.getTipoAvviso(),
+                    avviso.getAvviso()
+            );
+            if (!avviso.getNote().isEmpty()) {
+                avvisoText = String.format("%s<br><b>Nota:</b> %s", avvisoText, avviso.getNote());
+            }
+            if (!avviso.getRegione().isEmpty()) {
+                avvisoText = String.format("%s<br><b>Regione:</b> %s", avvisoText, avviso.getRegione());
+            }
+            if (!avviso.getProvincia().isEmpty()) {
+                avvisoText = String.format("%s<br><b>Provincia:</b> %s", avvisoText, avviso.getProvincia());
+            }
+            avvisiText.add(avvisoText);
         }
-        if (!avviso.getRegione().isEmpty()) {
-            avvisoText = String.format("%s<br><b>Regione:</b> %s", avvisoText, avviso.getRegione());
-        }
-        if (!avviso.getProvincia().isEmpty()) {
-            avvisoText = String.format("%s<br><b>Provincia:</b> %s", avvisoText, avviso.getProvincia());
-        }
-        return avvisoText;
+
+        return Utils.joinString("<br><br>", avvisiText);
     }
 
 }

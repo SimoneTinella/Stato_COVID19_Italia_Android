@@ -82,7 +82,7 @@ public class DataStorage {
 
     private Map<String, Avviso> mappaAvvisi = new HashMap<>(); //popolato solo nel datastorage nazionale
 
-    private Map<String, Avviso> avvisiRelativiMap = new HashMap<>(); //avvisi relativi al proprio dataset
+    private Map<String, List<Avviso>> avvisiRelativiMap = new HashMap<>(); //avvisi relativi al proprio dataset
 
     private String dataContext;
     private Scope dataContextScope;
@@ -171,7 +171,7 @@ public class DataStorage {
         return getIstance().mappaAvvisi.get(key);
     }
 
-    public Avviso getAvvisoRelativoByDate(String date) {
+    public List<Avviso> getAvvisiRelativoByDate(String date) {
         return avvisiRelativiMap.get(date);
     }
 
@@ -217,7 +217,18 @@ public class DataStorage {
                 String data = getFullDateByIndex(i);
                 String noteKey = jsonObject.getString(NOTE_IT_KEY);
                 if (!noteKey.isEmpty()) {
-                    avvisiRelativiMap.put(data, getAvvisoByKey(noteKey));
+                    String[] split = noteKey.split(";");
+                    List<Avviso> avvisi;
+                    if (avvisiRelativiMap.get(data) == null) {
+                        avvisi = new ArrayList<>();
+                        avvisiRelativiMap.put(data, avvisi);
+                    } else {
+                        avvisi = avvisiRelativiMap.get(data);
+                    }
+                    for (String nota : split) {
+                        avvisi.add(getAvvisoByKey(nota));
+                    }
+
                 }
 
             }

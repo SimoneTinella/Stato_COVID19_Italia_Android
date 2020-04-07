@@ -182,24 +182,36 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         currentValues.clear();
         ArrayList<BarEntry> barValues = new ArrayList<>();
 
+        boolean isMinimumZero = true;
+
         int i = 0;
         for (String dataContext : dataStorage.getSubLevelDataKeys()) {
             DataStorage regionalDataStore = dataStorage.getDataStorageByDataContext(dataContext);
             TrendValue trendValue = regionalDataStore.getTrendByKey(trendKey).getTrendValueByIndex(cursore);
             currentValues.put(dataContext, trendValue);
+            float value;
             if (dispalyPercentage) {
-                chart.getAxisLeft().resetAxisMinimum();
-                chart.getAxisRight().resetAxisMinimum();
-                barValues.add(new BarEntry(i++, trendValue.getDeltaPercentage() * 100, dataContext));
+                value = trendValue.getDeltaPercentage() * 100;
             } else {
-                chart.getAxisLeft().setAxisMinimum(0);
-                chart.getAxisRight().setAxisMinimum(0);
-                barValues.add(new BarEntry(i++, trendValue.getValue(), dataContext));
+                value = trendValue.getValue();
             }
+            barValues.add(new BarEntry(i++, value, dataContext));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
+
+            if (value < 0) {
+                isMinimumZero = false;
+            }
         }
         if (orderTrend) {
             Utils.quickSort(barValues, 0, barValues.size() - 1);
+        }
+
+        if (isMinimumZero) {
+            chart.getAxisLeft().setAxisMinimum(0);
+            chart.getAxisRight().setAxisMinimum(0);
+        } else {
+            chart.getAxisLeft().resetAxisMinimum();
+            chart.getAxisRight().resetAxisMinimum();
         }
 
         BarDataSet barDataSet;
