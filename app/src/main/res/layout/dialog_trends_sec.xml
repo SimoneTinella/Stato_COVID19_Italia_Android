@@ -9,7 +9,7 @@
     <TextView
         android:id="@+id/txtTrendsDialogTitle"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingBottom="10sp"
         android:text="@string/misure_da_visualizzare"
@@ -23,17 +23,18 @@
 
     <ListView
         android:id="@+id/listViewDialogTrends"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/listButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTrendsDialogTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTrendsDialogTitle"
+        app:layout_constraintHeight_default="wrap" />
 
     <LinearLayout
         android:id="@+id/listButton"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"

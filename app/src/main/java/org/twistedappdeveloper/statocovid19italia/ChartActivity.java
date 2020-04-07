@@ -303,7 +303,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         switch (v.getId()) {
             case R.id.btnTrends:
                 final Dialog dialog = new Dialog(ChartActivity.this, R.style.AppAlert);
-                dialog.setContentView(R.layout.dialog_trends);
+                dialog.setContentView(R.layout.dialog_trends_sec);
 
                 final ListView listViewTrends = dialog.findViewById(R.id.listViewDialogTrends);
                 final Button btnSaveTrends = dialog.findViewById(R.id.btnCloseTrendDialog);
