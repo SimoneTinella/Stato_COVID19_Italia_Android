@@ -143,6 +143,16 @@
             android:text="Extra info"
             android:textColor="@android:color/white" />
 
+        <ImageButton
+            android:id="@+id/btnChangeDate"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:contentDescription="@string/ordinamento"
+            android:padding="0dp"
+            android:src="@drawable/baseline_event_white_24" />
+
         <Button
             android:id="@+id/btnAvanti"
             style="?android:attr/buttonBarButtonStyle"

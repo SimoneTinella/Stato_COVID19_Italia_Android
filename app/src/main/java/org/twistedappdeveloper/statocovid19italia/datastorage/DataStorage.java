@@ -145,10 +145,10 @@ public class DataStorage {
         return 0;
     }
 
-    public String getFullDateByIndex(int index) {
+    public String getFullDateStringByIndex(int index) {
         String date;
         try {
-            date = getFullDateFromJSONObject(dataArrayJson.getJSONObject(index));
+            date = getFullDateStringFromJSONObject(dataArrayJson.getJSONObject(index));
         } catch (JSONException e) {
             e.printStackTrace();
             date = "NoData";
@@ -156,10 +156,10 @@ public class DataStorage {
         return date;
     }
 
-    public String getSimpleDateByIndex(int index) {
+    public String getSimpleDateStringByIndex(int index) {
         String date;
         try {
-            date = getSimpleDateFromJSONObject(dataArrayJson.getJSONObject(index));
+            date = getSimpleDateStringFromJSONObject(dataArrayJson.getJSONObject(index));
         } catch (JSONException e) {
             e.printStackTrace();
             date = "NoData";
@@ -200,7 +200,7 @@ public class DataStorage {
                 ArrayList<TrendValue> values = new ArrayList<>();
                 for (int i = 0; i < dataArrayJson.length(); i++) {
                     JSONObject jsonObject = dataArrayJson.getJSONObject(i);
-                    String date = getFullDateFromJSONObject(jsonObject);
+                    String date = getFullDateStringFromJSONObject(jsonObject);
                     int value = jsonObject.getInt(key);
                     int precValue = tmpObj.getInt(key);
                     int delta = value - precValue;
@@ -214,7 +214,7 @@ public class DataStorage {
 
             for (int i = 0; i < dataArrayJson.length(); i++) {
                 JSONObject jsonObject = dataArrayJson.getJSONObject(i);
-                String data = getFullDateByIndex(i);
+                String data = getFullDateStringByIndex(i);
                 String noteKey = jsonObject.getString(NOTE_IT_KEY);
                 if (!noteKey.isEmpty()) {
                     String[] split = noteKey.split(";");
@@ -240,7 +240,7 @@ public class DataStorage {
                 ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
                 ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
 
-                String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
+                String dataIniziale = getFullDateStringFromJSONObject(jsonObjectIniziale);
                 nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
                 nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
 
@@ -254,7 +254,7 @@ public class DataStorage {
             } else {
                 JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
                 ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();
-                String dataIniziale = getFullDateFromJSONObject(jsonObjectIniziale);
+                String dataIniziale = getFullDateStringFromJSONObject(jsonObjectIniziale);
                 nuoviPositivi.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_CASI_KEY), dataIniziale));
                 for (int i = 1; i < dataArrayJson.length(); i++) {
                     nuoviPositivi.add(computeDifferentialTrend(i, i - 1, TOTALE_CASI_KEY));
@@ -316,7 +316,7 @@ public class DataStorage {
             deltaPrecedente = valorePrecendente - valorePrecedenteAncora;
         }
 
-        String date = getFullDateFromJSONObject(jsonObjectCorrente);
+        String date = getFullDateStringFromJSONObject(jsonObjectCorrente);
         int delta = valoreCorrente - valorePrecendente;
 
         float percentage = (float) (delta - deltaPrecedente) / (deltaPrecedente == 0 ? 1 : deltaPrecedente);
@@ -347,8 +347,7 @@ public class DataStorage {
         }
     }
 
-
-    private String getFullDateFromJSONObject(JSONObject jsonObject) throws JSONException {
+    private String getFullDateStringFromJSONObject(JSONObject jsonObject) throws JSONException {
         try {
             Date date = dateFormatRead.parse(jsonObject.getString(DATA_KEY));
             return dateFormatWriteFull.format(date);
@@ -358,7 +357,7 @@ public class DataStorage {
         }
     }
 
-    private String getSimpleDateFromJSONObject(JSONObject jsonObject) throws JSONException {
+    private String getSimpleDateStringFromJSONObject(JSONObject jsonObject) throws JSONException {
         try {
             Date date = dateFormatRead.parse(jsonObject.getString(DATA_KEY));
             return dateFormatWriteSimple.format(date);
@@ -390,5 +389,23 @@ public class DataStorage {
             }
         }
 
+    }
+
+    public Date getDateByIndex(int index) {
+        try {
+            return dateFormatRead.parse(dataArrayJson.getJSONObject(index).getString(DATA_KEY));
+        } catch (ParseException | JSONException e) {
+            e.printStackTrace();
+            return new Date();
+        }
+    }
+
+    public int getIndexByDate(Date date) {
+        for (int i = 0; i < dataArrayJson.length(); i++) {
+            if (getDateByIndex(i).equals(date)) {
+                return i;
+            }
+        }
+        return getDataLength() - 1;
     }
 }

@@ -60,17 +60,27 @@
             android:textSize="12sp"
             android:src="@drawable/baseline_format_list_bulleted_white_24"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/btnProvinciale"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:contentDescription="@string/ordinamento"
+            android:padding="0dp"
+            android:src="@drawable/baseline_location_city_white_24" />
+
+        <ImageButton
+            android:id="@+id/btnChangeDate"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="0dp"
             android:layout_weight="1"
+            android:contentDescription="@string/ordinamento"
             android:padding="0dp"
-            android:text="@string/barre_provinciale"
-            android:textColor="@android:color/white"
-            android:textSize="12sp" />
+            android:src="@drawable/baseline_event_white_24" />
 
         <Button
             android:id="@+id/btnPercentage"

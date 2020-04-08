@@ -1,5 +1,6 @@
 package org.twistedappdeveloper.statocovid19italia;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,10 +42,15 @@ import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
@@ -121,9 +128,10 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         chart = findViewById(R.id.barChart);
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
-        Button btnProvince = findViewById(R.id.btnProvinciale);
+        ImageButton btnProvince = findViewById(R.id.btnProvinciale);
         ImageButton btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
         btnChangeOrder = findViewById(R.id.btnChangeOrder);
+        ImageButton btnChangeDate = findViewById(R.id.btnChangeDate);
 
         btnIndietro.setOnClickListener(this);
         btnAvanti.setOnClickListener(this);
@@ -131,6 +139,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         btnCambiaMisura.setOnClickListener(this);
         btnChangeOrder.setOnClickListener(this);
         btnPercentage.setOnClickListener(this);
+        btnChangeDate.setOnClickListener(this);
 
         chart.setTouchEnabled(true);
         chart.setBackgroundColor(Color.WHITE);
@@ -345,6 +354,37 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
                     btnChangeOrder.setImageResource(R.drawable.baseline_signal_cellular_alt_white_24);
                 }
                 setData();
+                break;
+            case R.id.btnChangeDate:
+                try {
+                    String minDataS = dataStorage.getFullDateStringByIndex(0);
+                    String maxDataS = dataStorage.getFullDateStringByIndex(dataStorage.getDataLength() - 1);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+                    Date minData = dateFormat.parse(minDataS);
+                    Date maxData = dateFormat.parse(maxDataS);
+
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(dataStorage.getDateByIndex(cursore));
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(ProvincialBarChartActivity.this,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                    calendar.set(Calendar.YEAR, year);
+                                    calendar.set(Calendar.MONTH, month);
+                                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                                    cursore = dataStorage.getIndexByDate(calendar.getTime());
+                                    btnEnableStatusCheck();
+                                    setData();
+                                }
+                            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+                    datePickerDialog.getDatePicker().setMinDate(minData.getTime());
+                    datePickerDialog.getDatePicker().setMaxDate(maxData.getTime());
+                    datePickerDialog.show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(ProvincialBarChartActivity.this, "Non è possibile selezionare un data", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

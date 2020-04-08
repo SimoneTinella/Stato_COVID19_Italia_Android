@@ -1,5 +1,6 @@
 package org.twistedappdeveloper.statocovid19italia.fragments;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,8 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,9 +30,14 @@ import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getPositionByTrendKey;
@@ -68,6 +77,7 @@ public class DataVisualizerFragment extends Fragment {
     private List<RowData> rowDataList;
 
     private Button btnAvanti, btnIndietro, btnChangeValues, btnAvviso;
+    private ImageButton btnChangeDate;
     private TextView txtData;
 
     private int cursore;
@@ -145,7 +155,7 @@ public class DataVisualizerFragment extends Fragment {
             }
             rowDataList.add(rowData);
         }
-        String data = dataStorage.getFullDateByIndex(cursore);
+        String data = dataStorage.getFullDateStringByIndex(cursore);
         txtData.setText(String.format(getString(R.string.relativo_al), data));
         Collections.sort(rowDataList);
         adapter.notifyDataSetChanged();
@@ -205,6 +215,36 @@ public class DataVisualizerFragment extends Fragment {
                     adapter.setDisplayInfo(displayPercentage);
                     checkExtraInfo();
                     break;
+                case R.id.btnChangeDate:
+                    try {
+                        String minDataS = dataStorage.getFullDateStringByIndex(0);
+                        String maxDataS = dataStorage.getFullDateStringByIndex(dataStorage.getDataLength() - 1);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+                        Date minData = dateFormat.parse(minDataS);
+                        Date maxData = dateFormat.parse(maxDataS);
+
+                        final Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(dataStorage.getDateByIndex(cursore));
+                        DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                                new DatePickerDialog.OnDateSetListener() {
+                                    @Override
+                                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                        calendar.set(Calendar.YEAR, year);
+                                        calendar.set(Calendar.MONTH, month);
+                                        calendar.set(Calendar.DAY_OF_MONTH, day);
+                                        cursore = dataStorage.getIndexByDate(calendar.getTime());
+                                        displayData();
+                                    }
+                                }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+                        datePickerDialog.getDatePicker().setMinDate(minData.getTime());
+                        datePickerDialog.getDatePicker().setMaxDate(maxData.getTime());
+                        datePickerDialog.show();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getContext(), "Non è possibile selezionare un data", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
             }
             displayData();
         }
@@ -223,6 +263,7 @@ public class DataVisualizerFragment extends Fragment {
         btnIndietro = root.findViewById(R.id.btnIndietro);
         btnChangeValues = root.findViewById(R.id.btnChangeValues);
         btnAvviso = root.findViewById(R.id.btnAvviso);
+        btnChangeDate = root.findViewById(R.id.btnChangeDate);
 
         ListView listView = root.findViewById(R.id.listView);
         adapter = new RowDataAdapter(getContext(), R.layout.list_data, rowDataList, true);
@@ -240,7 +281,7 @@ public class DataVisualizerFragment extends Fragment {
                         String.format(
                                 "%s\n\n%s",
                                 getTrendDescriptionByTrendKey(getContext(), key),
-                                String.format(getString(R.string.confronto_regionale_message), dataStorage.getFullDateByIndex(cursore))
+                                String.format(getString(R.string.confronto_regionale_message), dataStorage.getFullDateStringByIndex(cursore))
                         ));
                 builder.setPositiveButton(getString(R.string.si), new DialogInterface.OnClickListener() {
                     @Override
@@ -266,11 +307,12 @@ public class DataVisualizerFragment extends Fragment {
         btnIndietro.setOnClickListener(listener);
         btnAvanti.setOnClickListener(listener);
         btnChangeValues.setOnClickListener(listener);
+        btnChangeDate.setOnClickListener(listener);
 
         View.OnClickListener listenerAvvisi = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<Avviso> avvisi = dataStorage.getAvvisiRelativoByDate(dataStorage.getFullDateByIndex(cursore));
+                List<Avviso> avvisi = dataStorage.getAvvisiRelativoByDate(dataStorage.getFullDateStringByIndex(cursore));
                 if (avvisi != null && avvisi.size() > 0) {
                     String avvisoText = buildAvvisoText(avvisi);
                     AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getContext());

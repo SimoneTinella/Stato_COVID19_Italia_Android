@@ -261,7 +261,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void updateLegend(int index) {
-        txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), dataStorage.getFullDateByIndex(index)));
+        txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), dataStorage.getFullDateStringByIndex(index)));
 
 
         for (TrendsSelection trendSelection : trendList) {
@@ -620,7 +620,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         @Override
         public String getFormattedValue(float value) {
-            return dataStorage.getSimpleDateByIndex((int) value);
+            return dataStorage.getSimpleDateStringByIndex((int) value);
         }
 
     }

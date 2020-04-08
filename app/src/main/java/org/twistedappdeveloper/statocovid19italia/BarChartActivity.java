@@ -1,5 +1,6 @@
 package org.twistedappdeveloper.statocovid19italia;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -41,8 +43,12 @@ import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
 import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -60,7 +66,8 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     ImageButton btnChangeOrder;
 
     private Button btnPercentage;
-    private ImageButton btnIndietro, btnAvanti, btnCambiaMisura;
+    private ImageButton btnIndietro;
+    private ImageButton btnAvanti;
 
     private int cursore, dataLen;
 
@@ -90,8 +97,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         chart = findViewById(R.id.barChart);
         btnIndietro = findViewById(R.id.btnIndietro);
         btnAvanti = findViewById(R.id.btnAvanti);
-        btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
-        Button btnGraficoProvinciale = findViewById(R.id.btnProvinciale);
+        ImageButton btnCambiaMisura = findViewById(R.id.btnCambiaMisura);
+        ImageButton btnGraficoProvinciale = findViewById(R.id.btnProvinciale);
+        ImageButton btnChangeDate = findViewById(R.id.btnChangeDate);
         btnChangeOrder = findViewById(R.id.btnChangeOrder);
         btnPercentage = findViewById(R.id.btnPercentage);
 
@@ -104,6 +112,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         btnGraficoProvinciale.setOnClickListener(this);
         btnChangeOrder.setOnClickListener(this);
         btnPercentage.setOnClickListener(this);
+        btnChangeDate.setOnClickListener(this);
 
         dataStorage = DataStorage.getIstance();
         dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
@@ -340,6 +349,37 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
                     btnPercentage.setText("%");
                 }
                 setData(selectedTrendKey);
+                break;
+            case R.id.btnChangeDate:
+                try {
+                    String minDataS = dataStorage.getFullDateStringByIndex(0);
+                    String maxDataS = dataStorage.getFullDateStringByIndex(dataStorage.getDataLength() - 1);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
+                    Date minData = dateFormat.parse(minDataS);
+                    Date maxData = dateFormat.parse(maxDataS);
+
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(dataStorage.getDateByIndex(cursore));
+                    DatePickerDialog datePickerDialog = new DatePickerDialog(BarChartActivity.this,
+                            new DatePickerDialog.OnDateSetListener() {
+                                @Override
+                                public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                    calendar.set(Calendar.YEAR, year);
+                                    calendar.set(Calendar.MONTH, month);
+                                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                                    cursore = dataStorage.getIndexByDate(calendar.getTime());
+                                    btnEnableStatusCheck();
+                                    setData(selectedTrendKey);
+                                }
+                            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+                    datePickerDialog.getDatePicker().setMinDate(minData.getTime());
+                    datePickerDialog.getDatePicker().setMaxDate(maxData.getTime());
+                    datePickerDialog.show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(BarChartActivity.this, "Non è possibile selezionare un data", Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }
