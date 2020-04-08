@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ShareCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -172,6 +173,15 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(MainActivity.this, getResources().getString(R.string.no_data_to_display), Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.action_contatta:
+                ShareCompat.IntentBuilder.from(MainActivity.this)
+                        .setType("message/rfc822")
+                        .addEmailTo("twistedappdeveloper@gmail.com")
+                        .setSubject(String.format("%s: %s", getString(R.string.oggetto), getString(R.string.app_name)))
+                        .setChooserTitle("Scegli un Client Email")
+                        .startChooser();
+                Toast.makeText(MainActivity.this, "Scegli un Client Email", Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);

@@ -8,7 +8,9 @@
         \n\nIl codice sorgente dell\'applicativo è disponibile sotto licenza OpenSource \'MIT\' al seguente URL: https://github.com/SimoneTinella/Stato_COVID19_Italia_Android
     </string>
     <string name="changelog">Changelog</string>
+    <string name="contatta">Contatta lo sviluppatore</string>
     <string name="no_changelog">Non è stato possibile recuperare il Changelog.</string>
+    <string name="oggetto">Applicazione Android</string>
     <string name="ver_installata">Versione installata %s</string>
 
     <string name="indietro">indietro</string>

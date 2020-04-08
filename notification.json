@@ -2,8 +2,8 @@
   "latest_app_version": 19,
   "changelog": [
     {
-      "ver": "1.1.9",
-      "description": "-Aggiunta visualizzazione temporale per i dati delle Province.\n-Fix visualizzazione avvisi multipli."
+      "ver": "1.2.0",
+      "description": "-Aggiunta visualizzazione temporale per i dati delle Province.\n-Aggiunta Icona per le province.\n-Fix visualizzazione avvisi multipli.\n-Aggiunto DatePicker per scegliere direttamente il giorno da visualizzare.\n-Possibilità di contattare lo sviluppatore dal Menu principale."
     },
     {
       "ver": "1.1.8.1",
