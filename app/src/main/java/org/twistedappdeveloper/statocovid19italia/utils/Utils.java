@@ -10,6 +10,10 @@ public class Utils {
     public static final String TREND_KEY = "trendKey";
     public static final String PROVINCE_ARRAY_KEY = "provincie";
 
+    public static final String themeModeKey = "themeMode";
+    public static final int DayMode = 0;
+    public static final int DarkMode = 1;
+
 
     static int compare(BarEntry u1, BarEntry u2) {
         // assume null checks as required

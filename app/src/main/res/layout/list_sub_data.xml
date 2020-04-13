@@ -11,8 +11,8 @@
         android:layout_weight="1"
         android:gravity="start"
         android:textAlignment="textStart"
-        android:textColor="@android:color/black"
-        android:textSize="13sp"
+        android:textColor="@color/textColor"
+        android:textSize="14sp"
         tools:text="Nome" />
 
     <TextView
@@ -23,6 +23,7 @@
         android:gravity="end"
         android:textAlignment="textEnd"
         android:textColor="@android:color/holo_orange_dark"
-        android:textSize="13sp"
+        android:textSize="14sp"
+        android:textStyle="bold"
         tools:text="Valore" />
 </LinearLayout>

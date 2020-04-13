@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/txtProvinceDialogTitle"
@@ -11,7 +12,7 @@
         android:gravity="center_horizontal"
         android:text="@string/province_da_visualizzare"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/textColor"
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingBottom="10sp"/>

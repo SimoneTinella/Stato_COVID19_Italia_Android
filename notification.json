@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 19,
+  "latest_app_version": 20,
   "changelog": [
+    {
+      "ver": "1.2.1",
+      "description": "-Aggiunta Dark Mode."
+    },
     {
       "ver": "1.2.0",
       "description": "-Aggiunta visualizzazione temporale per i dati delle Province.\n-Aggiunta Icona per le province.\n-Fix visualizzazione avvisi multipli.\n-Aggiunto DatePicker per scegliere direttamente il giorno da visualizzare.\n-Possibilità di contattare lo sviluppatore dal Menu principale."

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#43a047</color>
-    <color name="colorPrimaryDark">#00701a</color>
-    <color name="colorAccent">#76d275</color>
+    <color name="colorPrimary">#1b5e20</color>
+    <color name="colorPrimaryDark">#003300</color>
+    <color name="colorAccent">#4c8c4a</color>
 
     <color name="orange">#FF8300</color>
     <color name="orangeSecondary">#ef6c00</color>
@@ -11,8 +11,8 @@
 
 
 
-    <color name="brown">#B71C1C</color>
-    <color name="brownDark">#7f0000</color>
+    <color name="brown">#D71C1C</color>
+    <color name="brownDark">#Df0000</color>
 
     <color name="blue">#42A5F4</color>
     <color name="blueLight">#0077C1</color>
@@ -23,10 +23,10 @@
 
     <color name="grey">#8f8f8f</color>
 
-    <color name="background">#FFFFFF</color>
-    <color name="chart_background">#FFFFFF</color>
-    <color name="textColor">#000000</color>
-    <color name="chartTextColor">#88000000</color>
-    <color name="barra_avviso">#fbff00</color>
+    <color name="background">#333333</color>
+    <color name="chart_background">#222222</color>
+    <color name="textColor">#FFFFFF</color>
+    <color name="chartTextColor">#AAFFFFFF</color>
+    <color name="barra_avviso">#f0c800</color>
 
 </resources>

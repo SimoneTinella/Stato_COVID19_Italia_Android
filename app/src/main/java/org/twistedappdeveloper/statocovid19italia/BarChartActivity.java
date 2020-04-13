@@ -118,7 +118,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         dataLen = dataStorage.getDataStorageByDataContext(dataStorage.getSubLevelDataKeys().get(0)).getDataLength();
 
         chart.setTouchEnabled(true);
-        chart.setBackgroundColor(Color.WHITE);
+        chart.setBackgroundColor(Color.TRANSPARENT);
         chart.setDrawBarShadow(false);
         chart.setDrawValueAboveBar(true);
         chart.setPinchZoom(false);
@@ -136,6 +136,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         xAxis.setLabelCount(21);
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setLabelRotationAngle(90);
+        xAxis.setTextColor(getResources().getColor(R.color.textColor));
+
+        chart.getAxisRight().setTextColor(getResources().getColor(R.color.textColor));
 
         List<TrendInfo> trendInfoListTmp = dataStorage.getTrendsList();
         trendInfoList = new TrendInfo[trendInfoListTmp.size()];
@@ -156,7 +159,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         Legend l = chart.getLegend();
         l.setForm(Legend.LegendForm.SQUARE);
         l.setTextSize(12f);
-        l.setTextColor(Color.BLACK);
+        l.setTextColor(getResources().getColor(R.color.textColor));
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
@@ -227,6 +230,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         barDataSet = new BarDataSet(barValues, TrendUtils.getTrendNameByTrendKey(getApplicationContext().getResources(), trendKey));
         barDataSet.setDrawIcons(false);
         barDataSet.setColor(TrendUtils.getColorByTrendKey(BarChartActivity.this, trendKey));
+        barDataSet.setValueTextColor(getResources().getColor(R.color.textColor));
 
         ArrayList<IBarDataSet> dataSets = new ArrayList<>();
         dataSets.add(barDataSet);

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/chart_background">
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart1"
@@ -20,7 +21,7 @@
         android:layout_marginLeft="9sp"
         android:layout_marginTop="2sp"
         android:layout_alignParentStart="true"
-        android:textColor="@android:color/black"
+        android:textColor="@color/textColor"
         tools:text="TextView"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"/>
@@ -33,7 +34,7 @@
         android:layout_marginRight="9sp"
         android:layout_marginTop="2sp"
         android:layout_alignParentEnd="true"
-        android:textColor="@android:color/black"
+        android:textColor="@color/textColor"
         tools:text="TextView"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"/>

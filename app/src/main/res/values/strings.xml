@@ -9,6 +9,7 @@
     </string>
     <string name="changelog">Changelog</string>
     <string name="contatta">Contatta lo sviluppatore</string>
+    <string name="impostazioni">Cambia tema</string>
     <string name="no_changelog">Non è stato possibile recuperare il Changelog.</string>
     <string name="oggetto">Applicazione Android</string>
     <string name="ver_installata">Versione installata %s</string>
@@ -38,7 +39,7 @@
     <string name="wait_pls">Attendere prego…</string>
     <string name="versione">versione</string>
     <string name="versioni">versioni</string>
-    <string name="dati_relativi_al">Dati relativi al %s</string>
+    <string name="dati_relativi_al">Dati del %s</string>
     <string name="seleziona_almeno_un_elem">Seleziona almeno un elemento</string>
     <string name="limite_selezione">Puoi selezionare un minimo di %d province e un massimo di %d.</string>
     <string name="variazioni_giorno_prec">Variazioni con il giorno precedente</string>
@@ -89,9 +90,9 @@
     <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>
     <string name="province_da_visualizzare">Elenco Province</string>
     <string name="ordinamento">Ordinamento</string>
-    <string name="val_giorno_prima">Valore del giorno prima</string>
-    <string name="var_perc_giorno_prima">Var. % rispetto al giorno prima</string>
-    <string name="var_giorno_prima">Var. rispetto al giorno prima</string>
+    <string name="val_giorno_prima">Valore precedente</string>
+    <string name="var_perc_giorno_prima">Variazione %</string>
+    <string name="var_giorno_prima">Variazione numerica</string>
     <string name="visualizza_avviso">Visualizza Avviso</string>
 
 </resources>

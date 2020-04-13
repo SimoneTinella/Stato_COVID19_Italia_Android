@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="0sp">
+    android:padding="0sp"
+    android:background="@color/background">
 
     <TextView
         android:id="@+id/txtTrendsDialogTitle"
@@ -14,7 +15,7 @@
         android:paddingBottom="10sp"
         android:text="@string/misure_da_visualizzare"
         android:textAlignment="center"
-        android:textColor="@android:color/black"
+        android:textColor="@color/textColor"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

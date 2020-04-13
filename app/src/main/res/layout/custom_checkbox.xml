@@ -7,4 +7,5 @@
     android:drawableEnd="?android:attr/listChoiceIndicatorMultiple"
     android:paddingHorizontal="25sp"
     android:background="@android:color/transparent"
+    android:textColor="@color/textColor"
     />

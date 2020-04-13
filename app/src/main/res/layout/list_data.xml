@@ -22,8 +22,9 @@
             android:layout_weight="1"
             android:gravity="start"
             android:textAlignment="textStart"
-            android:textColor="@android:color/black"
+            android:textColor="@color/textColor"
             android:textSize="20sp"
+            android:textStyle="bold"
             tools:text="Nome" />
 
         <TextView
@@ -35,6 +36,7 @@
             android:textAlignment="textEnd"
             android:textColor="@android:color/holo_orange_dark"
             android:textSize="20sp"
+            android:textStyle="bold"
             tools:text="Valore" />
 
     </LinearLayout>
@@ -43,7 +45,6 @@
         android:id="@+id/infoContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
         android:paddingLeft="3sp"
         android:paddingStart="3sp"
         tools:ignore="RtlSymmetry"
@@ -51,79 +52,88 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/txtInfoPrec"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:gravity="start"
                 android:textAlignment="textStart"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textColor="@color/textColor"
+                android:textSize="14sp"
                 tools:text="Valore del giorno prima" />
 
             <TextView
                 android:id="@+id/txtInfoValuePrec"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 tools:text="Valore" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/txtInfoPercentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:gravity="start"
                 android:textAlignment="textStart"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textColor="@color/textColor"
+                android:textSize="14sp"
                 tools:text="Var. % rispetto al giorno prima" />
 
             <TextView
                 android:id="@+id/txtInfoValuePercentage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 tools:text="Valore" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/txtInfoDelta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.8"
                 android:gravity="start"
                 android:textAlignment="textStart"
-                android:textColor="@android:color/black"
-                android:textSize="12sp"
+                android:textColor="@color/textColor"
+                android:textSize="14sp"
                 tools:text="Var. rispetto al giorno prima" />
 
             <TextView
                 android:id="@+id/txtInfoValueDelta"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.2"
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="12sp"
+                android:textSize="14sp"
+                android:textStyle="bold"
                 tools:text="Valore" />
         </LinearLayout>
 

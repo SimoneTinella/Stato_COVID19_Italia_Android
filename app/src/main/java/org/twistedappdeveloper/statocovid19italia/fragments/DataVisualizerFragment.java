@@ -68,7 +68,10 @@ public class DataVisualizerFragment extends Fragment {
         return fragment;
     }
 
-    private DataVisualizerFragment() {
+    /***
+     * Usare newIstance. Questo costruttore dovrebbe essere private ma a causa del cambio tema deve essere public.
+     * ***/
+    public DataVisualizerFragment() {
     }
 
     private String dataContext;

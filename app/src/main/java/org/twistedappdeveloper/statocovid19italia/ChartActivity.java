@@ -3,6 +3,7 @@ package org.twistedappdeveloper.statocovid19italia;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -72,9 +73,11 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private ImageButton btnDisplayValues, btnContextProvince;
 
-    private boolean displayValuesOnChart = true;
+    private boolean displayValuesOnChart = false;
 
     private static final int animDuration = 600;
+
+    private SharedPreferences preferences;
 
     private void updateContext() {
         dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
@@ -113,6 +116,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_chart);
 
+        preferences = getApplicationContext().getSharedPreferences("default", 0);
+
         txtContesto = findViewById(R.id.txtContesto);
         txtMarkerData = findViewById(R.id.txtMarkerData);
         ImageButton btnTrends = findViewById(R.id.btnTrends);
@@ -144,7 +149,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.setHighlightPerDragEnabled(true);
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);
-        chart.setBackgroundColor(Color.WHITE);
+        chart.setBackgroundColor(Color.TRANSPARENT);
         chart.setOnChartGestureListener(this);
 
         chart.setMarker(new ChartActivityMaker(ChartActivity.this));
@@ -152,12 +157,10 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         Legend l = chart.getLegend();
         l.setForm(Legend.LegendForm.SQUARE);
         l.setTextSize(12f);
-        l.setTextColor(Color.BLACK);
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(true);
-//        l.setYOffset(4f);
         l.setXOffset(getSPDimension(4));
 
         chart.getDescription().setEnabled(false);
@@ -165,7 +168,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         DataFormatter dataFormatter = new DataFormatter();
         XAxis xAxis = chart.getXAxis();
         xAxis.setTextSize(11f);
-        xAxis.setTextColor(Color.BLACK);
+
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -173,11 +176,16 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         xAxis.setValueFormatter(dataFormatter);
 
         YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setTextColor(Color.BLACK);
+
         rightAxis.setDrawGridLines(true);
         rightAxis.setGranularityEnabled(true);
 
         chart.getAxisLeft().setEnabled(false);
+
+        l.setTextColor(getResources().getColor(R.color.textColor));
+        rightAxis.setTextColor(getResources().getColor(R.color.textColor));
+        xAxis.setTextColor(getResources().getColor(R.color.textColor));
+
 
         setData(animDuration);
     }
@@ -211,7 +219,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 LineDataSet dataSet = new LineDataSet(values, trendSelection.getTrendInfo().getName());
                 dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
                 dataSet.setColor(getColorByTrendKey(ChartActivity.this, trendSelection.getTrendInfo().getKey()));
-                dataSet.setCircleColor(Color.BLACK);
+                dataSet.setCircleColor(getResources().getColor(R.color.chartTextColor));
                 dataSet.setLineWidth(1.8f);
                 dataSet.setCircleRadius(2f);
                 dataSet.setFillAlpha(65);
@@ -234,7 +242,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.setData(data);
 
         if (displayValuesOnChart) {
-            data.setValueTextColor(Color.BLACK);
+            data.setValueTextColor(getResources().getColor(R.color.chartTextColor));
             data.setValueTextSize(9.5f);
             data.setDrawValues(true);
         } else {

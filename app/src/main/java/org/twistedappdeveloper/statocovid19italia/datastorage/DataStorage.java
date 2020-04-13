@@ -372,6 +372,8 @@ public class DataStorage {
     }
 
     public void setAvvisiDataArrayJson(JSONArray avvisiDataArrayJson) {
+        mappaAvvisi.clear();
+        avvisiRelativiMap.clear();
         for (int i = 0; i < avvisiDataArrayJson.length(); i++) {
             try {
                 JSONObject jsonObject = avvisiDataArrayJson.getJSONObject(i);

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -40,6 +41,10 @@ import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
 
+import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DarkMode;
+import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DayMode;
+import static org.twistedappdeveloper.statocovid19italia.utils.Utils.themeModeKey;
+
 public class MainActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
@@ -53,9 +58,26 @@ public class MainActivity extends AppCompatActivity {
 
     private DataStorage nationalDataStorage;
 
+    private SharedPreferences pref;
+
+    private void changeTheme(){
+        pref = getApplicationContext().getSharedPreferences("default", 0);
+        int themeMode = pref.getInt(themeModeKey, 0);
+        switch (themeMode) {
+            case DayMode:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                break;
+            case DarkMode:
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        changeTheme();
         super.onCreate(savedInstanceState);
+
         nationalDataStorage = DataStorage.createAndGetIstanceIfNotExist(getResources(), DataStorage.Scope.NAZIONALE);
 
         setContentView(R.layout.activity_main);
@@ -63,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         currentFragment = DataVisualizerFragment.newInstance(DataStorage.defaultDataContext);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, currentFragment);
+        fragmentTransaction.replace(R.id.container, currentFragment);
         fragmentTransaction.commit();
     }
 
@@ -183,6 +205,17 @@ public class MainActivity extends AppCompatActivity {
                         .startChooser();
                 Toast.makeText(MainActivity.this, "Scegli un Client Email", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.action_settings:
+                int themeMode = pref.getInt(themeModeKey, 0);
+                SharedPreferences.Editor editor = pref.edit();
+                if (themeMode == DayMode) {
+                    editor.putInt(themeModeKey, DarkMode);
+                }else{
+                    editor.putInt(themeModeKey, DayMode);
+                }
+                editor.apply();
+                changeTheme();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -261,10 +294,9 @@ public class MainActivity extends AppCompatActivity {
                                 });
                             } else {
                                 String key = "versione";
-                                SharedPreferences pref = getApplicationContext().getSharedPreferences("default", 0);
+                                SharedPreferences.Editor editor = pref.edit();
                                 int version = pref.getInt(key, 0);
                                 if (version < BuildConfig.VERSION_CODE) {
-                                    SharedPreferences.Editor editor = pref.edit();
                                     editor.putInt(key, BuildConfig.VERSION_CODE);
                                     editor.apply();
                                     runOnUiThread(new Runnable() {
