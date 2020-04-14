@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences pref;
 
-    private void changeTheme(){
+    private void setTheme(){
         pref = getApplicationContext().getSharedPreferences("default", 0);
         int themeMode = pref.getInt(themeModeKey, 0);
         switch (themeMode) {
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        changeTheme();
+        setTheme();
         super.onCreate(savedInstanceState);
 
         nationalDataStorage = DataStorage.createAndGetIstanceIfNotExist(getResources(), DataStorage.Scope.NAZIONALE);
@@ -206,6 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Scegli un Client Email", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_settings:
+                Toast.makeText(getApplicationContext(),"Cambio tema in corso...", Toast.LENGTH_SHORT).show();
                 int themeMode = pref.getInt(themeModeKey, 0);
                 SharedPreferences.Editor editor = pref.edit();
                 if (themeMode == DayMode) {
@@ -214,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                     editor.putInt(themeModeKey, DayMode);
                 }
                 editor.apply();
-                changeTheme();
+                setTheme();
                 break;
         }
         return super.onOptionsItemSelected(item);

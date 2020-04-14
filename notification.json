@@ -2,6 +2,10 @@
   "latest_app_version": 20,
   "changelog": [
     {
+      "ver": "1.2.1.1",
+      "description": "-Minor Fix"
+    },
+    {
       "ver": "1.2.1",
       "description": "-Aggiunta Dark Mode."
     },

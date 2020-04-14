@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical"
-    android:padding="0sp"
-    android:background="@color/background">
+    android:padding="0sp">
 
     <TextView
         android:id="@+id/txtTrendsDialogTitle"
@@ -25,12 +25,12 @@
     <ListView
         android:id="@+id/listViewDialogTrends"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@+id/listButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTrendsDialogTitle"
-        app:layout_constraintHeight_default="wrap" />
+        app:layout_constraintTop_toBottomOf="@+id/txtTrendsDialogTitle" />
 
     <LinearLayout
         android:id="@+id/listButton"

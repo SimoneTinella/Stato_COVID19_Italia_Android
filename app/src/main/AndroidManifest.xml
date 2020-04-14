@@ -5,8 +5,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />-->
+<!--    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />-->
 
     <application
         android:allowBackup="false"
@@ -14,21 +14,24 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:configChanges="uiMode|orientation|screenSize|screenLayout|keyboardHidden">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".BarChartActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
         <activity
             android:name=".ProvincialBarChartActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
         <activity
             android:name=".ChartActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="userPortrait"
-            tools:ignore="LockedOrientationActivity">
+            tools:ignore="LockedOrientationActivity"
+            android:configChanges="orientation|screenSize|screenLayout|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
