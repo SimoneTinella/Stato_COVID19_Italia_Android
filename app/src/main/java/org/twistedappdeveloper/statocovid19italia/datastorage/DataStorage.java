@@ -42,7 +42,8 @@ public class DataStorage {
     public static final String RICOVERATI_SINTOMI_KEY = "ricoverati_con_sintomi";
     public static final String ISOLAMENTO_DOMICILIARE_KEY = "isolamento_domiciliare";
     public static final String TAMPONI_KEY = "tamponi";
-    public static final String NUOVI_POSITIVI = "nuovi_positivi";
+    public static final String NUOVI_POSITIVI_KEY = "nuovi_positivi";
+    public static final String CASI_TESTATI_KEY = "casi_testati";
 
     //Computed trends keys
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
@@ -190,7 +191,10 @@ public class DataStorage {
 
                 //Escludo eventuali nuovi campi aggiunti nel json non rappresentanti segnali
                 try {
-                    Integer.parseInt(dataArrayJson.getJSONObject(0).getString(key));
+                    String value = dataArrayJson.getJSONObject(0).getString(key);
+                    if (!value.equals("null")) {
+                        Integer.parseInt(value);
+                    }
                 } catch (NumberFormatException e) {
                     Log.d("AndroTag", String.format("Valori della chiave %s scartati", key));
                     continue;
@@ -201,8 +205,20 @@ public class DataStorage {
                 for (int i = 0; i < dataArrayJson.length(); i++) {
                     JSONObject jsonObject = dataArrayJson.getJSONObject(i);
                     String date = getFullDateStringFromJSONObject(jsonObject);
-                    int value = jsonObject.getInt(key);
-                    int precValue = tmpObj.getInt(key);
+                    String valueString = jsonObject.getString(key);
+                    int value;
+                    if (valueString.equals("null")) {
+                        value = 0;
+                    } else {
+                        value = jsonObject.getInt(key);
+                    }
+                    int precValue;
+                    String precValueString = tmpObj.getString(key);
+                    if (precValueString.equals("null")) {
+                        precValue = 0;
+                    } else {
+                        precValue = tmpObj.getInt(key);
+                    }
                     int delta = value - precValue;
                     float percentage = (float) delta / (precValue == 0 ? 1 : precValue);
                     values.add(new TrendValue(value, date, percentage, delta, precValue));
@@ -259,7 +275,7 @@ public class DataStorage {
                 for (int i = 1; i < dataArrayJson.length(); i++) {
                     nuoviPositivi.add(computeDifferentialTrend(i, i - 1, TOTALE_CASI_KEY));
                 }
-                trendsMap.put(NUOVI_POSITIVI, new TrendInfo(getTrendNameByTrendKey(resources, NUOVI_POSITIVI), NUOVI_POSITIVI, nuoviPositivi));
+                trendsMap.put(NUOVI_POSITIVI_KEY, new TrendInfo(getTrendNameByTrendKey(resources, NUOVI_POSITIVI_KEY), NUOVI_POSITIVI_KEY, nuoviPositivi));
             }
         } catch (JSONException e) {
             Log.e("AndroTagError", e.getMessage());

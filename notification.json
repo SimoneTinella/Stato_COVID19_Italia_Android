@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 21,
+  "latest_app_version": 22,
   "changelog": [
+    {
+      "ver": "1.2.2",
+      "description": "-Aggiunta nuova misura (Casi Testati) fornita dalla Protezione Civile. Tale misura rappresenta gli individui distinti che sono stati sottoposti almeno una volta al tampone.\n\nNota: I primi dati di questa misura risalgono al 19/04/2020"
+    },
     {
       "ver": "1.2.1.1",
       "description": "-Minor Fix"

@@ -193,7 +193,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
     private boolean isTrendSelected(String key) {
         switch (key) {
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
-            case DataStorage.NUOVI_POSITIVI:
+            case DataStorage.NUOVI_POSITIVI_KEY:
                 return true;
 
             default:

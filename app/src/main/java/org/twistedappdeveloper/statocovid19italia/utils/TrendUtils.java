@@ -13,7 +13,7 @@ public class TrendUtils {
         switch (key) {
             case DataStorage.TOTALE_CASI_KEY:
                 return context.getResources().getColor(R.color.orangeSecondary);
-            case DataStorage.NUOVI_POSITIVI:
+            case DataStorage.NUOVI_POSITIVI_KEY:
                 return context.getResources().getColor(R.color.orangeLight);
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
                 return context.getResources().getColor(R.color.brown);
@@ -42,13 +42,13 @@ public class TrendUtils {
             case DataStorage.TAMPONI_KEY:
                 return context.getResources().getColor(R.color.grey);
             default:
-                return Color.BLACK;
+                return context.getResources().getColor(R.color.textColor);
         }
     }
 
     public static Integer getPositionByTrendKey(String key) {
         switch (key) {
-            case DataStorage.NUOVI_POSITIVI:
+            case DataStorage.NUOVI_POSITIVI_KEY:
                 return 1;
             case DataStorage.C_NUOVI_DIMESSI_GUARITI:
                 return 2;
@@ -75,6 +75,8 @@ public class TrendUtils {
                 return 11;
             case DataStorage.TAMPONI_KEY:
                 return 12;
+            case DataStorage.CASI_TESTATI_KEY:
+                return 13;
 
             default:
                 return Integer.MAX_VALUE;
@@ -88,7 +90,7 @@ public class TrendUtils {
         switch (key) {
             case DataStorage.TOTALE_CASI_KEY:
                 return resources.getString(R.string.totale_casi_name);
-            case DataStorage.NUOVI_POSITIVI:
+            case DataStorage.NUOVI_POSITIVI_KEY:
                 return resources.getString(R.string.c_nuovi_positivi_name);
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
                 return resources.getString(R.string.totale_attualmente_positivi_name);
@@ -131,7 +133,7 @@ public class TrendUtils {
         switch (key) {
             case DataStorage.TOTALE_CASI_KEY:
                 return context.getResources().getString(R.string.totale_casi_desc);
-            case DataStorage.NUOVI_POSITIVI:
+            case DataStorage.NUOVI_POSITIVI_KEY:
                 return context.getResources().getString(R.string.c_nuovi_positivi_desc);
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
                 return context.getResources().getString(R.string.totale_attualmente_positivi_desc);
@@ -155,6 +157,8 @@ public class TrendUtils {
                 return context.getResources().getString(R.string.isolamento_domiciliare_desc);
             case DataStorage.TAMPONI_KEY:
                 return context.getResources().getString(R.string.tamponi_desc);
+            case DataStorage.CASI_TESTATI_KEY:
+                return context.getResources().getString(R.string.casi_testati_desc);
 
             default:
                 return "Nessuna Descrizione Disponibile";
