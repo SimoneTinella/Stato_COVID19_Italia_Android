@@ -171,7 +171,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
         provinceListMap = new HashMap<>();
         for (String regione : dataStorage.getSubLevelDataKeys()) {
             for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
-                if (!provincia.equals("In fase di definizione/aggiornamento")) {
+                if (!TrendUtils.discardProvincia(provincia)) {
                     List<ProvinceSelection> provinceSelections;
                     if (provinceListMap.containsKey(regione)) {
                         provinceSelections = provinceListMap.get(regione);

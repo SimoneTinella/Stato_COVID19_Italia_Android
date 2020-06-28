@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.twistedappdeveloper.statocovid19italia.model.Avviso;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
 import org.twistedappdeveloper.statocovid19italia.model.TrendValue;
+import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -294,6 +295,10 @@ public class DataStorage {
                 JSONObject jsonObject = subLevelDataJSONArray.getJSONObject(i);
 
                 String regione = jsonObject.getString(key);
+
+                //FIXME da gestire i casi separatamente
+                regione = TrendUtils.getFixedProvinciaDen(regione);
+
                 JSONArray regionalJSONArray;
                 if (regionalJsonArrayMap.containsKey(regione)) {
                     regionalJSONArray = regionalJsonArrayMap.get(regione);

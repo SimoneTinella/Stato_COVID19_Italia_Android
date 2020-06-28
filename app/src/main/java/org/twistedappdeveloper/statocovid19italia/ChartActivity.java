@@ -418,7 +418,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     province.add(dataStorageRegionale.getDataContext());
                     province.addAll(dataStorageRegionale.getSubLevelDataKeys());
                 }
-                province.remove("In fase di definizione/aggiornamento");
+                province.remove(TrendUtils.denProvinciaFixed);
+
                 final String[] provinceContexs = province.toArray(new String[0]);
 
                 for (int i = 0; i < provinceContexs.length; i++) {

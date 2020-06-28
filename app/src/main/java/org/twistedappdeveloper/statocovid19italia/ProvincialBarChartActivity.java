@@ -106,7 +106,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
 
         for (String regione : dataStorage.getSubLevelDataKeys()) {
             for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
-                if (!provincia.equals("In fase di definizione/aggiornamento")) {
+                if (!TrendUtils.discardProvincia(provincia)) {
                     dataStorageMap.put(provincia, dataStorage.getDataStorageByDataContext(regione).getDataStorageByDataContext(provincia));
                 }
             }
@@ -192,7 +192,7 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         provinceListMap = new HashMap<>();
         for (String regione : dataStorage.getSubLevelDataKeys()) {
             for (String provincia : dataStorage.getDataStorageByDataContext(regione).getSubLevelDataKeys()) {
-                if (!provincia.equals("In fase di definizione/aggiornamento")) {
+                if (!TrendUtils.discardProvincia(provincia)) {
                     List<ProvinceSelection> provinceSelections;
                     if (provinceListMap.containsKey(regione)) {
                         provinceSelections = provinceListMap.get(regione);

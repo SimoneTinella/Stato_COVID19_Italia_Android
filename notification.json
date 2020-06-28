@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 22,
+  "latest_app_version": 23,
   "changelog": [
+    {
+      "ver": "1.2.3",
+      "description": "-Fix crash nei dati provinciali e regionali. Problema dovuto alla modifica dei dati forniti dalla Protezione Civile."
+    },
     {
       "ver": "1.2.2",
       "description": "-Aggiunta nuova misura (Casi Testati) fornita dalla Protezione Civile. Tale misura rappresenta gli individui distinti che sono stati sottoposti almeno una volta al tampone.\n\nNota: I primi dati di questa misura risalgono al 19/04/2020"

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 
-import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.R;
+import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 
 public class TrendUtils {
 
@@ -164,5 +164,27 @@ public class TrendUtils {
                 return "Nessuna Descrizione Disponibile";
         }
     }
+
+    //FIXME da gestire i casi separatamente e rimuovere questo metodo
+    public static String getFixedProvinciaDen(String den) {
+        if (
+                den.compareToIgnoreCase("In fase di definizione") == 0 ||
+                        den.compareToIgnoreCase("In fase di definizione/aggiornamento") == 0 ||
+                        den.compareToIgnoreCase("fuori Regione/P.A.") == 0
+        ) {
+            return denProvinciaFixed;
+        } else {
+            return den;
+        }
+    }
+
+    public static boolean discardProvincia(String den) {
+        return den.compareToIgnoreCase("In fase di definizione") == 0 ||
+                den.compareToIgnoreCase("In fase di definizione/aggiornamento") == 0 ||
+                den.compareToIgnoreCase("fuori Regione/P.A.") == 0 ||
+                den.compareToIgnoreCase(denProvinciaFixed) == 0;
+    }
+
+    public static final String denProvinciaFixed = "In fase di definizione o Fuori Regione/P.A";
 
 }

@@ -28,6 +28,7 @@ import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.Avviso;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
 import org.twistedappdeveloper.statocovid19italia.model.TrendInfo;
+import org.twistedappdeveloper.statocovid19italia.utils.TrendUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
 import java.text.ParseException;
@@ -143,6 +144,8 @@ public class DataVisualizerFragment extends Fragment {
                 List<String> province = dataStorage.getSubLevelDataKeys();
                 Collections.sort(province);
                 for (String provincia : province) {
+                    //FIXME da gestire i casi separatamente
+                    provincia = TrendUtils.getFixedProvinciaDen(provincia);
                     TrendInfo totaleCasiProvincia = dataStorage.getDataStorageByDataContext(provincia).getTrendByKey(trendInfo.getKey());
                     if (totaleCasiProvincia != null) {
                         RowData provincialRowData = new RowData(
