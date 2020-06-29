@@ -72,6 +72,8 @@
     <string name="isolamento_domiciliare_desc">Persone in isolamente domiciliare.</string>
     <string name="tamponi_desc">Totale tamponi effettuati dall\'inizio. (Incluse le ripetizioni sugli stessi individui)</string>
     <string name="casi_testati_desc">Totale persone distinte su cui è stato effettuato almeno un tampone. (Non include ripetizioni)</string>
+    <string name="casi_da_sospetto_diagnostico_desc">Casi positivi identificati dal sospetto diagnostico</string>
+    <string name="casi_da_screening_desc">Casi positivi che sono stati identificati attraverso attività di screening</string>
     <string name="c_nuovi_positivi_desc">Rappresenta il reale numero di nuove persone contagiate.</string>
     <string name="c_nuovi_dimessi_guariti_desc">Numero di nuove persone dimesse.</string>
     <string name="c_nuovi_deceduti_desc">Numero di nuove persone decedute.</string>

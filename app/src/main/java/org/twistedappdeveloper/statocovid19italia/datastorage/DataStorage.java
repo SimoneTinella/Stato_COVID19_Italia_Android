@@ -45,6 +45,8 @@ public class DataStorage {
     public static final String TAMPONI_KEY = "tamponi";
     public static final String NUOVI_POSITIVI_KEY = "nuovi_positivi";
     public static final String CASI_TESTATI_KEY = "casi_testati";
+    public static final String CASI_DA_SOSPETTO_DIAGNOSTICO = "casi_da_sospetto_diagnostico";
+    public static final String CASI_DA_SCREENING = "casi_da_screening";
 
     //Computed trends keys
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
@@ -60,7 +62,7 @@ public class DataStorage {
     private static final String LONG_REGIONE_KEY = "long";
     private static final String COD_PROVINCIA_KEY = "codice_provincia";
     private static final String SIGLA_PROVINCIA_KEY = "sigla_provincia";
-    private static final String NOTE_IT_KEY = "note_it";
+    private static final String NOTE_IT_KEY = "note";
     private static final String NOTE_EN_KEY = "note_en";
 
     //AVVISI
@@ -243,7 +245,10 @@ public class DataStorage {
                         avvisi = avvisiRelativiMap.get(data);
                     }
                     for (String nota : split) {
-                        avvisi.add(getAvvisoByKey(nota));
+                        Avviso avviso = getAvvisoByKey(nota);
+                        if(avviso != null){
+                            avvisi.add(getAvvisoByKey(nota));
+                        }
                     }
 
                 }

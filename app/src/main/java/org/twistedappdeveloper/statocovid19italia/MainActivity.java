@@ -329,11 +329,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-                client.get(getString(R.string.dataset_avvisi), new JsonHttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                        super.onSuccess(statusCode, headers, response);
-                        nationalDataStorage.setAvvisiDataArrayJson(response);
+//                client.get(getString(R.string.dataset_avvisi), new JsonHttpResponseHandler() {
+//                    @Override
+//                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                        super.onSuccess(statusCode, headers, response);
+//                        nationalDataStorage.setAvvisiDataArrayJson(response);
 
                         client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
                             @Override
@@ -387,9 +387,9 @@ public class MainActivity extends AppCompatActivity {
                         });
 
                     }
-                });
+//                });
 
-            }
+//            }
         });
 
         threadFetchData.start();

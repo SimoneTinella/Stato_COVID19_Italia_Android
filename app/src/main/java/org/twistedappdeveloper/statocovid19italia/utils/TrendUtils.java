@@ -77,6 +77,10 @@ public class TrendUtils {
                 return 12;
             case DataStorage.CASI_TESTATI_KEY:
                 return 13;
+            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
+                return 14;
+            case DataStorage.CASI_DA_SCREENING:
+                return 15;
 
             default:
                 return Integer.MAX_VALUE;
@@ -159,6 +163,10 @@ public class TrendUtils {
                 return context.getResources().getString(R.string.tamponi_desc);
             case DataStorage.CASI_TESTATI_KEY:
                 return context.getResources().getString(R.string.casi_testati_desc);
+            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
+                return context.getResources().getString(R.string.casi_da_sospetto_diagnostico_desc);
+            case DataStorage.CASI_DA_SCREENING:
+                return context.getResources().getString(R.string.casi_da_screening_desc);
 
             default:
                 return "Nessuna Descrizione Disponibile";
@@ -170,7 +178,8 @@ public class TrendUtils {
         if (
                 den.compareToIgnoreCase("In fase di definizione") == 0 ||
                         den.compareToIgnoreCase("In fase di definizione/aggiornamento") == 0 ||
-                        den.compareToIgnoreCase("fuori Regione/P.A.") == 0
+                        den.compareToIgnoreCase("Fuori Regione / Provincia Autonoma") == 0 ||
+                        den.compareToIgnoreCase(denProvinciaFixed) == 0
         ) {
             return denProvinciaFixed;
         } else {
