@@ -173,14 +173,8 @@ public class TrendUtils {
         }
     }
 
-    //FIXME da gestire i casi separatamente e rimuovere questo metodo
     public static String getFixedProvinciaDen(String den) {
-        if (
-                den.compareToIgnoreCase("In fase di definizione") == 0 ||
-                        den.compareToIgnoreCase("In fase di definizione/aggiornamento") == 0 ||
-                        den.compareToIgnoreCase("Fuori Regione / Provincia Autonoma") == 0 ||
-                        den.compareToIgnoreCase(denProvinciaFixed) == 0
-        ) {
+        if (discardProvincia(den)) {
             return denProvinciaFixed;
         } else {
             return den;
@@ -190,7 +184,7 @@ public class TrendUtils {
     public static boolean discardProvincia(String den) {
         return den.compareToIgnoreCase("In fase di definizione") == 0 ||
                 den.compareToIgnoreCase("In fase di definizione/aggiornamento") == 0 ||
-                den.compareToIgnoreCase("fuori Regione/P.A.") == 0 ||
+                den.compareToIgnoreCase("Fuori Regione / Provincia Autonoma") == 0 ||
                 den.compareToIgnoreCase(denProvinciaFixed) == 0;
     }
 

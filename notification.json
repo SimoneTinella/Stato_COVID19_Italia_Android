@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 24,
+  "latest_app_version": 25,
   "changelog": [
+    {
+      "ver": "1.2.3.2",
+      "description": "-Sistemato calcolo per dati provinciali In fase di definizione o Fuori Regione/P.A"
+    },
     {
       "ver": "1.2.3.1",
       "description": "-Hotfix: Adattamento alla nuova struttura dati rilasciata dalla Protezione Civile in data 29/06/2020. Sono state aggiunte due nuove misure: Casi da Sospetto Diagnostico e Casi da Screening. \n\nNote: \n1) Le due nuove misure sono valorizzate dal 25/06/2020 in poi. \n2)Al momento gli avvisi sui dati sono stati disattivati per assenza degli stessi."

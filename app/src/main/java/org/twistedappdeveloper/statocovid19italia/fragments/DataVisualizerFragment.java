@@ -144,7 +144,6 @@ public class DataVisualizerFragment extends Fragment {
                 List<String> province = dataStorage.getSubLevelDataKeys();
                 Collections.sort(province);
                 for (String provincia : province) {
-                    //FIXME da gestire i casi separatamente
                     provincia = TrendUtils.getFixedProvinciaDen(provincia);
                     TrendInfo totaleCasiProvincia = dataStorage.getDataStorageByDataContext(provincia).getTrendByKey(trendInfo.getKey());
                     if (totaleCasiProvincia != null) {

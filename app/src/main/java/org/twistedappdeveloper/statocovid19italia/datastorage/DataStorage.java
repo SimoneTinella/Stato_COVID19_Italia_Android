@@ -246,7 +246,7 @@ public class DataStorage {
                     }
                     for (String nota : split) {
                         Avviso avviso = getAvvisoByKey(nota);
-                        if(avviso != null){
+                        if (avviso != null) {
                             avvisi.add(getAvvisoByKey(nota));
                         }
                     }
@@ -300,8 +300,6 @@ public class DataStorage {
                 JSONObject jsonObject = subLevelDataJSONArray.getJSONObject(i);
 
                 String regione = jsonObject.getString(key);
-
-                //FIXME da gestire i casi separatamente
                 regione = TrendUtils.getFixedProvinciaDen(regione);
 
                 JSONArray regionalJSONArray;
@@ -311,7 +309,18 @@ public class DataStorage {
                     regionalJSONArray = new JSONArray();
                     regionalJsonArrayMap.put(regione, regionalJSONArray);
                 }
-                regionalJSONArray.put(jsonObject);
+                // unisco i valori nel caso di province unite. Es In fase di definizione o Fuori Regione etc..
+                boolean found = false;
+                for (int j = 0; j < regionalJSONArray.length(); j++) {
+                    JSONObject jsonObjectTmp = regionalJSONArray.getJSONObject(j);
+                    if (jsonObjectTmp.get(DataStorage.DATA_KEY).equals(jsonObject.get(DataStorage.DATA_KEY))) {
+                        jsonObjectTmp.put(DataStorage.TOTALE_CASI_KEY, jsonObjectTmp.getInt(DataStorage.TOTALE_CASI_KEY) + jsonObject.getInt(DataStorage.TOTALE_CASI_KEY));
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    regionalJSONArray.put(jsonObject);
+                }
             }
 
             for (String dataContext : regionalJsonArrayMap.keySet()) {
