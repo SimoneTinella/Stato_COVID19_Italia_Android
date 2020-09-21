@@ -3,7 +3,7 @@
   "changelog": [
     {
       "ver": "1.2.4",
-      "description": "ATTENZIONE: Per l\\'installazione della versione 1.2.4 è necessario disinstallare le precedenti (Ho perso la chiave di build...).\n\nNovità:\n-Aggiunta misura Nuovi Tamponi Effettuati (corrisponde alla variazione della misura Tot. Tamponi Effettuati)\n-Rimosso pulsate visualizzazione numerica nel grafico temporale (Non era più utilizzabile da tempo)"
+      "description": "ATTENZIONE: Per l\'installazione della versione 1.2.4 è necessario disinstallare le precedenti (Ho perso la chiave di build...).\n\nNovità:\n-Aggiunta misura Nuovi Tamponi Effettuati (corrisponde alla variazione della misura Tot. Tamponi Effettuati)\n-Rimosso pulsate visualizzazione numerica nel grafico temporale (Non era più utilizzabile da tempo)"
     },
     {
       "ver": "1.2.3.2",
