@@ -51,6 +51,7 @@ public class DataStorage {
     //Computed trends keys
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
     public static final String C_NUOVI_DECEDUTI = "c_nuovi_deceduti";
+    public static final String C_NUOVI_TAMPONI = "c_nuovi_tamponi";
 
     //National, Regional and Provincial no trend keys
     private static final String DATA_KEY = "data";
@@ -261,18 +262,22 @@ public class DataStorage {
 
                 ArrayList<TrendValue> nuoviGuariti = new ArrayList<>();
                 ArrayList<TrendValue> nuoviDeceduti = new ArrayList<>();
+                ArrayList<TrendValue> nuoviTamponi = new ArrayList<>();
 
                 String dataIniziale = getFullDateStringFromJSONObject(jsonObjectIniziale);
                 nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
                 nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getInt(TOTALE_DECEDUTI_KEY), dataIniziale));
+                nuoviTamponi.add(new TrendValue(jsonObjectIniziale.getInt(TAMPONI_KEY), dataIniziale));
 
                 for (int i = 1; i < dataArrayJson.length(); i++) {
                     nuoviGuariti.add(computeDifferentialTrend(i, i - 1, TOTALE_DIMESSI_GUARITI_KEY));
                     nuoviDeceduti.add(computeDifferentialTrend(i, i - 1, TOTALE_DECEDUTI_KEY));
+                    nuoviTamponi.add(computeDifferentialTrend(i, i - 1, TAMPONI_KEY));
                 }
 
                 trendsMap.put(C_NUOVI_DIMESSI_GUARITI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DIMESSI_GUARITI), C_NUOVI_DIMESSI_GUARITI, nuoviGuariti));
                 trendsMap.put(C_NUOVI_DECEDUTI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_DECEDUTI), C_NUOVI_DECEDUTI, nuoviDeceduti));
+                trendsMap.put(C_NUOVI_TAMPONI, new TrendInfo(getTrendNameByTrendKey(resources, C_NUOVI_TAMPONI), C_NUOVI_TAMPONI, nuoviTamponi));
             } else {
                 JSONObject jsonObjectIniziale = dataArrayJson.getJSONObject(0);
                 ArrayList<TrendValue> nuoviPositivi = new ArrayList<>();

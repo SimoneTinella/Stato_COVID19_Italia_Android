@@ -50,7 +50,7 @@
     <string name="dataset_nazionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json</string>
     <string name="dataset_regionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json</string>
     <string name="dataset_provinciale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-province.json</string>
-    <string name="dataset_avvisi">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-note-it.json</string>
+    <string name="dataset_avvisi">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-note.json</string>
 
     <string name="notification_file">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json</string>
     <string name="new_version_app_site">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/StatoCovid19Italia.apk</string>
@@ -87,7 +87,8 @@
     <string name="terapia_intensiva_name">Terapia Intensiva</string>
     <string name="ricoverati_con_sintomi_name">Ricoverati Con Sintomi</string>
     <string name="isolamento_domiciliare_name">Isolamento Domiciliare</string>
-    <string name="tamponi_name">Tamponi Effettuati</string>
+    <string name="tamponi_name">Tot. Tamponi Effettuati</string>
+    <string name="nuovi_tamponi_name">Nuovi Tamponi Effettuati</string>
     <string name="c_nuovi_positivi_name">Nuovi Positivi</string>
     <string name="c_nuovi_dimessi_guariti_name">Nuovi Dimessi Guariti</string>
     <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>

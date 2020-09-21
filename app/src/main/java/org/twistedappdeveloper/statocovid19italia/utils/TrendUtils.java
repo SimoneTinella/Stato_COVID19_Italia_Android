@@ -54,33 +54,35 @@ public class TrendUtils {
                 return 2;
             case DataStorage.C_NUOVI_DECEDUTI:
                 return 3;
-            case DataStorage.TOTALE_CASI_KEY:
+            case DataStorage.C_NUOVI_TAMPONI:
                 return 4;
+            case DataStorage.TOTALE_CASI_KEY:
+                return 5;
             case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
                 return 0;
             case DataStorage.TOTALE_DIMESSI_GUARITI_KEY:
-                return 5;
-            case DataStorage.TOTALE_DECEDUTI_KEY:
                 return 6;
+            case DataStorage.TOTALE_DECEDUTI_KEY:
+                return 7;
 
             case DataStorage.NUOVI_ATTUALMENTE_POSITIVI_KEY:
-                return 7;
-            case DataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
                 return 8;
-            case DataStorage.TERAPIA_INTENSIVA_KEY:
+            case DataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
                 return 9;
-            case DataStorage.RICOVERATI_SINTOMI_KEY:
+            case DataStorage.TERAPIA_INTENSIVA_KEY:
                 return 10;
-            case DataStorage.ISOLAMENTO_DOMICILIARE_KEY:
+            case DataStorage.RICOVERATI_SINTOMI_KEY:
                 return 11;
-            case DataStorage.TAMPONI_KEY:
+            case DataStorage.ISOLAMENTO_DOMICILIARE_KEY:
                 return 12;
-            case DataStorage.CASI_TESTATI_KEY:
+            case DataStorage.TAMPONI_KEY:
                 return 13;
-            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
+            case DataStorage.CASI_TESTATI_KEY:
                 return 14;
-            case DataStorage.CASI_DA_SCREENING:
+            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
                 return 15;
+            case DataStorage.CASI_DA_SCREENING:
+                return 16;
 
             default:
                 return Integer.MAX_VALUE;
@@ -118,6 +120,8 @@ public class TrendUtils {
                 return resources.getString(R.string.isolamento_domiciliare_name);
             case DataStorage.TAMPONI_KEY:
                 return resources.getString(R.string.tamponi_name);
+            case DataStorage.C_NUOVI_TAMPONI:
+                return resources.getString(R.string.nuovi_tamponi_name);
 
             default:
                 String[] strings = key.split("_");

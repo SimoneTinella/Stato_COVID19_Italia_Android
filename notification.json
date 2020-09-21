@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 25,
+  "latest_app_version": 26,
   "changelog": [
+    {
+      "ver": "1.2.4",
+      "description": "-Aggiunta misura Nuovi Tamponi Effettuati (corrisponde alla variazione della misura Tot. Tamponi Effettuati)\n-Rimosso pulsate visualizzazione numerica nel grafico temporale (Non era più utilizzabile da tempo)"
+    },
     {
       "ver": "1.2.3.2",
       "description": "-Sistemato calcolo per dati provinciali In fase di definizione o Fuori Regione/P.A"
