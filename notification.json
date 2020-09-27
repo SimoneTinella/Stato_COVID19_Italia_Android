@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 26,
+  "latest_app_version": 27,
   "changelog": [
+    {
+      "ver": "1.2.4.1",
+      "description": "-Aggiunta misura rapporto tra nuovi positivi e nuovi tamponi giornaliri\n-Minor fix"
+    },
     {
       "ver": "1.2.4",
       "description": "ATTENZIONE: Per l\'installazione della versione 1.2.4 è necessario disinstallare le precedenti (Ho perso la chiave di build...).\n\nNovità:\n-Aggiunta misura Nuovi Tamponi Effettuati (corrisponde alla variazione della misura Tot. Tamponi Effettuati)\n-Rimosso pulsate visualizzazione numerica nel grafico temporale (Non era più utilizzabile da tempo)"
