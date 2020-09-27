@@ -48,6 +48,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -56,11 +57,11 @@
             android:id="@+id/txtBarPrecValueTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:layout_marginTop="5sp"
             android:layout_weight="1"
-            android:textSize="14sp"
             android:text="Val. Precedente:"
-            android:layout_marginTop="5sp"/>
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtBarPrecValue"
@@ -76,6 +77,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -84,11 +86,11 @@
             android:id="@+id/txtBarMarkerVariazioneTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:layout_marginTop="5sp"
             android:layout_weight="1"
-            android:textSize="14sp"
             android:text="Variazione:"
-            android:layout_marginTop="5sp"/>
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtBarMarkerVariazione"
@@ -104,6 +106,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -112,11 +115,11 @@
             android:id="@+id/txtBarMarkerPercentageTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:layout_marginTop="5sp"
             android:layout_weight="1"
-            android:textSize="14sp"
             android:text="Variazione Perc.:"
-            android:layout_marginTop="5sp"/>
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/txtBarMarkerPercentage"

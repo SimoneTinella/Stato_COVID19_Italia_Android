@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -457,6 +458,7 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
     public class BarChartActivityMaker extends MarkerView {
 
         private TextView txtBarMarkerTitle, txtBarMarkerCurrentValue, txtBarPrecValue, txtBarMarkerPercentage, txtBarMarkerVariazione;
+        private LinearLayout ll1, ll2, ll3;
 
         public BarChartActivityMaker(Context context) {
             super(context, R.layout.bar_chart_marker);
@@ -465,6 +467,10 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             txtBarPrecValue = findViewById(R.id.txtBarPrecValue);
             txtBarMarkerPercentage = findViewById(R.id.txtBarMarkerPercentage);
             txtBarMarkerVariazione = findViewById(R.id.txtBarMarkerVariazione);
+
+            ll1 = findViewById(R.id.ll1);
+            ll2 = findViewById(R.id.ll2);
+            ll3 = findViewById(R.id.ll3);
         }
 
         @Override
@@ -482,10 +488,19 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
 
             TrendValue trendValue = currentValues.get(dataContext);
             txtBarMarkerCurrentValue.setText(String.format("%s", formatNumber((float) trendValue.getValue())));
-            txtBarPrecValue.setText(String.format("%s", trendValue.getPrecValue()));
-            txtBarMarkerPercentage.setText(String.format(Locale.ITALIAN, "%.2f%%", trendValue.getDeltaPercentage() * 100));
-            txtBarMarkerVariazione.setText(String.format("%s", trendValue.getDelta()));
 
+            if (selectedTrendKey.equals(DataStorage.C_RAPPORTO_POSITIVI_TAMPONI)) {
+                ll1.setVisibility(GONE);
+                ll2.setVisibility(GONE);
+                ll3.setVisibility(GONE);
+            } else {
+                txtBarPrecValue.setText(String.format("%s", trendValue.getPrecValue()));
+                txtBarMarkerPercentage.setText(String.format(Locale.ITALIAN, "%.2f%%", trendValue.getDeltaPercentage() * 100));
+                txtBarMarkerVariazione.setText(String.format("%s", trendValue.getDelta()));
+                ll1.setVisibility(VISIBLE);
+                ll2.setVisibility(VISIBLE);
+                ll3.setVisibility(VISIBLE);
+            }
             super.refreshContent(e, highlight);
         }
     }
