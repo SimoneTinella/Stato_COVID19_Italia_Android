@@ -1,11 +1,10 @@
 package org.twistedappdeveloper.statocovid19italia.model;
 
 public class TrendValue {
-    private int value, delta, precValue;
+    private double value, delta, precValue, deltaPercentage;
     private String date;
-    private float deltaPercentage;
 
-    public TrendValue(Integer value, String date, float deltaPercentage, int delta, int precValue) {
+    public TrendValue(double value, String date, double deltaPercentage, double delta, double precValue) {
         this.value = value;
         this.date = date;
         this.deltaPercentage = deltaPercentage;
@@ -13,7 +12,7 @@ public class TrendValue {
         this.precValue = precValue;
     }
 
-    public TrendValue(Integer value, String date) {
+    public TrendValue(double value, String date) {
         this.value = value;
         this.date = date;
         this.deltaPercentage = 0f;
@@ -21,7 +20,7 @@ public class TrendValue {
         this.precValue = 0;
     }
 
-    public int getValue() {
+    public double getValue() {
         return value;
     }
 
@@ -29,15 +28,15 @@ public class TrendValue {
         return date;
     }
 
-    public float getDeltaPercentage() {
+    public double getDeltaPercentage() {
         return deltaPercentage;
     }
 
-    public int getDelta() {
+    public double getDelta() {
         return delta;
     }
 
-    public int getPrecValue() {
+    public double getPrecValue() {
         return precValue;
     }
 }

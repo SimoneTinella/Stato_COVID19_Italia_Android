@@ -220,8 +220,8 @@ public class ProvincialBarChartActivity extends AppCompatActivity implements Vie
         for (String selectedProvincia : selectedProvince) {
             TrendValue trendValue = dataStorageMap.get(selectedProvincia).getTrendByKey(selectedTrendKey).getTrendValues().get(cursore);
             currentValues.put(selectedProvincia, trendValue);
-            int value = trendValue.getValue();
-            values.add(new BarEntry(i++, value, selectedProvincia));
+            double value = trendValue.getValue();
+            values.add(new BarEntry(i++, (float) value, selectedProvincia));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
             if (value < 0) {
                 isMinimumZero = false;

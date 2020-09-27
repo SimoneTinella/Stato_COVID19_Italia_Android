@@ -7,6 +7,8 @@ import android.graphics.Color;
 import org.twistedappdeveloper.statocovid19italia.R;
 import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 
+import java.util.Locale;
+
 public class TrendUtils {
 
     public static int getColorByTrendKey(Context context, String key) {
@@ -41,6 +43,8 @@ public class TrendUtils {
 
             case DataStorage.TAMPONI_KEY:
                 return context.getResources().getColor(R.color.grey);
+
+
             default:
                 return context.getResources().getColor(R.color.textColor);
         }
@@ -48,6 +52,8 @@ public class TrendUtils {
 
     public static Integer getPositionByTrendKey(String key) {
         switch (key) {
+            case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
+                return 0;
             case DataStorage.NUOVI_POSITIVI_KEY:
                 return 1;
             case DataStorage.C_NUOVI_DIMESSI_GUARITI:
@@ -56,33 +62,32 @@ public class TrendUtils {
                 return 3;
             case DataStorage.C_NUOVI_TAMPONI:
                 return 4;
-            case DataStorage.TOTALE_CASI_KEY:
+            case DataStorage.C_RAPPORTO_POSITIVI_TAMPONI:
                 return 5;
-            case DataStorage.TOTALE_ATTUALMENTE_POSITIVI_KEY:
-                return 0;
-            case DataStorage.TOTALE_DIMESSI_GUARITI_KEY:
+            case DataStorage.TOTALE_CASI_KEY:
                 return 6;
-            case DataStorage.TOTALE_DECEDUTI_KEY:
+            case DataStorage.TOTALE_DIMESSI_GUARITI_KEY:
                 return 7;
-
-            case DataStorage.NUOVI_ATTUALMENTE_POSITIVI_KEY:
+            case DataStorage.TOTALE_DECEDUTI_KEY:
                 return 8;
-            case DataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
+            case DataStorage.NUOVI_ATTUALMENTE_POSITIVI_KEY:
                 return 9;
-            case DataStorage.TERAPIA_INTENSIVA_KEY:
+            case DataStorage.TOTALE_OSPEDALIZZAZIONI_KEY:
                 return 10;
-            case DataStorage.RICOVERATI_SINTOMI_KEY:
+            case DataStorage.TERAPIA_INTENSIVA_KEY:
                 return 11;
-            case DataStorage.ISOLAMENTO_DOMICILIARE_KEY:
+            case DataStorage.RICOVERATI_SINTOMI_KEY:
                 return 12;
-            case DataStorage.TAMPONI_KEY:
+            case DataStorage.ISOLAMENTO_DOMICILIARE_KEY:
                 return 13;
-            case DataStorage.CASI_TESTATI_KEY:
+            case DataStorage.TAMPONI_KEY:
                 return 14;
-            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
+            case DataStorage.CASI_TESTATI_KEY:
                 return 15;
-            case DataStorage.CASI_DA_SCREENING:
+            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
                 return 16;
+            case DataStorage.CASI_DA_SCREENING:
+                return 17;
 
             default:
                 return Integer.MAX_VALUE;
@@ -121,7 +126,9 @@ public class TrendUtils {
             case DataStorage.TAMPONI_KEY:
                 return resources.getString(R.string.tamponi_name);
             case DataStorage.C_NUOVI_TAMPONI:
-                return resources.getString(R.string.nuovi_tamponi_name);
+                return resources.getString(R.string.c_nuovi_tamponi_name);
+            case DataStorage.C_RAPPORTO_POSITIVI_TAMPONI:
+                return resources.getString(R.string.c_rapporto_positivi_tamponi);
 
             default:
                 String[] strings = key.split("_");
@@ -171,6 +178,10 @@ public class TrendUtils {
                 return context.getResources().getString(R.string.casi_da_sospetto_diagnostico_desc);
             case DataStorage.CASI_DA_SCREENING:
                 return context.getResources().getString(R.string.casi_da_screening_desc);
+            case DataStorage.C_NUOVI_TAMPONI:
+                return context.getResources().getString(R.string.c_nuovi_tamponi_name_desc);
+            case DataStorage.C_RAPPORTO_POSITIVI_TAMPONI:
+                return context.getResources().getString(R.string.c_rapporto_positivi_tamponi_desc);
 
             default:
                 return "Nessuna Descrizione Disponibile";
@@ -194,4 +205,12 @@ public class TrendUtils {
 
     public static final String denProvinciaFixed = "In fase di definizione o Fuori Regione/P.A";
 
+
+    public static String formatNumber(float number) {
+        if (number == (int) number) {
+            return String.format(Locale.ITALIAN, "%d", (int) number);
+        } else {
+            return String.format(Locale.ITALIAN, "%.2f", number);
+        }
+    }
 }

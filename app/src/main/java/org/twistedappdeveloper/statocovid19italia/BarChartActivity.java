@@ -57,6 +57,7 @@ import java.util.Map;
 import static android.content.res.Configuration.ORIENTATION_LANDSCAPE;
 import static org.twistedappdeveloper.statocovid19italia.ProvincialBarChartActivity.MAX_ELEMENTS;
 import static org.twistedappdeveloper.statocovid19italia.ProvincialBarChartActivity.MIN_ELEMENTS;
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.formatNumber;
 
 public class BarChartActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -203,9 +204,9 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             currentValues.put(dataContext, trendValue);
             float value;
             if (dispalyPercentage) {
-                value = trendValue.getDeltaPercentage() * 100;
+                value = (float) trendValue.getDeltaPercentage() * 100;
             } else {
-                value = trendValue.getValue();
+                value = (float) trendValue.getValue();
             }
             barValues.add(new BarEntry(i++, value, dataContext));
             txtMarkerData.setText(String.format(getString(R.string.dati_relativi_al), trendValue.getDate()));
@@ -480,16 +481,10 @@ public class BarChartActivity extends AppCompatActivity implements View.OnClickL
             txtBarMarkerTitle.setText(dataContext);
 
             TrendValue trendValue = currentValues.get(dataContext);
-            txtBarMarkerCurrentValue.setText(String.format("%s", trendValue.getValue()));
+            txtBarMarkerCurrentValue.setText(String.format("%s", formatNumber((float) trendValue.getValue())));
             txtBarPrecValue.setText(String.format("%s", trendValue.getPrecValue()));
             txtBarMarkerPercentage.setText(String.format(Locale.ITALIAN, "%.2f%%", trendValue.getDeltaPercentage() * 100));
             txtBarMarkerVariazione.setText(String.format("%s", trendValue.getDelta()));
-
-            int color = TrendUtils.getColorByTrendKey(getApplicationContext(), selectedTrendKey);
-            txtBarMarkerCurrentValue.setTextColor(color);
-            txtBarPrecValue.setTextColor(color);
-            txtBarMarkerVariazione.setTextColor(color);
-            txtBarMarkerPercentage.setTextColor(color);
 
             super.refreshContent(e, highlight);
         }

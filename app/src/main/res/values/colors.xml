@@ -24,7 +24,7 @@
     <color name="grey">#8f8f8f</color>
 
     <color name="background">#FFFFFF</color>
-    <color name="chart_background">#FFFFFF</color>
+    <color name="chart_background">#EEEEEE</color>
     <color name="textColor">#000000</color>
     <color name="chartTextColor">#88000000</color>
     <color name="barra_avviso">#fbff00</color>

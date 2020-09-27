@@ -77,6 +77,8 @@
     <string name="c_nuovi_positivi_desc">Rappresenta il reale numero di nuove persone contagiate.</string>
     <string name="c_nuovi_dimessi_guariti_desc">Numero di nuove persone dimesse.</string>
     <string name="c_nuovi_deceduti_desc">Numero di nuove persone decedute.</string>
+    <string name="c_nuovi_tamponi_name_desc">Numero di nuovi Tamponi Effettuati in giornata</string>
+    <string name="c_rapporto_positivi_tamponi_desc">Rapporto in percentuale tra il numero di nuovi positivi e il numero dei nuovi tamponi giornalieri</string>
 
     <string name="dimessi_guariti_name">Totale Dimessi Guariti</string>
     <string name="deceduti_name">Totale Deceduti</string>
@@ -88,7 +90,8 @@
     <string name="ricoverati_con_sintomi_name">Ricoverati Con Sintomi</string>
     <string name="isolamento_domiciliare_name">Isolamento Domiciliare</string>
     <string name="tamponi_name">Tot. Tamponi Effettuati</string>
-    <string name="nuovi_tamponi_name">Nuovi Tamponi Effettuati</string>
+    <string name="c_nuovi_tamponi_name">Nuovi Tamponi Effettuati</string>
+    <string name="c_rapporto_positivi_tamponi">Rapporto N. Pos./N. Tamp.</string>
     <string name="c_nuovi_positivi_name">Nuovi Positivi</string>
     <string name="c_nuovi_dimessi_guariti_name">Nuovi Dimessi Guariti</string>
     <string name="c_nuovi_deceduti_name">Nuovi Deceduti</string>

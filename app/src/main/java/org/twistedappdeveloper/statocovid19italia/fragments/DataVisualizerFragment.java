@@ -131,13 +131,13 @@ public class DataVisualizerFragment extends Fragment {
         for (TrendInfo trendInfo : dataStorage.getTrendsList()) {
             RowData rowData = new RowData(
                     trendInfo.getName(),
-                    trendInfo.getTrendValueByIndex(cursore).getValue(),
+                    (float) trendInfo.getTrendValueByIndex(cursore).getValue(),
                     getColorByTrendKey(getContext(), trendInfo.getKey()),
                     getPositionByTrendKey(trendInfo.getKey()),
                     trendInfo.getKey(),
-                    trendInfo.getTrendValueByIndex(cursore).getDeltaPercentage(),
-                    trendInfo.getTrendValueByIndex(cursore).getDelta(),
-                    trendInfo.getTrendValueByIndex(cursore).getPrecValue()
+                    (float) trendInfo.getTrendValueByIndex(cursore).getDeltaPercentage(),
+                    (float) trendInfo.getTrendValueByIndex(cursore).getDelta(),
+                    (float) trendInfo.getTrendValueByIndex(cursore).getPrecValue()
             );
             //Aggiungo i dati provinciali
             if (dataStorage.getDataContextScope() == DataStorage.Scope.REGIONALE) {
@@ -149,7 +149,7 @@ public class DataVisualizerFragment extends Fragment {
                     if (totaleCasiProvincia != null) {
                         RowData provincialRowData = new RowData(
                                 provincia,
-                                totaleCasiProvincia.getTrendValueByIndex(cursore).getValue(),
+                                (float) totaleCasiProvincia.getTrendValueByIndex(cursore).getValue(),
                                 getColorByTrendKey(getContext(), totaleCasiProvincia.getKey()),
                                 0, //non usato in questo caso
                                 totaleCasiProvincia.getKey()

@@ -22,7 +22,7 @@
         android:layout_weight="1"
         android:gravity="end"
         android:textAlignment="textEnd"
-        android:textColor="@android:color/holo_orange_dark"
+        android:textColor="@android:color/black"
         android:textSize="13sp"
         tools:text="Valore" />
 </LinearLayout>

@@ -55,7 +55,9 @@ import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.formatNumber;
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
 
 public class ChartActivity extends AppCompatActivity implements OnChartValueSelectedListener, View.OnClickListener, OnChartGestureListener {
@@ -210,8 +212,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
             if (trendSelection.isSelected()) {
                 List<Entry> values = new ArrayList<>();
                 for (int i = 0; i < trendSelection.getTrendInfo().getTrendValues().size(); i++) {
-                    int value = trendSelection.getTrendInfo().getTrendValueByIndex(i).getValue();
-                    values.add(new Entry(i, value));
+                    double value = trendSelection.getTrendInfo().getTrendValueByIndex(i).getValue();
+                    values.add(new Entry(i, (float) value));
                     if (value < 0) {
                         isMinimumZero = false;
                     }
@@ -221,12 +223,12 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 dataSet.setColor(getColorByTrendKey(ChartActivity.this, trendSelection.getTrendInfo().getKey()));
                 dataSet.setCircleColor(getResources().getColor(R.color.chartTextColor));
                 dataSet.setLineWidth(1.8f);
-                dataSet.setCircleRadius(2f);
+                dataSet.setCircleRadius(1.25f);
                 dataSet.setFillAlpha(65);
                 dataSet.setFillColor(Color.rgb(255, 131, 0));
                 dataSet.setHighLightColor(Color.rgb(244, 117, 117));
                 dataSet.setDrawCircleHole(false);
-                dataSet.setDrawHorizontalHighlightIndicator(false);
+                dataSet.setDrawHorizontalHighlightIndicator(true);
                 data.addDataSet(dataSet);
             }
         }
@@ -275,7 +277,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 ILineDataSet dataSetByLabel = chart.getLineData().getDataSetByLabel(
-                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValueByIndex(precIndex).getValue()),
+                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), formatNumber((float)trendSelection.getTrendInfo().getTrendValueByIndex(precIndex).getValue())),
                         false
                 );
                 if (dataSetByLabel == null) {
@@ -284,7 +286,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 if (dataSetByLabel != null) {
                     dataSetByLabel
                             .setLabel(
-                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), trendSelection.getTrendInfo().getTrendValueByIndex(index).getValue()));
+                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), formatNumber((float)trendSelection.getTrendInfo().getTrendValueByIndex(index).getValue())));
                 }
             }
         }
@@ -603,7 +605,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
                     RowData rowData = new RowData(
                             trendInfo.getName(),
-                            currentTrendValue.getValue() - precTrendValue.getValue(),
+                            (float)(currentTrendValue.getValue() - precTrendValue.getValue()),
                             getColorByTrendKey(ChartActivity.this, trendInfo.getKey()),
                             TrendUtils.getPositionByTrendKey(trendInfo.getKey()),
                             trendInfo.getKey()
@@ -613,8 +615,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                     TextView txtName = child.findViewById(R.id.txtName);
                     txtName.setText(String.format("Diff. %s", rowData.getName()));
                     TextView txtValue = child.findViewById(R.id.txtValue);
-                    txtValue.setText(String.format("%s", rowData.getValue()));
-                    txtValue.setTextColor(rowData.getColor());
+                    txtValue.setText(formatNumber(rowData.getValue()));
+//                    txtValue.setTextColor(rowData.getColor());
                     linearLayoutMarker.addView(child);
 
                 }

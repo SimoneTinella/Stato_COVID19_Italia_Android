@@ -5,11 +5,12 @@ import java.util.List;
 
 public class RowData implements Comparable<RowData> {
     private String name, key;
-    private int position, color, value, delta, precValue;
+    private int position, color;
+    private float value, delta, precValue;
     private List<RowData> subItems;
     private float deltaPercentage;
 
-    public RowData(String name, int value, int color, int position, String key) {
+    public RowData(String name, float value, int color, int position, String key) {
         this.name = name;
         this.value = value;
         this.color = color;
@@ -18,7 +19,7 @@ public class RowData implements Comparable<RowData> {
         subItems = new ArrayList<>();
     }
 
-    public RowData(String name, int value, int color, int position, String key, float deltaPercentage, int delta, int precValue) {
+    public RowData(String name, float value, int color, int position, String key, float deltaPercentage, float delta, float precValue) {
         this.name = name;
         this.value = value;
         this.color = color;
@@ -38,7 +39,7 @@ public class RowData implements Comparable<RowData> {
         this.name = name;
     }
 
-    public int getValue() {
+    public float getValue() {
         return this.value;
     }
 
@@ -62,11 +63,11 @@ public class RowData implements Comparable<RowData> {
         return deltaPercentage;
     }
 
-    public int getDelta() {
+    public float getDelta() {
         return delta;
     }
 
-    public int getPrecValue() {
+    public float getPrecValue() {
         return precValue;
     }
 

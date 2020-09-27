@@ -7,12 +7,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
+
 import org.twistedappdeveloper.statocovid19italia.R;
+import org.twistedappdeveloper.statocovid19italia.datastorage.DataStorage;
 import org.twistedappdeveloper.statocovid19italia.model.RowData;
 
 import java.util.List;
 import java.util.Locale;
+
+import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.formatNumber;
 
 public class RowDataAdapter extends ArrayAdapter<RowData> {
 
@@ -40,11 +45,14 @@ public class RowDataAdapter extends ArrayAdapter<RowData> {
 
         RowData obj = getItem(position);
         name.setText(obj.getName());
-        value.setText(String.format("%s", obj.getValue()));
+        value.setText(formatNumber(obj.getValue()));
+        if (obj.getKey().equals(DataStorage.C_RAPPORTO_POSITIVI_TAMPONI)) {
+            value.setText(String.format("%s %%", value.getText()));
+        }
         value.setTextColor(obj.getColor());
 
         View infoContainer = convertView.findViewById(R.id.infoContainer);
-        if (displayInfo) {
+        if (displayInfo && !obj.getKey().equals(DataStorage.C_RAPPORTO_POSITIVI_TAMPONI)) {
             infoContainer.setVisibility(View.VISIBLE);
             TextView txtInfoPercentage = convertView.findViewById(R.id.txtInfoPercentage);
             TextView txtInfoValuePercentage = convertView.findViewById(R.id.txtInfoValuePercentage);
@@ -56,20 +64,24 @@ public class RowDataAdapter extends ArrayAdapter<RowData> {
             txtInfoPercentage.setText(R.string.var_perc_giorno_prima);
             txtInfoDelta.setText(R.string.var_giorno_prima);
             if (obj.getDeltaPercentage() >= 0f) {
-                txtInfoValueDelta.setText(String.format("+%s", obj.getDelta()));
+                if (obj.getDelta() == (int) obj.getDelta()) {
+                    txtInfoValueDelta.setText(String.format(Locale.ITALIAN, "+%d", (int) obj.getDelta()));
+                } else {
+                    txtInfoValueDelta.setText(String.format(Locale.ITALIAN, "+%.1f", obj.getDelta()));
+                }
                 txtInfoValuePercentage.setText(String.format(Locale.ITALIAN, "+%.2f %%", obj.getDeltaPercentage() * 100));
             } else {
                 txtInfoValuePercentage.setText(String.format(Locale.ITALIAN, "%.2f %%", obj.getDeltaPercentage() * 100));
-                txtInfoValueDelta.setText(String.format("%s", obj.getDelta()));
+                txtInfoValueDelta.setText(formatNumber(obj.getDelta()));
             }
-            txtInfoValuePrec.setText(String.format("%s", obj.getPrecValue()));
+            txtInfoValuePrec.setText(formatNumber(obj.getPrecValue()));
 
             txtInfoValuePercentage.setTextColor(obj.getColor());
             txtInfoValueDelta.setTextColor(obj.getColor());
             txtInfoValuePrec.setTextColor(obj.getColor());
 
             List<RowData> subItems = obj.getSubItems();
-            //Nel caso in cui non si superino i 2 elementi siamo nei casi di P.A Trento/Bolzano o Valle d'Aosta. Evito di visualizzare i dati perché ridondanti
+            //Nel caso in cui non si superano i 2 elementi siamo nei casi di P.A Trento/Bolzano o Valle d'Aosta. Evito di visualizzare i dati perché ridondanti
             if (!subItems.isEmpty() && subItems.size() > 2) {
                 LinearLayout linearLayout = convertView.findViewById(R.id.subItems);
                 for (RowData rowData : subItems) {
@@ -77,7 +89,7 @@ public class RowDataAdapter extends ArrayAdapter<RowData> {
                     TextView txtName = child.findViewById(R.id.txtName);
                     txtName.setText(rowData.getName());
                     TextView txtValue = child.findViewById(R.id.txtValue);
-                    txtValue.setText(String.format("%s", rowData.getValue()));
+                    txtValue.setText(formatNumber(rowData.getValue()));
                     txtValue.setTextColor(rowData.getColor());
                     linearLayout.addView(child);
                 }
@@ -92,4 +104,5 @@ public class RowDataAdapter extends ArrayAdapter<RowData> {
     public void setDisplayInfo(boolean displayInfo) {
         this.displayInfo = displayInfo;
     }
+
 }
