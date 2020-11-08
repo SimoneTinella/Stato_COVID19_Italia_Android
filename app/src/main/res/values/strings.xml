@@ -36,7 +36,8 @@
     <string name="no">No</string>
     <string name="app_preview">Hai una versione preview dell\'App</string>
     <string name="no_connection">Il dispositivo non ha accesso ad Internet, attiva la connessione e riprova.</string>
-    <string name="wait_pls">Attendere prego…</string>
+    <string name="wait_pls">Recupero dati aggiornati…</string>
+    <string name="wait_local_pls">Controllo validità dati in cache…</string>
     <string name="versione">versione</string>
     <string name="versioni">versioni</string>
     <string name="dati_relativi_al">Dati del %s</string>
@@ -101,5 +102,6 @@
     <string name="var_perc_giorno_prima">Variazione %</string>
     <string name="var_giorno_prima">Variazione numerica</string>
     <string name="visualizza_avviso">Visualizza Avviso</string>
+    <string name="dati_cache">Dati recuperati dalla cache</string>
 
 </resources>

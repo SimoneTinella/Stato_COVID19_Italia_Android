@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
     defaultConfig {
         applicationId "org.twistedappdeveloper.statocovid19italia"
         minSdkVersion 14
-        targetSdkVersion 29
-        versionCode 27
-        versionName "1.2.4.1"
+        targetSdkVersion 30
+        versionCode 28
+        versionName "1.2.5"
     }
     buildTypes {
         release {

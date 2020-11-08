@@ -55,7 +55,7 @@ public class DataStorage {
     public static final String C_RAPPORTO_POSITIVI_TAMPONI = "c_rapporto_positivi_tamponi";
 
     //National, Regional and Provincial no trend keys
-    private static final String DATA_KEY = "data";
+    public static final String DATA_KEY = "data";
     private static final String STATO_KEY = "stato";
     public static final String DEN_REGIONE_KEY = "denominazione_regione";
     public static final String DEN_PROVINCIA_KEY = "denominazione_provincia";

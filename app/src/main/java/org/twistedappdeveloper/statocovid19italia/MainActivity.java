@@ -1,5 +1,6 @@
 package org.twistedappdeveloper.statocovid19italia;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,7 +35,15 @@ import org.twistedappdeveloper.statocovid19italia.model.Changelog;
 import org.twistedappdeveloper.statocovid19italia.network.NetworkUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences pref;
 
-    private void setTheme(){
+    private void setTheme() {
         pref = getApplicationContext().getSharedPreferences("default", 0);
         int themeMode = pref.getInt(themeModeKey, 0);
         switch (themeMode) {
@@ -156,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.action_update:
-                recoverData();
+                recoverDataFromNetwork();
                 checkAppVersion();
                 break;
             case R.id.action_change_datacontex:
@@ -206,12 +215,12 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Scegli un Client Email", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_settings:
-                Toast.makeText(getApplicationContext(),"Cambio tema in corso...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Cambio tema in corso...", Toast.LENGTH_SHORT).show();
                 int themeMode = pref.getInt(themeModeKey, 0);
                 SharedPreferences.Editor editor = pref.edit();
                 if (themeMode == DayMode) {
                     editor.putInt(themeModeKey, DarkMode);
-                }else{
+                } else {
                     editor.putInt(themeModeKey, DayMode);
                 }
                 editor.apply();
@@ -317,7 +326,108 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
+
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private void recoverData() {
+
+        progressDialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.wait_local_pls), true);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean cacheIsValid = false;
+                try {
+                    //todo fare il check se il file esiste ed è valido
+                    FileInputStream fileIn = openFileInput("cached_data.json");
+                    InputStreamReader inputRead = new InputStreamReader(fileIn);
+
+                    char[] inputBuffer = new char[1024];
+                    StringBuilder s = new StringBuilder();
+                    int charRead;
+
+                    while ((charRead = inputRead.read(inputBuffer)) > 0) {
+                        String readstring = String.copyValueOf(inputBuffer, 0, charRead);
+                        s.append(readstring);
+                    }
+                    inputRead.close();
+
+                    JSONObject datiGlobali = new JSONObject(s.toString());
+
+                    //fixme rivedere la condizione per capire quando la cache è valida o meno
+                    if (datiGlobali.getString("timestamp").substring(0, 10).equals(simpleDateFormat.format(new Date()))) {
+                        progressDialog.dismiss();
+                        cacheIsValid = false;
+                    } else {
+                        cacheIsValid = true;
+                        nationalDataStorage.setDataArrayJson(datiGlobali.getJSONArray("dataset_nazionale"));
+                        nationalDataStorage.setSubLvlDataArrayJson(datiGlobali.getJSONArray("dataset_regionale"), DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
+
+                        Map<String, JSONArray> datiPerRegione = new HashMap<>();
+                        for (int i = 0; i < datiGlobali.getJSONArray("dataset_provinciale").length(); i++) {
+                            try {
+                                JSONObject jsonObject = datiGlobali.getJSONArray("dataset_provinciale").getJSONObject(i);
+                                String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
+                                JSONArray datiProvince;
+                                if (datiPerRegione.containsKey(regione)) {
+                                    datiProvince = datiPerRegione.get(regione);
+                                } else {
+                                    datiProvince = new JSONArray();
+                                    datiPerRegione.put(regione, datiProvince);
+                                }
+                                datiProvince.put(jsonObject);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        for (String regione : datiPerRegione.keySet()) {
+                            nationalDataStorage
+                                    .getDataStorageByDataContext(regione)
+                                    .setSubLvlDataArrayJson(
+                                            datiPerRegione.get(regione),
+                                            DataStorage.DEN_PROVINCIA_KEY,
+                                            DataStorage.Scope.PROVINCIALE
+                                    );
+                        }
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                currentFragment = DataVisualizerFragment.newInstance(currentFragment.getDataStorage().getDataContext());
+                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                                fragmentTransaction.replace(R.id.container, currentFragment);
+                                fragmentTransaction.commit();
+                                progressDialog.dismiss();
+                                Toast.makeText(getApplicationContext(), getString(R.string.dati_cache), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                    }
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                if (!cacheIsValid) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            recoverDataFromNetwork();
+                        }
+                    });
+
+                }
+
+            }
+        }).start();
+
+    }
+
+    private void recoverDataFromNetwork() {
         if (!NetworkUtils.isDeviceOnline(MainActivity.this)) {
             Toast.makeText(MainActivity.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             return;
@@ -335,58 +445,77 @@ public class MainActivity extends AppCompatActivity {
 //                        super.onSuccess(statusCode, headers, response);
 //                        nationalDataStorage.setAvvisiDataArrayJson(response);
 
-                        client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
+                client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, final JSONArray responseNazionale) {
+                        super.onSuccess(statusCode, headers, responseNazionale);
+                        nationalDataStorage.setDataArrayJson(responseNazionale);
+
+                        client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
                             @Override
-                            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                                super.onSuccess(statusCode, headers, response);
-                                nationalDataStorage.setDataArrayJson(response);
+                            public void onSuccess(int statusCode, Header[] headers, final JSONArray responseRegionale) {
+                                super.onSuccess(statusCode, headers, responseRegionale);
+                                nationalDataStorage.setSubLvlDataArrayJson(responseRegionale, DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
 
-                                client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
+                                client.get(getResources().getString(R.string.dataset_provinciale), new JsonHttpResponseHandler() {
                                     @Override
-                                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                                        super.onSuccess(statusCode, headers, response);
-                                        nationalDataStorage.setSubLvlDataArrayJson(response, DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
+                                    public void onSuccess(int statusCode, Header[] headers, JSONArray responseProvinciale) {
+                                        super.onSuccess(statusCode, headers, responseProvinciale);
 
-                                        client.get(getResources().getString(R.string.dataset_provinciale), new JsonHttpResponseHandler() {
-                                            @Override
-                                            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                                                super.onSuccess(statusCode, headers, response);
-                                                Map<String, JSONArray> datiPerRegione = new HashMap<>();
-                                                for (int i = 0; i < response.length(); i++) {
-                                                    try {
-                                                        JSONObject jsonObject = response.getJSONObject(i);
-                                                        String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
-                                                        JSONArray datiProvince;
-                                                        if (datiPerRegione.containsKey(regione)) {
-                                                            datiProvince = datiPerRegione.get(regione);
-                                                        } else {
-                                                            datiProvince = new JSONArray();
-                                                            datiPerRegione.put(regione, datiProvince);
-                                                        }
-                                                        datiProvince.put(jsonObject);
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
+                                        try {
+                                            JSONObject datiGlobali = new JSONObject();
+                                            datiGlobali.put("dataset_nazionale", responseNazionale);
+                                            datiGlobali.put("dataset_regionale", responseRegionale);
+                                            datiGlobali.put("dataset_provinciale", responseProvinciale);
+                                            datiGlobali.put("timestamp", responseNazionale.getJSONObject(responseNazionale.length() - 1).getString(DataStorage.DATA_KEY));
+                                            FileOutputStream fileout = openFileOutput("cached_data.json", MODE_PRIVATE);
+                                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
+                                            outputWriter.write(datiGlobali.toString());
+                                            outputWriter.close();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        } catch (FileNotFoundException e) {
+                                            e.printStackTrace();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                        Map<String, JSONArray> datiPerRegione = new HashMap<>();
+                                        for (int i = 0; i < responseProvinciale.length(); i++) {
+                                            try {
+                                                JSONObject jsonObject = responseProvinciale.getJSONObject(i);
+                                                String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
+                                                JSONArray datiProvince;
+                                                if (datiPerRegione.containsKey(regione)) {
+                                                    datiProvince = datiPerRegione.get(regione);
+                                                } else {
+                                                    datiProvince = new JSONArray();
+                                                    datiPerRegione.put(regione, datiProvince);
                                                 }
-                                                for (String regione : datiPerRegione.keySet()) {
-                                                    nationalDataStorage
-                                                            .getDataStorageByDataContext(regione)
-                                                            .setSubLvlDataArrayJson(
-                                                                    datiPerRegione.get(regione),
-                                                                    DataStorage.DEN_PROVINCIA_KEY,
-                                                                    DataStorage.Scope.PROVINCIALE
-                                                            );
-                                                }
+                                                datiProvince.put(jsonObject);
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
                                             }
-                                        });
+                                        }
+                                        for (String regione : datiPerRegione.keySet()) {
+                                            nationalDataStorage
+                                                    .getDataStorageByDataContext(regione)
+                                                    .setSubLvlDataArrayJson(
+                                                            datiPerRegione.get(regione),
+                                                            DataStorage.DEN_PROVINCIA_KEY,
+                                                            DataStorage.Scope.PROVINCIALE
+                                                    );
+                                        }
                                     }
                                 });
-
                             }
-
                         });
 
                     }
+
+                });
+
+            }
 //                });
 
 //            }
