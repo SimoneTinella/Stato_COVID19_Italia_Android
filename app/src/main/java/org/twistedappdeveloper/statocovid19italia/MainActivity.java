@@ -1,10 +1,10 @@
 package org.twistedappdeveloper.statocovid19italia;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.icu.util.LocaleData;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -42,10 +42,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import cz.msebera.android.httpclient.Header;
@@ -327,7 +330,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm", Locale.ITALY);
+
     private void recoverData() {
 
         progressDialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.wait_local_pls), true);
@@ -337,7 +341,6 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 boolean cacheIsValid = false;
                 try {
-                    //todo fare il check se il file esiste ed è valido
                     FileInputStream fileIn = openFileInput("cached_data.json");
                     InputStreamReader inputRead = new InputStreamReader(fileIn);
 
@@ -353,8 +356,13 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject datiGlobali = new JSONObject(s.toString());
 
-                    //fixme rivedere la condizione per capire quando la cache è valida o meno
-                    if (datiGlobali.getString("timestamp").substring(0, 10).equals(simpleDateFormat.format(new Date()))) {
+                    Date cachedTimestamp = simpleDateFormat.parse(datiGlobali.getString("timestamp").substring(0, 16));
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(cachedTimestamp);
+                    calendar.add(Calendar.DATE, 1);
+                    Date revisedCachedTimestamp = calendar.getTime();
+
+                    if (revisedCachedTimestamp.before(new Date())) {
                         progressDialog.dismiss();
                         cacheIsValid = false;
                     } else {
@@ -403,11 +411,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (JSONException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
