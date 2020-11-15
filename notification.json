@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 27,
+  "latest_app_version": 28,
   "changelog": [
+    {
+      "ver": "1.2.5",
+      "description": "-È stata aggiunta la cache per velocizzare l'apertura dell'applicazione. È adesso possibile consultare l'ultima versione dei dati precedentemente scaricati senza la necessità di avere una connessione internet."
+    },
     {
       "ver": "1.2.4.1",
       "description": "-Aggiunta misura rapporto tra nuovi positivi e nuovi tamponi giornaliri\n-Minor fix"
