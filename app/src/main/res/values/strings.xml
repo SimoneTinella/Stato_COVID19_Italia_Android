@@ -80,6 +80,7 @@
     <string name="c_nuovi_deceduti_desc">Numero di nuove persone decedute.</string>
     <string name="c_nuovi_tamponi_name_desc">Numero di nuovi Tamponi Effettuati in giornata</string>
     <string name="c_rapporto_positivi_tamponi_desc">Rapporto in percentuale tra il numero di nuovi positivi e il numero dei nuovi tamponi giornalieri</string>
+    <string name="ingressi_ter_int_desc">Nuovi ingressi in terapia intensiva</string>
 
     <string name="dimessi_guariti_name">Totale Dimessi Guariti</string>
     <string name="deceduti_name">Totale Deceduti</string>

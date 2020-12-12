@@ -84,10 +84,12 @@ public class TrendUtils {
                 return 14;
             case DataStorage.CASI_TESTATI_KEY:
                 return 15;
-            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
+            case DataStorage.INGRESSI_TERAPIA_INT:
                 return 16;
-            case DataStorage.CASI_DA_SCREENING:
+            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
                 return 17;
+            case DataStorage.CASI_DA_SCREENING:
+                return 18;
 
             default:
                 return Integer.MAX_VALUE;
@@ -182,6 +184,8 @@ public class TrendUtils {
                 return context.getResources().getString(R.string.c_nuovi_tamponi_name_desc);
             case DataStorage.C_RAPPORTO_POSITIVI_TAMPONI:
                 return context.getResources().getString(R.string.c_rapporto_positivi_tamponi_desc);
+            case DataStorage.INGRESSI_TERAPIA_INT:
+                return context.getResources().getString(R.string.ingressi_ter_int_desc);
 
             default:
                 return "Nessuna Descrizione Disponibile";

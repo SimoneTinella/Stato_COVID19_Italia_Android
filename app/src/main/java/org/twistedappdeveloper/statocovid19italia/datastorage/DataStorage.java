@@ -47,6 +47,7 @@ public class DataStorage {
     public static final String CASI_TESTATI_KEY = "casi_testati";
     public static final String CASI_DA_SOSPETTO_DIAGNOSTICO = "casi_da_sospetto_diagnostico";
     public static final String CASI_DA_SCREENING = "casi_da_screening";
+    public static final String INGRESSI_TERAPIA_INT = "ingressi_terapia_intensiva";
 
     //Computed trends keys
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
@@ -66,6 +67,8 @@ public class DataStorage {
     private static final String SIGLA_PROVINCIA_KEY = "sigla_provincia";
     private static final String NOTE_IT_KEY = "note";
     private static final String NOTE_EN_KEY = "note_en";
+    private static final String NOTE_CASI_KEY = "note_casi";
+    private static final String NOTE_TEST_KEY = "note_test";
 
     //AVVISI
     private static final String TIPO_AVVISO_KEY = "tipologia_avviso";
@@ -123,6 +126,8 @@ public class DataStorage {
         discardedInfo.add(COD_PROVINCIA_KEY);
         discardedInfo.add(NOTE_IT_KEY);
         discardedInfo.add(NOTE_EN_KEY);
+        discardedInfo.add(NOTE_CASI_KEY);
+        discardedInfo.add(NOTE_TEST_KEY);
     }
 
     public static DataStorage createAndGetIstanceIfNotExist(Resources resources, Scope dataContextScope) {

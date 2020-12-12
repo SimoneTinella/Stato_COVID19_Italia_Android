@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 28,
+  "latest_app_version": 29,
   "changelog": [
+    {
+      "ver": "1.2.6",
+      "description": "-Dal 09/12/2020 le misure \'Casi da sospetto diagnostico\' e \'Casi da screening\' non vengono più fornite dalla Protezione Civile.\n-Dal 09/12/2020 è disponibile la nuova misura \'Ingressi Terapia Intensiva\'"
+    },
     {
       "ver": "1.2.5",
       "description": "-È stata aggiunta la cache per velocizzare l'apertura dell'applicazione. È adesso possibile consultare l'ultima versione dei dati precedentemente scaricati senza la necessità di avere una connessione internet."

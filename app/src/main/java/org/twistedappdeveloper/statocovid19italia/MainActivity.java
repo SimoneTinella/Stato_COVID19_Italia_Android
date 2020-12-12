@@ -62,9 +62,9 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private DataVisualizerFragment currentFragment;
 
-    private SyncHttpClient client = new SyncHttpClient();
+    private final SyncHttpClient client = new SyncHttpClient();
 
-    private List<Changelog> changelogs = new ArrayList<>();
+    private final List<Changelog> changelogs = new ArrayList<>();
 
     private DataStorage nationalDataStorage;
 
