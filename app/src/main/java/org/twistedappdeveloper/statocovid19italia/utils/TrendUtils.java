@@ -90,6 +90,14 @@ public class TrendUtils {
                 return 17;
             case DataStorage.CASI_DA_SCREENING:
                 return 18;
+            case DataStorage.TOT_POS_TEST_MOLECOLARE:
+                return 19;
+            case DataStorage.TOT_POS_TEST_ANT_RAPID:
+                return 20;
+            case DataStorage.TAMPONI_TEST_MOLECOLARE:
+                return 21;
+            case DataStorage.TAMPONI_TEST_ANT_RAPID:
+                return 22;
 
             default:
                 return Integer.MAX_VALUE;

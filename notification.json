@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 29,
+  "latest_app_version": 30,
   "changelog": [
+    {
+      "ver": "1.2.6.1",
+      "description": "-Dal 24/01/2021 è stato aggiunto il supporto alle misure \'Totale Positivi Test Antigenico Repido\', \'Tamponi Test Molecolare\', \'Totale Positivi Test Molecolare\' e \'Tamponi Test Antigenico Rapido\'"
+    },
     {
       "ver": "1.2.6",
       "description": "-Dal 03/12/2020 le misure \'Casi da sospetto diagnostico\' e \'Casi da screening\' non vengono più fornite dalla Protezione Civile.\n-Dal 03/12/2020 è disponibile la nuova misura \'Ingressi Terapia Intensiva\'"

@@ -48,6 +48,10 @@ public class DataStorage {
     public static final String CASI_DA_SOSPETTO_DIAGNOSTICO = "casi_da_sospetto_diagnostico";
     public static final String CASI_DA_SCREENING = "casi_da_screening";
     public static final String INGRESSI_TERAPIA_INT = "ingressi_terapia_intensiva";
+    public static final String TOT_POS_TEST_MOLECOLARE = "totale_positivi_test_molecolare";
+    public static final String TOT_POS_TEST_ANT_RAPID = "totale_positivi_test_antigenico_rapido";
+    public static final String TAMPONI_TEST_MOLECOLARE = "tamponi_test_molecolare";
+    public static final String TAMPONI_TEST_ANT_RAPID = "tamponi_test_antigenico_rapido";
 
     //Computed trends keys
     public static final String C_NUOVI_DIMESSI_GUARITI = "c_nuovi_dimessi_guariti";
