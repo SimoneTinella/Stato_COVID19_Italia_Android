@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 30,
+  "latest_app_version": 31,
   "changelog": [
+    {
+      "ver": "1.2.6.2",
+      "description": "-Minor fix"
+    },
     {
       "ver": "1.2.6.1",
       "description": "-Dal 24/01/2021 è stato aggiunto il supporto alle misure \'Totale Positivi Test Antigenico Repido\', \'Tamponi Test Molecolare\', \'Totale Positivi Test Molecolare\' e \'Tamponi Test Antigenico Rapido\'"

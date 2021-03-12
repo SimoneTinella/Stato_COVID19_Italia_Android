@@ -8,8 +8,8 @@ android {
         applicationId "org.twistedappdeveloper.statocovid19italia"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 30
-        versionName "1.2.6.1"
+        versionCode 31
+        versionName "1.2.6.2"
     }
     buildTypes {
         release {
