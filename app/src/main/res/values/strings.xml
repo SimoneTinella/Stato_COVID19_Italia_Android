@@ -52,6 +52,7 @@
     <string name="dataset_regionale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-regioni.json</string>
     <string name="dataset_provinciale">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-province.json</string>
     <string name="dataset_avvisi">https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-note.json</string>
+    <string name="dataset_vaccini">https://raw.githubusercontent.com/italia/covid19-opendata-vaccini/master/dati/somministrazioni-vaccini-latest.json</string>
 
     <string name="notification_file">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/notification.json</string>
     <string name="new_version_app_site">https://raw.githubusercontent.com/SimoneTinella/Stato_COVID19_Italia_Android/master/StatoCovid19Italia.apk</string>

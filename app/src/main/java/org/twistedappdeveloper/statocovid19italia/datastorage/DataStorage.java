@@ -73,6 +73,9 @@ public class DataStorage {
     private static final String NOTE_EN_KEY = "note_en";
     private static final String NOTE_CASI_KEY = "note_casi";
     private static final String NOTE_TEST_KEY = "note_test";
+    private static final String CODICE_NUTS_1_KEY = "codice_nuts_1";
+    private static final String CODICE_NUTS_2_KEY = "codice_nuts_2";
+    private static final String CODICE_NUTS_3_KEY = "codice_nuts_3";
 
     //AVVISI
     private static final String TIPO_AVVISO_KEY = "tipologia_avviso";
@@ -132,6 +135,9 @@ public class DataStorage {
         discardedInfo.add(NOTE_EN_KEY);
         discardedInfo.add(NOTE_CASI_KEY);
         discardedInfo.add(NOTE_TEST_KEY);
+        discardedInfo.add(CODICE_NUTS_1_KEY);
+        discardedInfo.add(CODICE_NUTS_2_KEY);
+        discardedInfo.add(CODICE_NUTS_3_KEY);
     }
 
     public static DataStorage createAndGetIstanceIfNotExist(Resources resources, Scope dataContextScope) {
