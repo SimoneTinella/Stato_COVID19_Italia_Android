@@ -339,20 +339,10 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 boolean cacheIsValid = false;
                 try {
-                    FileInputStream fileIn = openFileInput("cached_data.json");
-                    InputStreamReader inputRead = new InputStreamReader(fileIn);
 
-                    char[] inputBuffer = new char[1024];
-                    StringBuilder s = new StringBuilder();
-                    int charRead;
-
-                    while ((charRead = inputRead.read(inputBuffer)) > 0) {
-                        String readstring = String.copyValueOf(inputBuffer, 0, charRead);
-                        s.append(readstring);
-                    }
-                    inputRead.close();
-
-                    JSONObject datiGlobali = new JSONObject(s.toString());
+                    JSONObject datiGlobali = new JSONObject(getJsonString("cached_dati_nazionali.json"));
+                    JSONObject datiRegionali = new JSONObject(getJsonString("cached_dati_regionali.json"));
+                    JSONObject datiProvinciali = new JSONObject(getJsonString("cached_dati_provinciali.json"));
 
                     Date cachedTimestamp = simpleDateFormat.parse(datiGlobali.getString("timestamp").substring(0, 16));
                     Calendar calendar = Calendar.getInstance();
@@ -366,12 +356,12 @@ public class MainActivity extends AppCompatActivity {
                     } else {
                         cacheIsValid = true;
                         nationalDataStorage.setDataArrayJson(datiGlobali.getJSONArray("dataset_nazionale"));
-                        nationalDataStorage.setSubLvlDataArrayJson(datiGlobali.getJSONArray("dataset_regionale"), DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
+                        nationalDataStorage.setSubLvlDataArrayJson(datiRegionali.getJSONArray("dataset_regionale"), DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
 
                         Map<String, JSONArray> datiPerRegione = new HashMap<>();
-                        for (int i = 0; i < datiGlobali.getJSONArray("dataset_provinciale").length(); i++) {
+                        for (int i = 0; i < datiProvinciali.getJSONArray("dataset_provinciale").length(); i++) {
                             try {
-                                JSONObject jsonObject = datiGlobali.getJSONArray("dataset_provinciale").getJSONObject(i);
+                                JSONObject jsonObject = datiProvinciali.getJSONArray("dataset_provinciale").getJSONObject(i);
                                 String regione = jsonObject.getString(DataStorage.DEN_REGIONE_KEY);
                                 JSONArray datiProvince;
                                 if (datiPerRegione.containsKey(regione)) {
@@ -425,6 +415,23 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
+
+            private String getJsonString(String fileName) throws IOException {
+                FileInputStream fileIn = openFileInput(fileName);
+                InputStreamReader inputRead = new InputStreamReader(fileIn);
+
+                char[] inputBuffer = new char[1024];
+                StringBuilder s = new StringBuilder();
+                int charRead;
+
+                while ((charRead = inputRead.read(inputBuffer)) > 0) {
+                    String readstring = String.copyValueOf(inputBuffer, 0, charRead);
+                    s.append(readstring);
+                }
+                inputRead.close();
+
+                return s.toString();
+            }
         }).start();
 
     }
@@ -466,14 +473,26 @@ public class MainActivity extends AppCompatActivity {
 
                                         try {
                                             JSONObject datiGlobali = new JSONObject();
+                                            JSONObject datiRegionali = new JSONObject();
+                                            JSONObject datiProvinciali = new JSONObject();
                                             datiGlobali.put("dataset_nazionale", responseNazionale);
-                                            datiGlobali.put("dataset_regionale", responseRegionale);
-                                            datiGlobali.put("dataset_provinciale", responseProvinciale);
                                             datiGlobali.put("timestamp", responseNazionale.getJSONObject(responseNazionale.length() - 1).getString(DataStorage.DATA_KEY));
-                                            FileOutputStream fileout = openFileOutput("cached_data.json", MODE_PRIVATE);
-                                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
+                                            datiRegionali.put("dataset_regionale", responseRegionale);
+                                            datiProvinciali.put("dataset_provinciale", responseProvinciale);
+                                            FileOutputStream fileOutNazionali = openFileOutput("cached_dati_nazionali.json", MODE_PRIVATE);
+                                            FileOutputStream fileOutRegionali = openFileOutput("cached_dati_regionali.json", MODE_PRIVATE);
+                                            FileOutputStream fileOutProvinciali = openFileOutput("cached_dati_provinciali.json", MODE_PRIVATE);
+
+                                            OutputStreamWriter outputWriter = new OutputStreamWriter(fileOutNazionali);
                                             outputWriter.write(datiGlobali.toString());
                                             outputWriter.close();
+                                            outputWriter = new OutputStreamWriter(fileOutRegionali);
+                                            outputWriter.write(datiRegionali.toString());
+                                            outputWriter.close();
+                                            outputWriter = new OutputStreamWriter(fileOutProvinciali);
+                                            outputWriter.write(datiProvinciali.toString()); //fixme stringa troppo lunga
+                                            outputWriter.close();
+
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         } catch (FileNotFoundException e) {
