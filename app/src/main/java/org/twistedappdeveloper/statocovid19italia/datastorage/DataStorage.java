@@ -92,22 +92,22 @@ public class DataStorage {
 
     private JSONArray dataArrayJson;
 
-    private Map<String, TrendInfo> trendsMap;
+    private final Map<String, TrendInfo> trendsMap;
 
-    private Map<String, DataStorage> subLevelDataStorageMap;
+    private final Map<String, DataStorage> subLevelDataStorageMap;
 
-    private Map<String, Avviso> mappaAvvisi = new HashMap<>(); //popolato solo nel datastorage nazionale
+    private final Map<String, Avviso> mappaAvvisi = new HashMap<>(); //popolato solo nel datastorage nazionale
 
-    private Map<String, List<Avviso>> avvisiRelativiMap = new HashMap<>(); //avvisi relativi al proprio dataset
+    private final Map<String, List<Avviso>> avvisiRelativiMap = new HashMap<>(); //avvisi relativi al proprio dataset
 
-    private String dataContext;
-    private Scope dataContextScope;
+    private final String dataContext;
+    private final Scope dataContextScope;
 
     private final DateFormat dateFormatRead = new SimpleDateFormat("yyyy-MM-dd", Locale.ITALY);
     private final DateFormat dateFormatWriteSimple = new SimpleDateFormat("dd/MM", Locale.ITALY);
     private final DateFormat dateFormatWriteFull = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALY);
 
-    private Resources resources;
+    private final Resources resources;
 
     public enum Scope {
         NAZIONALE,
@@ -251,25 +251,25 @@ public class DataStorage {
             for (int i = 0; i < dataArrayJson.length(); i++) {
                 JSONObject jsonObject = dataArrayJson.getJSONObject(i);
                 String data = getFullDateStringByIndex(i);
-                String noteKey = jsonObject.getString(NOTE_IT_KEY);
-                if (!noteKey.isEmpty()) {
-                    String[] split = noteKey.split(";");
-                    List<Avviso> avvisi;
-                    if (avvisiRelativiMap.get(data) == null) {
-                        avvisi = new ArrayList<>();
-                        avvisiRelativiMap.put(data, avvisi);
-                    } else {
-                        avvisi = avvisiRelativiMap.get(data);
-                    }
-                    for (String nota : split) {
-                        Avviso avviso = getAvvisoByKey(nota);
-                        if (avviso != null) {
-                            avvisi.add(getAvvisoByKey(nota));
+                if(jsonObject.has(NOTE_IT_KEY)){
+                    String noteKey = jsonObject.getString(NOTE_IT_KEY);
+                    if (!noteKey.isEmpty()) {
+                        String[] split = noteKey.split(";");
+                        List<Avviso> avvisi;
+                        if (avvisiRelativiMap.get(data) == null) {
+                            avvisi = new ArrayList<>();
+                            avvisiRelativiMap.put(data, avvisi);
+                        } else {
+                            avvisi = avvisiRelativiMap.get(data);
+                        }
+                        for (String nota : split) {
+                            Avviso avviso = getAvvisoByKey(nota);
+                            if (avviso != null) {
+                                avvisi.add(getAvvisoByKey(nota));
+                            }
                         }
                     }
-
                 }
-
             }
 
             //Custom computed trends

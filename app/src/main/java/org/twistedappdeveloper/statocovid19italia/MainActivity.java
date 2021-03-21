@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private DataVisualizerFragment currentFragment;
 
-    private final SyncHttpClient client = new SyncHttpClient();
+    private SyncHttpClient client;
 
     private final List<Changelog> changelogs = new ArrayList<>();
 
@@ -87,6 +87,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setTheme();
         super.onCreate(savedInstanceState);
+
+        client = new SyncHttpClient();
+        client.addHeader("Accept", "application/json");
+        client.addHeader("Content-Type", "application/json");
+        client.addHeader("X-API-KEY", getResources().getString(R.string.api_key));
 
         nationalDataStorage = DataStorage.createAndGetIstanceIfNotExist(getResources(), DataStorage.Scope.NAZIONALE);
 
@@ -448,6 +453,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void run() {
+                if (!pref.getBoolean("counted", false)) {
+                    client.post(getString(R.string.counter), new JsonHttpResponseHandler() {
+                    });
+                    SharedPreferences.Editor editor = pref.edit();
+                    editor.putBoolean("counted", true);
+                    editor.apply();
+                }
+
 //                client.get(getString(R.string.dataset_avvisi), new JsonHttpResponseHandler() {
 //                    @Override
 //                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
@@ -490,7 +503,7 @@ public class MainActivity extends AppCompatActivity {
                                             outputWriter.write(datiRegionali.toString());
                                             outputWriter.close();
                                             outputWriter = new OutputStreamWriter(fileOutProvinciali);
-                                            outputWriter.write(datiProvinciali.toString()); //fixme stringa troppo lunga
+                                            outputWriter.write(datiProvinciali.toString());
                                             outputWriter.close();
 
                                         } catch (JSONException e) {
