@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 31,
+  "latest_app_version": 32,
   "changelog": [
+    {
+      "ver": "1.2.7",
+      "description": "-Minor fix"
+    },
     {
       "ver": "1.2.6.2",
       "description": "-Minor fix"
