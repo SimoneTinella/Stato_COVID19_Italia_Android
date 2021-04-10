@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 32,
+  "latest_app_version": 33,
   "changelog": [
+    {
+      "ver": "1.2.8",
+      "description": "-Zoom asse X e Y resa indipendente"
+    },
     {
       "ver": "1.2.7",
       "description": "-Minor fix"
