@@ -3,7 +3,6 @@ package org.twistedappdeveloper.statocovid19italia;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -55,7 +54,6 @@ import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.formatNumber;
 import static org.twistedappdeveloper.statocovid19italia.utils.TrendUtils.getColorByTrendKey;
@@ -73,13 +71,13 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
     private String contestoDati, contestoDatiProvince;
 
-    private ImageButton btnDisplayValues, btnContextProvince;
+    private ImageButton btnDisplayValues, btnContextProvince, btnSwitchZoom;
 
     private boolean displayValuesOnChart = false;
 
     private static final int animDuration = 600;
 
-    private SharedPreferences preferences;
+    private boolean scaleXaxis = true;
 
     private void updateContext() {
         dataStorage = DataStorage.getIstance().getDataStorageByDataContext(contestoDati);
@@ -118,13 +116,12 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_chart);
 
-        preferences = getApplicationContext().getSharedPreferences("default", 0);
-
         txtContesto = findViewById(R.id.txtContesto);
         txtMarkerData = findViewById(R.id.txtMarkerData);
         ImageButton btnTrends = findViewById(R.id.btnTrends);
         ImageButton btnChangeContext = findViewById(R.id.btnChangeContext);
         btnDisplayValues = findViewById(R.id.btnDisplayValues);
+        btnSwitchZoom = findViewById(R.id.btnSwitchZoom);
         btnContextProvince = findViewById(R.id.btnContextProvince);
         fabResetZoom = findViewById(R.id.fabResetZoom);
         fabResetZoom.setVisibility(View.INVISIBLE);
@@ -138,6 +135,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         fabResetZoom.setOnClickListener(this);
         btnDisplayValues.setOnClickListener(this);
         btnContextProvince.setOnClickListener(this);
+        btnSwitchZoom.setOnClickListener(this);
 
         chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
@@ -151,6 +149,8 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         chart.setHighlightPerDragEnabled(true);
         // if disabled, scaling can be done on x- and y-axis separately
         chart.setPinchZoom(true);
+        chart.setScaleXEnabled(scaleXaxis);
+        chart.setScaleYEnabled(!scaleXaxis);
         chart.setBackgroundColor(Color.TRANSPARENT);
         chart.setOnChartGestureListener(this);
 
@@ -208,10 +208,11 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
         boolean isMinimumZero = true;
 
+        int nValues = trendList.get(0).getTrendInfo().getTrendValues().size();
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 List<Entry> values = new ArrayList<>();
-                for (int i = 0; i < trendSelection.getTrendInfo().getTrendValues().size(); i++) {
+                for (int i = 0; i < nValues; i++) {
                     double value = trendSelection.getTrendInfo().getTrendValueByIndex(i).getValue();
                     values.add(new Entry(i, (float) value));
                     if (value < 0) {
@@ -277,7 +278,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
         for (TrendsSelection trendSelection : trendList) {
             if (trendSelection.isSelected()) {
                 ILineDataSet dataSetByLabel = chart.getLineData().getDataSetByLabel(
-                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), formatNumber((float)trendSelection.getTrendInfo().getTrendValueByIndex(precIndex).getValue())),
+                        String.format("%s (%s)", trendSelection.getTrendInfo().getName(), formatNumber((float) trendSelection.getTrendInfo().getTrendValueByIndex(precIndex).getValue())),
                         false
                 );
                 if (dataSetByLabel == null) {
@@ -286,7 +287,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 if (dataSetByLabel != null) {
                     dataSetByLabel
                             .setLabel(
-                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), formatNumber((float)trendSelection.getTrendInfo().getTrendValueByIndex(index).getValue())));
+                                    String.format("%s (%s)", trendSelection.getTrendInfo().getName(), formatNumber((float) trendSelection.getTrendInfo().getTrendValueByIndex(index).getValue())));
                 }
             }
         }
@@ -442,6 +443,19 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
                 builder.setTitle(getResources().getString(R.string.sel_dataContext_sub));
                 alert = builder.create();
                 alert.show();
+                break;
+
+            case R.id.btnSwitchZoom:
+                scaleXaxis = !scaleXaxis;
+                chart.setScaleXEnabled(scaleXaxis);
+                chart.setScaleYEnabled(!scaleXaxis);
+                if (scaleXaxis) {
+                    Toast.makeText(getApplicationContext(), "Zoom asse X abilitato", Toast.LENGTH_SHORT).show();
+                    btnSwitchZoom.setImageResource(R.drawable.baseline_search_white_24x);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Zoom asse Y abilitato", Toast.LENGTH_SHORT).show();
+                    btnSwitchZoom.setImageResource(R.drawable.baseline_search_white_24y);
+                }
                 break;
         }
     }
@@ -605,7 +619,7 @@ public class ChartActivity extends AppCompatActivity implements OnChartValueSele
 
                     RowData rowData = new RowData(
                             trendInfo.getName(),
-                            (float)(currentTrendValue.getValue() - precTrendValue.getValue()),
+                            (float) (currentTrendValue.getValue() - precTrendValue.getValue()),
                             getColorByTrendKey(ChartActivity.this, trendInfo.getKey()),
                             TrendUtils.getPositionByTrendKey(trendInfo.getKey()),
                             trendInfo.getKey()
