@@ -85,10 +85,10 @@
     <string name="c_rapporto_positivi_tamponi_desc">Rapporto in percentuale tra il numero di nuovi positivi e il numero dei nuovi tamponi giornalieri</string>
     <string name="ingressi_ter_int_desc">Nuovi ingressi in terapia intensiva</string>
 
-    <string name="dimessi_guariti_name">Totale Dimessi Guariti</string>
-    <string name="deceduti_name">Totale Deceduti</string>
-    <string name="totale_casi_name">Totale Casi</string>
-    <string name="totale_attualmente_positivi_name">Totale Attualmente Positivi</string>
+    <string name="dimessi_guariti_name">Tot. Dimessi Guariti</string>
+    <string name="deceduti_name">Tot. Deceduti</string>
+    <string name="totale_casi_name">Tot. Casi</string>
+    <string name="totale_attualmente_positivi_name">Tot. Attualmente Positivi</string>
     <string name="nuovi_attualmente_positivi_name">Nuovi Positivi Attivi</string>
     <string name="totale_ospedalizzati_name">Tot. Persone Ricoverate</string>
     <string name="terapia_intensiva_name">Terapia Intensiva</string>

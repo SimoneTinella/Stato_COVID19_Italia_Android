@@ -23,7 +23,7 @@
             android:gravity="start"
             android:textAlignment="textStart"
             android:textColor="@color/textColor"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             tools:text="Nome" />
 
@@ -35,7 +35,7 @@
             android:gravity="end"
             android:textAlignment="textEnd"
             android:textColor="@android:color/holo_orange_dark"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold"
             tools:text="Valore" />
 
@@ -63,7 +63,7 @@
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@color/textColor"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 tools:text="Valore del giorno prima" />
 
             <TextView
@@ -74,7 +74,7 @@
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 tools:text="Valore" />
         </LinearLayout>
@@ -92,7 +92,7 @@
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@color/textColor"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 tools:text="Var. % rispetto al giorno prima" />
 
             <TextView
@@ -103,7 +103,7 @@
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 tools:text="Valore" />
         </LinearLayout>
@@ -121,7 +121,7 @@
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@color/textColor"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 tools:text="Var. rispetto al giorno prima" />
 
             <TextView
@@ -132,7 +132,7 @@
                 android:gravity="start"
                 android:textAlignment="textStart"
                 android:textColor="@android:color/holo_orange_dark"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 tools:text="Valore" />
         </LinearLayout>
