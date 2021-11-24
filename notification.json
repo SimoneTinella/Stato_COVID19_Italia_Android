@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 33,
+  "latest_app_version": 34,
   "changelog": [
+    {
+      "ver": "1.2.9",
+      "description": "-Rimosse misure non più calcolate\n-Aggiunto retry in caso di fallimento nel recupero dai dati."
+    },
     {
       "ver": "1.2.8",
       "description": "-Zoom asse X e Y resa indipendente"
