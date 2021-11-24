@@ -86,18 +86,14 @@ public class TrendUtils {
                 return 15;
             case DataStorage.INGRESSI_TERAPIA_INT:
                 return 16;
-            case DataStorage.CASI_DA_SOSPETTO_DIAGNOSTICO:
-                return 17;
-            case DataStorage.CASI_DA_SCREENING:
-                return 18;
             case DataStorage.TOT_POS_TEST_MOLECOLARE:
-                return 19;
+                return 17;
             case DataStorage.TOT_POS_TEST_ANT_RAPID:
-                return 20;
+                return 18;
             case DataStorage.TAMPONI_TEST_MOLECOLARE:
-                return 21;
+                return 19;
             case DataStorage.TAMPONI_TEST_ANT_RAPID:
-                return 22;
+                return 20;
 
             default:
                 return Integer.MAX_VALUE;

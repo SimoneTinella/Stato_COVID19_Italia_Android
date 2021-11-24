@@ -138,6 +138,8 @@ public class DataStorage {
         discardedInfo.add(CODICE_NUTS_1_KEY);
         discardedInfo.add(CODICE_NUTS_2_KEY);
         discardedInfo.add(CODICE_NUTS_3_KEY);
+        discardedInfo.add(CASI_DA_SOSPETTO_DIAGNOSTICO);
+        discardedInfo.add(CASI_DA_SCREENING);
     }
 
     public static DataStorage createAndGetIstanceIfNotExist(Resources resources, Scope dataContextScope) {
