@@ -135,6 +135,14 @@ public class TrendUtils {
                 return resources.getString(R.string.c_nuovi_tamponi_name);
             case DataStorage.C_RAPPORTO_POSITIVI_TAMPONI:
                 return resources.getString(R.string.c_rapporto_positivi_tamponi);
+            case DataStorage.TOT_POS_TEST_MOLECOLARE:
+                return resources.getString(R.string.tot_pos_test_molecolare);
+            case DataStorage.TOT_POS_TEST_ANT_RAPID:
+                return resources.getString(R.string.tot_pos_test_rapido);
+            case DataStorage.TAMPONI_TEST_MOLECOLARE:
+                return resources.getString(R.string.tamponi_test_molecolare);
+            case DataStorage.TAMPONI_TEST_ANT_RAPID:
+                return resources.getString(R.string.tamponi_test_rapido);
 
             default:
                 String[] strings = key.split("_");
@@ -190,6 +198,14 @@ public class TrendUtils {
                 return context.getResources().getString(R.string.c_rapporto_positivi_tamponi_desc);
             case DataStorage.INGRESSI_TERAPIA_INT:
                 return context.getResources().getString(R.string.ingressi_ter_int_desc);
+            case DataStorage.TOT_POS_TEST_MOLECOLARE:
+                return context.getResources().getString(R.string.tot_pos_test_molecolare_desc);
+            case DataStorage.TOT_POS_TEST_ANT_RAPID:
+                return context.getResources().getString(R.string.tot_pos_test_rapido_desc);
+            case DataStorage.TAMPONI_TEST_MOLECOLARE:
+                return context.getResources().getString(R.string.tamponi_test_molecolare_desc);
+            case DataStorage.TAMPONI_TEST_ANT_RAPID:
+                return context.getResources().getString(R.string.tamponi_test_rapido_desc);
 
             default:
                 return "Nessuna Descrizione Disponibile";

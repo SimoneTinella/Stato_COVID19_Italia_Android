@@ -84,6 +84,10 @@
     <string name="c_nuovi_tamponi_name_desc">Numero di nuovi Tamponi Effettuati in giornata</string>
     <string name="c_rapporto_positivi_tamponi_desc">Rapporto in percentuale tra il numero di nuovi positivi e il numero dei nuovi tamponi giornalieri</string>
     <string name="ingressi_ter_int_desc">Nuovi ingressi in terapia intensiva</string>
+    <string name="tot_pos_test_molecolare_desc">Numero Totale di Positivi a seguito di Test Molecolare</string>
+    <string name="tot_pos_test_rapido_desc">Numero Totale di Positivi a seguito di Test Antigenico Rapido</string>
+    <string name="tamponi_test_molecolare_desc">Numero Totale di Tamponi Molecolari eseguiti</string>
+    <string name="tamponi_test_rapido_desc">Numero Totale di Test Antigenici Rapidi eseguiti</string>
 
     <string name="dimessi_guariti_name">Tot. Dimessi Guariti</string>
     <string name="deceduti_name">Tot. Deceduti</string>
@@ -107,5 +111,9 @@
     <string name="var_giorno_prima">Variazione numerica</string>
     <string name="visualizza_avviso">Visualizza Avviso</string>
     <string name="dati_cache">Dati recuperati dalla cache</string>
+    <string name="tot_pos_test_molecolare">Tot. Positivi Test Molecolare</string>
+    <string name="tot_pos_test_rapido">Tot. Positivi Test Rapido</string>
+    <string name="tamponi_test_molecolare">Tamponi Test Molecolare</string>
+    <string name="tamponi_test_rapido">Tamponi Test Rapido</string>
 
 </resources>
