@@ -1,5 +1,9 @@
 package org.twistedappdeveloper.statocovid19italia;
 
+import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DarkMode;
+import static org.twistedappdeveloper.statocovid19italia.utils.Utils.DayMode;
+import static org.twistedappdeveloper.statocovid19italia.utils.Utils.themeModeKey;
+
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,15 +19,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ShareCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.SyncHttpClient;
-import cz.msebera.android.httpclient.Header;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,11 +39,22 @@ import org.twistedappdeveloper.statocovid19italia.model.Changelog;
 import org.twistedappdeveloper.statocovid19italia.network.NetworkUtils;
 import org.twistedappdeveloper.statocovid19italia.utils.Utils;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import static org.twistedappdeveloper.statocovid19italia.utils.Utils.*;
+import cz.msebera.android.httpclient.Header;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -434,7 +451,10 @@ public class MainActivity extends AppCompatActivity {
 
                 List<Integer> done = new ArrayList<>();
 
-                while(done.isEmpty()){
+                int i = 0;
+                while (done.isEmpty() && i < 3) {
+                    Toast.makeText(MainActivity.this, String.format("Tentativo %s/3", ++i), Toast.LENGTH_SHORT).show();
+
                     if (!pref.getBoolean("counted", false)) {
                         client.post(getString(R.string.counter), new JsonHttpResponseHandler() {
                         });
@@ -532,7 +552,6 @@ public class MainActivity extends AppCompatActivity {
 
                     });
                 }
-
 
 
             }
