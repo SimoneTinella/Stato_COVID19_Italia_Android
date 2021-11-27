@@ -3,7 +3,7 @@
   "changelog": [
     {
       "ver": "1.2.9",
-      "description": "-Rimosse misure non più calcolate\n-Aggiunto retry in caso di fallimento nel recupero dai dati."
+      "description": "-Rimosse misure non più calcolate\n-Aggiunto retry in caso di fallimento nel recupero dai dati.\n-Gestione traduzione misure mancanti"
     },
     {
       "ver": "1.2.8",
