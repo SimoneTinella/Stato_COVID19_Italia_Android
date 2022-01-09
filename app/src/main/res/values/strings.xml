@@ -36,7 +36,8 @@
     <string name="no">No</string>
     <string name="app_preview">Hai una versione preview dell\'App</string>
     <string name="no_connection">Il dispositivo non ha accesso ad Internet, attiva la connessione e riprova.</string>
-    <string name="wait_pls">Recupero dati aggiornati…</string>
+    <string name="wait_pls">Recupero dati ultimi 365 giorni…</string>
+    <string name="wait_full">Recupero dati da inizio pandemia…</string>
     <string name="wait_local_pls">Controllo validità dati in cache…</string>
     <string name="versione">versione</string>
     <string name="versioni">versioni</string>
@@ -63,7 +64,7 @@
     <string name="andamento_regionale">Andamento Regionale</string>
     <string name="confronto_regionale">Confronto Regionale</string>
     <string name="confronto_regionale_message">Vuoi visualizzare il confronto Regionale di questa misura relativa al %s?</string>
-    <string name="verifica_nuovi_i_dati">Verifica nuovi i dati</string>
+    <string name="scarica_dati_completi">Scarica dati da inizio pandemia</string>
 
     <string name="dimessi_guariti_desc">Totale persone dimesse guarite dall\'inizio.</string>
     <string name="deceduti_desc">Totale persone decedute dall\'inizio.</string>

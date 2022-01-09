@@ -1,6 +1,10 @@
 {
-  "latest_app_version": 34,
+  "latest_app_version": 35,
   "changelog": [
+    {
+      "ver": "1.2.10",
+      "description": "-Per alleggerire il carico vengono adesso scaricati di default solo i dati degli ultimi 365 giorni. Per ottenere i dati da inizio pandemia utilizzare il menù."
+    },
     {
       "ver": "1.2.9",
       "description": "-Rimosse misure non più calcolate\n-Aggiunto retry in caso di fallimento nel recupero dai dati.\n-Gestione traduzione misure mancanti"

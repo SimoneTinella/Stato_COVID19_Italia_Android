@@ -21,7 +21,7 @@
         android:icon="@drawable/baseline_assessment_white_24"/>
 
     <item android:id="@+id/action_update"
-        android:title="@string/verifica_nuovi_i_dati"
+        android:title="@string/scarica_dati_completi"
         android:orderInCategory="100"
         app:showAsAction="never"
         android:icon="@drawable/baseline_refresh_white_24"/>

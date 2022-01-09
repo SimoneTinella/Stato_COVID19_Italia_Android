@@ -144,11 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 alertDialog.setTitle(getString(R.string.info));
                 alertDialog.setMessage(s);
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, getString(android.R.string.ok),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
+                        (dialog, which) -> dialog.dismiss());
                 alertDialog.show();
                 TextView txtDialog = alertDialog.findViewById(android.R.id.message);
                 if (txtDialog != null) {
@@ -168,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.action_update:
-                recoverDataFromNetwork();
+                recoverDataFromNetwork(true);
                 checkAppVersion();
                 break;
             case R.id.action_change_datacontex:
@@ -184,16 +180,13 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     }
                 }
-                builder.setSingleChoiceItems(dataContexs, checkedItem, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        DataVisualizerFragment newFragment = DataVisualizerFragment.newInstance(dataContexs[which], currentFragment.getCursore());
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.container, newFragment);
-                        fragmentTransaction.commit();
-                        currentFragment = newFragment;
-                    }
+                builder.setSingleChoiceItems(dataContexs, checkedItem, (dialog, which) -> {
+                    dialog.dismiss();
+                    DataVisualizerFragment newFragment = DataVisualizerFragment.newInstance(dataContexs[which], currentFragment.getCursore());
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container, newFragment);
+                    fragmentTransaction.commit();
+                    currentFragment = newFragment;
                 });
                 builder.setTitle(getResources().getString(R.string.sel_dataContext));
                 AlertDialog alert = builder.create();
@@ -268,36 +261,33 @@ public class MainActivity extends AppCompatActivity {
 
                             final int currentVersion = BuildConfig.VERSION_CODE;
                             if (latestVersion > currentVersion) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                        builder.setTitle(getResources().getString(R.string.app_update));
-                                        builder.setMessage(String.format(getResources().getString(R.string.app_update_message),
-                                                formatText(latestVersion - currentVersion),
-                                                BuildConfig.VERSION_NAME,
-                                                changelogs.get(0).getVersionaName()
-                                        ));
-                                        if (BuildConfig.DEBUG) {
-                                            builder.setPositiveButton(getResources().getString(R.string.aggiorna), new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    dialog.dismiss();
-                                                    Intent i = new Intent(Intent.ACTION_VIEW);
-                                                    i.setData(Uri.parse(getString(R.string.new_version_app_site)));
-                                                    startActivity(i);
-                                                }
-                                            });
-                                        }
-                                        builder.setNegativeButton(getString(R.string.chiudi), new DialogInterface.OnClickListener() {
+                                runOnUiThread(() -> {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setTitle(getResources().getString(R.string.app_update));
+                                    builder.setMessage(String.format(getResources().getString(R.string.app_update_message),
+                                            formatText(latestVersion - currentVersion),
+                                            BuildConfig.VERSION_NAME,
+                                            changelogs.get(0).getVersionaName()
+                                    ));
+                                    if (BuildConfig.DEBUG) {
+                                        builder.setPositiveButton(getResources().getString(R.string.aggiorna), new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
                                                 dialog.dismiss();
+                                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                                i.setData(Uri.parse(getString(R.string.new_version_app_site)));
+                                                startActivity(i);
                                             }
                                         });
-                                        AlertDialog alert = builder.create();
-                                        alert.show();
                                     }
+                                    builder.setNegativeButton(getString(R.string.chiudi), new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
                                 });
                             } else if (latestVersion < currentVersion) {
                                 runOnUiThread(new Runnable() {
@@ -388,16 +378,13 @@ public class MainActivity extends AppCompatActivity {
                                     );
                         }
 
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                currentFragment = DataVisualizerFragment.newInstance(currentFragment.getDataStorage().getDataContext());
-                                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                fragmentTransaction.replace(R.id.container, currentFragment);
-                                fragmentTransaction.commit();
-                                progressDialog.dismiss();
-                                Toast.makeText(getApplicationContext(), getString(R.string.dati_cache), Toast.LENGTH_SHORT).show();
-                            }
+                        runOnUiThread(() -> {
+                            currentFragment = DataVisualizerFragment.newInstance(currentFragment.getDataStorage().getDataContext());
+                            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                            fragmentTransaction.replace(R.id.container, currentFragment);
+                            fragmentTransaction.commit();
+                            progressDialog.dismiss();
+                            Toast.makeText(getApplicationContext(), getString(R.string.dati_cache), Toast.LENGTH_SHORT).show();
                         });
 
                     }
@@ -408,7 +395,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!cacheIsValid) {
                     runOnUiThread(() -> {
                         progressDialog.dismiss();
-                        recoverDataFromNetwork();
+                        recoverDataFromNetwork(false);
                     });
 
                 }
@@ -435,13 +422,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void recoverDataFromNetwork() {
+    private void recoverDataFromNetwork(Boolean allData) {
         if (!NetworkUtils.isDeviceOnline(MainActivity.this)) {
             Toast.makeText(MainActivity.this, getResources().getString(R.string.no_connection), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        progressDialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.wait_pls), true);
+        String testoDialog = allData ? getResources().getString(R.string.wait_full) : getResources().getString(R.string.wait_pls);
+        progressDialog = ProgressDialog.show(MainActivity.this, "", testoDialog, true);
 
         final Thread threadFetchData = new Thread(new Runnable() {
 
@@ -468,20 +456,31 @@ public class MainActivity extends AppCompatActivity {
 //                    public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
 //                        super.onSuccess(statusCode, headers, response);
 //                        nationalDataStorage.setAvvisiDataArrayJson(response);
-
-                    client.get(getResources().getString(R.string.dataset_nazionale), new JsonHttpResponseHandler() {
+                    String urlNazionali = getResources().getString(R.string.dataset_nazionale);
+                    if (allData) {
+                        urlNazionali = String.format("%s%s", urlNazionali, "?allData=true");
+                    }
+                    client.get(urlNazionali, new JsonHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, final JSONArray responseNazionale) {
                             super.onSuccess(statusCode, headers, responseNazionale);
                             nationalDataStorage.setDataArrayJson(responseNazionale);
 
-                            client.get(getResources().getString(R.string.dataset_regionale), new JsonHttpResponseHandler() {
+                            String urlRegionale = getResources().getString(R.string.dataset_regionale);
+                            if (allData) {
+                                urlRegionale = String.format("%s%s", urlRegionale, "?allData=true");
+                            }
+                            client.get(urlRegionale, new JsonHttpResponseHandler() {
                                 @Override
                                 public void onSuccess(int statusCode, Header[] headers, final JSONArray responseRegionale) {
                                     super.onSuccess(statusCode, headers, responseRegionale);
                                     nationalDataStorage.setSubLvlDataArrayJson(responseRegionale, DataStorage.DEN_REGIONE_KEY, DataStorage.Scope.REGIONALE);
 
-                                    client.get(getResources().getString(R.string.dataset_provinciale), new JsonHttpResponseHandler() {
+                                    String urlProvinciali = getResources().getString(R.string.dataset_provinciale);
+                                    if (allData) {
+                                        urlProvinciali = String.format("%s%s", urlProvinciali, "?allData=true");
+                                    }
+                                    client.get(urlProvinciali, new JsonHttpResponseHandler() {
                                         @Override
                                         public void onSuccess(int statusCode, Header[] headers, JSONArray responseProvinciale) {
                                             super.onSuccess(statusCode, headers, responseProvinciale);
@@ -562,22 +561,19 @@ public class MainActivity extends AppCompatActivity {
 
         threadFetchData.start();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    threadFetchData.join();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    runOnUiThread(() -> {
-                        currentFragment = DataVisualizerFragment.newInstance(currentFragment.getDataStorage().getDataContext());
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                        fragmentTransaction.replace(R.id.container, currentFragment);
-                        fragmentTransaction.commit();
-                        progressDialog.dismiss();
-                    });
-                }
+        new Thread(() -> {
+            try {
+                threadFetchData.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                runOnUiThread(() -> {
+                    currentFragment = DataVisualizerFragment.newInstance(currentFragment.getDataStorage().getDataContext());
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.container, currentFragment);
+                    fragmentTransaction.commit();
+                    progressDialog.dismiss();
+                });
             }
         }).start();
     }
