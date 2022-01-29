@@ -284,16 +284,15 @@ public class DataStorage {
                 ArrayList<TrendValue> rapportoPositiviTamponi = new ArrayList<>();
 
                 String dataIniziale = getFullDateStringFromJSONObject(jsonObjectIniziale);
-                nuoviGuariti.add(new TrendValue(jsonObjectIniziale.getDouble(TOTALE_DIMESSI_GUARITI_KEY), dataIniziale));
-                nuoviDeceduti.add(new TrendValue(jsonObjectIniziale.getDouble(TOTALE_DECEDUTI_KEY), dataIniziale));
-                nuoviTamponi.add(new TrendValue(jsonObjectIniziale.getDouble(TAMPONI_KEY), dataIniziale));
+                nuoviGuariti.add(computeDifferentialTrend(1, 0, TOTALE_DIMESSI_GUARITI_KEY));
+                nuoviDeceduti.add(computeDifferentialTrend(1, 0, TOTALE_DECEDUTI_KEY));
+                nuoviTamponi.add(computeDifferentialTrend(1, 0, TAMPONI_KEY));
                 rapportoPositiviTamponi.add(new TrendValue((jsonObjectIniziale.getDouble(NUOVI_POSITIVI_KEY) / jsonObjectIniziale.getDouble(TAMPONI_KEY)) * 100, dataIniziale));
 
                 for (int i = 1; i < dataArrayJson.length(); i++) {
                     nuoviGuariti.add(computeDifferentialTrend(i, i - 1, TOTALE_DIMESSI_GUARITI_KEY));
                     nuoviDeceduti.add(computeDifferentialTrend(i, i - 1, TOTALE_DECEDUTI_KEY));
                     nuoviTamponi.add(computeDifferentialTrend(i, i - 1, TAMPONI_KEY));
-
                     rapportoPositiviTamponi.add(new TrendValue((trendsMap.get(NUOVI_POSITIVI_KEY).getTrendValueByIndex(i).getValue() / nuoviTamponi.get(i).getValue()) * 100, dataIniziale));
                 }
 

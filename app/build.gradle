@@ -7,8 +7,8 @@ android {
         applicationId "org.twistedappdeveloper.statocovid19italia"
         minSdkVersion 14
         targetSdkVersion 31
-        versionCode 35
-        versionName "1.2.10"
+        versionCode 36
+        versionName "1.2.10.1"
     }
     buildTypes {
         release {
@@ -31,13 +31,13 @@ dependencies {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.5.0'
     implementation 'com.loopj.android:android-async-http:1.4.11'
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
 }
 
 dependencies {
